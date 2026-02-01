@@ -1,0 +1,109 @@
+Domain:
+  name: Real Estate Marketplace
+  problemStatement: Platform to list, verify, rent, and sell real estate properties through agent-managed transactions
+  lastUpdated: 2026-01-31
+
+Property:
+  definition: 
+    A physical real estate asset such as a house, apartment, or commercial space
+    that can be offered for rent or sale.
+  examples:
+    - A two-bedroom apartment available for rent
+  aliases:
+    - Real Estate Asset
+
+PropertyListing:
+  definition: 
+    A published representation of a property that includes its details,
+    pricing intent (rent or sale), and availability status.
+  examples:
+    - An apartment listed for sale with price and photos
+  aliases:
+    - Listing
+
+PropertySeeker:
+  definition: 
+    An individual who searches for properties with the intent to rent or purchase.
+  examples:
+    - A person browsing apartments and requesting site visits
+  aliases:
+    - Buyer
+    - Tenant
+
+Seller:
+  definition: 
+    An individual or entity that owns a property and intends to sell or rent it.
+  examples:
+    - A homeowner listing their house for sale
+  aliases:
+    - Property Owner
+
+Agent:
+  definition: 
+    An authorized intermediary responsible for verifying property listings, scheduling visits, and facilitating deal confirmation.
+  examples:
+    - An agent approving a property listing before it is published
+  aliases:
+    - Dealer
+
+Shortlist:
+  definition: 
+    A temporary collection of properties saved by a property seeker for future review or comparison.
+  examples:
+    - A user saving three apartments to compare later
+  aliases:
+    - Favorites
+
+SiteVisit:
+  definition: 
+    A scheduled physical visit to a property by a property seeker,
+    coordinated through an agent.
+  examples:
+    - A buyer visiting a house on Sunday afternoon
+  aliases:
+    - Property Visit
+
+SiteVisitRequest:
+  definition: 
+    A request raised by a property seeker to visit a listed property
+    at a preferred date and time.
+  examples:
+    - A tenant requesting a visit for an apartment on Saturday
+  aliases:
+    - Visit Request
+
+Offer:
+  definition: 
+    A formal proposal made by a property seeker to purchase a property
+    at specified terms.
+  examples:
+    - A buyer offering ₹80 lakhs for a listed house
+  aliases:
+    - Purchase Offer
+
+RentalRequest:
+  definition: 
+    A formal request made by a property seeker to rent a property
+    under specified conditions.
+  examples:
+    - A tenant requesting to rent an apartment for 12 months
+  aliases:
+    - Rent Request
+
+ListingVerification:
+  definition: >
+    The process performed by an agent to validate the authenticity
+    and eligibility of a property listing.
+  examples:
+    - An agent verifying ownership documents before approval
+  aliases:
+    - Listing Approval
+
+Deal:
+  definition: >
+    A finalized agreement resulting from an accepted offer or rental request,
+    marking the successful completion of a transaction.
+  examples:
+    - A confirmed sale agreement between buyer and seller
+  aliases:
+    - Transaction
