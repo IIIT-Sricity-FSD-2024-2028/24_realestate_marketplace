@@ -1,8 +1,19 @@
-Domain:
+Domain: Real Estate and property management
   name: Real Estate Marketplace
-  problemStatement: Platform to list, verify, rent, and sell real estate properties through agent-managed transactions
-  lastUpdated: 2026-01-31
+  problemStatement: A centralized platform to enable secure property listing, verification, searching, site visit coordination, negotiation, and transaction management for buyers, sellers, agents, and administrators.
+  lastUpdated: 2026-03-03
 
+User:
+definition:
+  A registered individual who interacts with the real estate marketplace platform.
+  Users can have different roles such as Buyer, Seller, Agent, or Verification Officer.
+examples:
+  - A buyer searching for apartments in Hyderabad.
+  - A seller listing a residential plot for sale.
+aliases:
+  - Account
+  - Platform User
+  
 Property:
   definition: 
     A physical real estate asset such as a house, apartment, or commercial space
@@ -46,6 +57,15 @@ Agent:
   aliases:
     - Dealer
 
+Admin:
+definition:
+  An administrative user responsible for reviewing and approving property listings before they become publicly visible.
+examples:
+  - Approving a verified residential property listing.
+  - Rejecting a listing due to invalid documents.
+aliases:
+  - Platform Administrator
+  
 Shortlist:
   definition: 
     A temporary collection of properties saved by a property seeker for future review or comparison.
@@ -56,8 +76,7 @@ Shortlist:
 
 SiteVisit:
   definition: 
-    A scheduled physical visit to a property by a property seeker,
-    coordinated through an agent.
+    A scheduled physical visit to a property by a property seeker, coordinated through an agent.
   examples:
     - A buyer visiting a house on Sunday afternoon
   aliases:
@@ -65,17 +84,15 @@ SiteVisit:
 
 SiteVisitRequest:
   definition: 
-    A request raised by a property seeker to visit a listed property
-    at a preferred date and time.
+    A request raised by a property seeker to visit a listed property at a preferred date and time.
   examples:
     - A tenant requesting a visit for an apartment on Saturday
   aliases:
     - Visit Request
 
-Offer:
+Initiate purchase:
   definition: 
-    A formal proposal made by a property seeker to purchase a property
-    at specified terms.
+    A formal proposal made by a property seeker to purchase a property at specified terms.
   examples:
     - A buyer offering ₹80 lakhs for a listed house
   aliases:
@@ -83,27 +100,25 @@ Offer:
 
 RentalRequest:
   definition: 
-    A formal request made by a property seeker to rent a property
-    under specified conditions.
+    A formal request made by a property seeker to rent a property under specified conditions.
   examples:
     - A tenant requesting to rent an apartment for 12 months
   aliases:
     - Rent Request
 
 ListingVerification:
-  definition: >
-    The process performed by an agent to validate the authenticity
-    and eligibility of a property listing.
+  definition: 
+    The process performed by an agent to validate the authenticity and eligibility of a property listing.
   examples:
     - An agent verifying ownership documents before approval
   aliases:
     - Listing Approval
 
 Deal:
-  definition: >
-    A finalized agreement resulting from an accepted offer or rental request,
-    marking the successful completion of a transaction.
+  definition: 
+    A finalized agreement resulting from an accepted offer or rental request, marking the successful completion of a transaction.
   examples:
     - A confirmed sale agreement between buyer and seller
   aliases:
     - Transaction
+
