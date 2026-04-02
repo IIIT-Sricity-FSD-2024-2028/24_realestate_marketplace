@@ -1,0 +1,26 @@
+.agent-drop {
+    display: none;
+    padding-left: 1rem;
+}
+
+.agent-drop.open {
+    display: block;
+}
+
+.drop-toggle svg.chevron {
+    transition: transform 0.3s;
+}
+
+.drop-toggle.open svg.chevron {
+    transform: rotate(90deg);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

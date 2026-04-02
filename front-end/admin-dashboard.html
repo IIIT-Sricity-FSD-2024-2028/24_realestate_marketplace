@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - truEstate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-dashboard.css">
+</head>
+
+<body
+    style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto',sans-serif;background:#000;color:#fff;">
+    <div style="display:flex;height:100vh;">
+        <aside
+            style="width:16rem;background:#000;border-right:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;">
+            <div style="padding:1.5rem;display:flex;align-items:center;gap:0.5rem;">
+                <div style="background:#1DB954;padding:0.5rem;border-radius:0.5rem;"><svg
+                        style="width:1.5rem;height:1.5rem;color:#000;" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg></div>
+                <div style="font-size:1.25rem;"><span style="font-weight:700;">Tru</span><span>Estate</span><span
+                        style="font-size:0.75rem;color:#1DB954;margin-left:0.5rem;">Admin</span></div>
+            </div>
+            <nav style="flex:1;padding:0.75rem;overflow-y:auto;" id="admin-nav">
+                <a href="#" class="admin-nav-item" data-nav="dashboard"
+                    style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;background:#282828;color:#fff;font-size:0.875rem;font-weight:500;"><svg
+                        style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg><span>Dashboard</span>
+                    <div class="nav-indicator"
+                        style="margin-left:auto;width:0.25rem;height:2rem;background:#1DB954;border-radius:9999px;">
+                    </div>
+                </a>
+                <a href="#" class="admin-nav-item" data-nav="users"
+                    style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+                        style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg><span>User Management</span></a>
+                <a href="#" class="admin-nav-item" data-nav="property-mgmt"
+                    style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+                        style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg><span>Property Management</span></a>
+                <a href="#" class="admin-nav-item" data-nav="profile"
+                    style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+                        style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg><span>Profile</span></a>
+            </nav>
+            <div style="padding:1rem;border-top:1px solid rgba(255,255,255,0.1);">
+                <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem;margin-bottom:0.75rem;">
+                    <div
+                        style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;color:#000;">
+                        AD</div>
+                    <div style="flex:1;">
+                        <div style="font-size:0.875rem;font-weight:500;">Admin User</div>
+                        <div style="font-size:0.75rem;color:#9ca3af;">Super Admin</div>
+                    </div>
+                </div>
+                <button onclick="window.location.href='index.html'"
+                    style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 1rem;width:100%;border-radius:0.5rem;color:#9ca3af;background:none;border:none;cursor:pointer;font-size:0.875rem;"><svg
+                        style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg><span>Logout</span></button>
+            </div>
+        </aside>
+        <main style="flex:1;overflow-y:auto;background:#121212;">
+            <div data-section="dashboard" class="admin-section" style="display:block;">
+                <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Admin Dashboard</h1>
+                    <p style="color:#9ca3af;font-size:0.875rem;">Platform overview and management</p>
+                </div>
+                <div style="padding:2rem;">
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2rem;">
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+                            <div
+                                style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div
+                                    style="width:3rem;height:3rem;border-radius:0.75rem;background:rgba(168,85,247,0.15);display:flex;align-items:center;justify-content:center;">
+                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#a855f7"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="font-size:2rem;font-weight:700;margin-bottom:0.25rem;">2,847</div>
+                            <div style="font-size:0.875rem;color:#9ca3af;">Total Users</div>
+                            <div style="font-size:0.75rem;color:#a855f7;margin-top:0.5rem;">+245 this month</div>
+                        </div>
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+                            <div
+                                style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div
+                                    style="width:3rem;height:3rem;border-radius:0.75rem;background:rgba(29,185,84,0.15);display:flex;align-items:center;justify-content:center;">
+                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#1DB954"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        <polyline points="9 22 9 12 15 12 15 22" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="font-size:2rem;font-weight:700;margin-bottom:0.25rem;">1,234</div>
+                            <div style="font-size:0.875rem;color:#9ca3af;">Total Properties</div>
+                            <div style="font-size:0.75rem;color:#1DB954;margin-top:0.5rem;">+89 this month</div>
+                        </div>
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+                            <div
+                                style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div
+                                    style="width:3rem;height:3rem;border-radius:0.75rem;background:rgba(29,185,84,0.15);display:flex;align-items:center;justify-content:center;">
+                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#1DB954"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="font-size:2rem;font-weight:700;margin-bottom:0.25rem;">156</div>
+                            <div style="font-size:0.875rem;color:#9ca3af;">Active Agents</div>
+                            <div style="font-size:0.75rem;color:#1DB954;margin-top:0.5rem;">+12 this month</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+                        <h2 style="font-size:1.25rem;font-weight:700;">Recent Listings</h2>
+                        <div style="display:flex;gap:0.5rem;" id="listing-filters"><button class="pill-btn active"
+                                onclick="filterListings(this,'all')">All</button><button class="pill-btn"
+                                onclick="filterListings(this,'pending')">Pending</button><button class="pill-btn"
+                                onclick="filterListings(this,'review')">Review</button><button class="pill-btn"
+                                onclick="filterListings(this,'verified')">Verified</button></div>
+                    </div>
+                    <div
+                        style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        PROPERTY</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        SELLER</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        PRICE</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listings-body">
+                                <tr class="listing-row" data-status="pending"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;">Modern Downtown Apt</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">Ramesh Kumar</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#1DB954;font-weight:600;">Rs
+                                        45,00,000</td>
+                                    <td style="padding:1rem 1.5rem;"><button
+                                            onclick="showToast('Reviewing Modern Downtown Apt...')"
+                                            style="background:rgba(234,179,8,0.1);color:#eab308;padding:0.375rem 0.75rem;border-radius:0.375rem;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;">Pending</button>
+                                    </td>
+                                </tr>
+                                <tr class="listing-row" data-status="review"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;">Luxury Villa</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">Suresh Reddy</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#1DB954;font-weight:600;">Rs
+                                        1,25,00,000</td>
+                                    <td style="padding:1rem 1.5rem;"><button
+                                            onclick="showToast('Reviewing Luxury Villa...')"
+                                            style="background:rgba(59,130,246,0.1);color:#3b82f6;padding:0.375rem 0.75rem;border-radius:0.375rem;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;">Review</button>
+                                    </td>
+                                </tr>
+                                <tr class="listing-row" data-status="verified"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;">Skyline Penthouse</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">Meera Reddy</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#1DB954;font-weight:600;">Rs
+                                        72,00,000</td>
+                                    <td style="padding:1rem 1.5rem;"><button
+                                            onclick="showToast('Reviewing Skyline Penthouse...')"
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.375rem 0.75rem;border-radius:0.375rem;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;">Verified</button>
+                                    </td>
+                                </tr>
+                                <tr class="listing-row" data-status="pending"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;">Beach House Villa</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">Vikram Nair</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#1DB954;font-weight:600;">Rs
+                                        5,20,00,000</td>
+                                    <td style="padding:1rem 1.5rem;"><button
+                                            onclick="showToast('Reviewing Beach House Villa...')"
+                                            style="background:rgba(234,179,8,0.1);color:#eab308;padding:0.375rem 0.75rem;border-radius:0.375rem;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;">Pending</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div data-section="users" class="admin-section" style="display:none;">
+                <div
+                    style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">User Management</h1>
+                        <p style="color:#9ca3af;font-size:0.875rem;">Manage platform users</p>
+                    </div><button onclick="showToast('Add user form coming soon!')"
+                        style="background:#1DB954;color:#000;padding:0.625rem 1.5rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">+
+                        Add User</button>
+                </div>
+                <div style="padding:2rem;">
+                    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;"><input type="text" id="userSearchInput"
+                            placeholder="Search users by name, email, or ID..." oninput="filterUsers()"
+                            style="flex:1;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;"><select
+                            id="userRoleFilter" onchange="filterUsers()"
+                            style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;">
+                            <option value="all">All Roles</option>
+                            <option value="Buyer">Buyer</option>
+                            <option value="Seller">Seller</option>
+                            <option value="Agent">Agent</option>
+                        </select></div>
+                    <div
+                        style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        USER ID</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        NAME</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        EMAIL</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        ROLE</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        STATUS</th>
+                                    <th
+                                        style="padding:1rem 1.5rem;text-align:left;font-size:0.8125rem;font-weight:600;color:#9ca3af;">
+                                        ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <tr class="user-row" data-role="Buyer" data-status="Active"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">#USR-001</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;" class="user-name">James Morgan
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;"
+                                        class="user-email">james@email.com</td>
+                                    <td style="padding:1rem 1.5rem;"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Buyer</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-status"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-action"><button
+                                            onclick="toggleBlock(this)"
+                                            style="background:none;color:#ef4444;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #ef444440;font-size:0.75rem;font-weight:600;cursor:pointer;">Block</button>
+                                    </td>
+                                </tr>
+                                <tr class="user-row" data-role="Seller" data-status="Active"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">#USR-002</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;" class="user-name">Priya Sharma
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;"
+                                        class="user-email">priya@email.com</td>
+                                    <td style="padding:1rem 1.5rem;"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Seller</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-status"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-action"><button
+                                            onclick="toggleBlock(this)"
+                                            style="background:none;color:#ef4444;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #ef444440;font-size:0.75rem;font-weight:600;cursor:pointer;">Block</button>
+                                    </td>
+                                </tr>
+                                <tr class="user-row" data-role="Agent" data-status="Active"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">#USR-003</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;" class="user-name">Mike Johnson
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;"
+                                        class="user-email">mike@email.com</td>
+                                    <td style="padding:1rem 1.5rem;"><span
+                                            style="background:rgba(59,130,246,0.1);color:#3b82f6;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Agent</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-status"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-action"><button
+                                            onclick="toggleBlock(this)"
+                                            style="background:none;color:#ef4444;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #ef444440;font-size:0.75rem;font-weight:600;cursor:pointer;">Block</button>
+                                    </td>
+                                </tr>
+                                <tr class="user-row" data-role="Seller" data-status="Active"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">#USR-004</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;" class="user-name">Sarah Parker
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;"
+                                        class="user-email">sarah@email.com</td>
+                                    <td style="padding:1rem 1.5rem;"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Seller</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-status"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-action"><button
+                                            onclick="toggleBlock(this)"
+                                            style="background:none;color:#ef4444;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #ef444440;font-size:0.75rem;font-weight:600;cursor:pointer;">Block</button>
+                                    </td>
+                                </tr>
+                                <tr class="user-row" data-role="Buyer" data-status="Blocked"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">#USR-005</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;" class="user-name">Vikram Nair
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;"
+                                        class="user-email">vikram@email.com</td>
+                                    <td style="padding:1rem 1.5rem;"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Buyer</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-status"><span
+                                            style="background:rgba(239,68,68,0.1);color:#ef4444;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Blocked</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-action"><button
+                                            onclick="toggleBlock(this)"
+                                            style="background:none;color:#1DB954;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #1DB95440;font-size:0.75rem;font-weight:600;cursor:pointer;">Unblock</button>
+                                    </td>
+                                </tr>
+                                <tr class="user-row" data-role="Agent" data-status="Active"
+                                    style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;">#USR-006</td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;" class="user-name">Lisa Anderson
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;font-size:0.875rem;color:#9ca3af;"
+                                        class="user-email">lisa@email.com</td>
+                                    <td style="padding:1rem 1.5rem;"><span
+                                            style="background:rgba(59,130,246,0.1);color:#3b82f6;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Agent</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-status"><span
+                                            style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                                    </td>
+                                    <td style="padding:1rem 1.5rem;" class="user-action"><button
+                                            onclick="toggleBlock(this)"
+                                            style="background:none;color:#ef4444;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #ef444440;font-size:0.75rem;font-weight:600;cursor:pointer;">Block</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div data-section="property-mgmt" class="admin-section" style="display:none;">
+                <!-- Header -->
+                <div
+                    style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:1rem;">
+                    <div
+                        style="width:3rem;height:3rem;border-radius:0.75rem;background:rgba(29,185,84,0.15);display:flex;align-items:center;justify-content:center;">
+                        <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#1DB954" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.25rem;">Property Document
+                            Verification</h1>
+                        <p style="color:#9ca3af;font-size:0.875rem;">Review and verify seller document submissions</p>
+                    </div>
+                </div>
+                <div style="padding:2rem;">
+                    <!-- Stats Cards -->
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Total Documents
+                                </div>
+                                <div id="stat-total" style="font-size:2rem;font-weight:700;">9</div>
+                            </div>
+                            <div
+                                style="width:2.5rem;height:2.5rem;border-radius:0.5rem;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;">
+                                <svg style="width:1.25rem;height:1.25rem;" fill="none" stroke="#9ca3af" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Pending Review</div>
+                                <div id="stat-pending" style="font-size:2rem;font-weight:700;color:#eab308;">3</div>
+                            </div>
+                            <div
+                                style="width:2.5rem;height:2.5rem;border-radius:0.5rem;background:rgba(234,179,8,0.1);display:flex;align-items:center;justify-content:center;">
+                                <svg style="width:1.25rem;height:1.25rem;" fill="none" stroke="#eab308" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Verified</div>
+                                <div id="stat-verified" style="font-size:2rem;font-weight:700;color:#1DB954;">3</div>
+                            </div>
+                            <div
+                                style="width:2.5rem;height:2.5rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                <svg style="width:1.25rem;height:1.25rem;" fill="none" stroke="#1DB954" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div
+                            style="background:#1a1a1a;padding:1.5rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Rejected</div>
+                                <div id="stat-rejected" style="font-size:2rem;font-weight:700;color:#ef4444;">3</div>
+                            </div>
+                            <div
+                                style="width:2.5rem;height:2.5rem;border-radius:0.5rem;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;">
+                                <svg style="width:1.25rem;height:1.25rem;" fill="none" stroke="#ef4444" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="15" y1="9" x2="9" y2="15" />
+                                    <line x1="9" y1="9" x2="15" y2="15" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Search + Filter -->
+                    <div style="display:flex;gap:1rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:200px;position:relative;"><svg
+                                style="width:1.25rem;height:1.25rem;position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:#9ca3af;"
+                                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg><input type="text" id="propSearchInput"
+                                placeholder="Search by seller, property, or document type..."
+                                oninput="filterProperties()"
+                                style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem 0.75rem 2.5rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                        </div>
+                        <div style="display:flex;gap:0.5rem;" id="prop-filters">
+                            <button class="pill-btn active" onclick="filterPropStatus(this,'all')"
+                                style="display:flex;align-items:center;gap:0.375rem;">All <span id="count-all"
+                                    style="background:rgba(255,255,255,0.2);padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;">9</span></button>
+                            <button class="pill-btn" onclick="filterPropStatus(this,'Pending')"
+                                style="display:flex;align-items:center;gap:0.375rem;">Pending <span id="count-pending"
+                                    style="background:rgba(234,179,8,0.2);padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;">3</span></button>
+                            <button class="pill-btn" onclick="filterPropStatus(this,'Verified')"
+                                style="display:flex;align-items:center;gap:0.375rem;">Verified <span id="count-verified"
+                                    style="background:rgba(29,185,84,0.2);padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;">3</span></button>
+                            <button class="pill-btn" onclick="filterPropStatus(this,'Rejected')"
+                                style="display:flex;align-items:center;gap:0.375rem;">Rejected <span id="count-rejected"
+                                    style="background:rgba(239,68,68,0.2);padding:0.125rem 0.5rem;border-radius:9999px;font-size:0.75rem;">3</span></button>
+                        </div>
+                    </div>
+                    <!-- Property Cards Grid -->
+                    <div id="property-cards" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;">
+                        <!-- Card 1 - Pending -->
+                        <div class="prop-card" data-prop-status="Pending" data-seller="Rajesh Kumar"
+                            data-name="Luxury 3BHK Apartment" data-doctype="Ownership Deed"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Luxury 3BHK
+                                            Apartment</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Banjara Hills, Hyderabad
+                                        </div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">●
+                                    Pending</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2847</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Apartment</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Ownership Deed</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-08</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Rajesh Kumar
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">rajesh.kumar@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL001</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button><button onclick="verifyProperty(this)"
+                                    style="flex:1;background:#1DB954;color:#000;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✓
+                                    Verify</button><button onclick="rejectProperty(this)"
+                                    style="flex:1;background:rgba(239,68,68,0.15);color:#ef4444;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✕
+                                    Reject</button></div>
+                        </div>
+                        <!-- Card 2 - Verified -->
+                        <div class="prop-card" data-prop-status="Verified" data-seller="Priya Sharma"
+                            data-name="Modern Villa with Pool" data-doctype="Tax Receipt"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Modern Villa
+                                            with Pool</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Jubilee Hills, Hyderabad
+                                        </div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✓
+                                    Verified</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2851</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Villa</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Tax Receipt</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-07</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Priya Sharma
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">priya.sharma@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL002</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button></div>
+                        </div>
+                        <!-- Card 3 - Rejected -->
+                        <div class="prop-card" data-prop-status="Rejected" data-seller="Amit Patel"
+                            data-name="Commercial Office Space" data-doctype="NOC Certificate"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Commercial
+                                            Office Space</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 HITEC City, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(239,68,68,0.1);color:#ef4444;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✕
+                                    Rejected</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2855</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Commercial</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        NOC Certificate</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-06</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Amit Patel
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">amit.patel@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL003</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 0.75rem;">
+                                <div
+                                    style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:0.5rem;padding:0.75rem;">
+                                    <div style="color:#ef4444;font-size:0.75rem;font-weight:600;margin-bottom:0.25rem;">
+                                        ⚠ Rejection Reason</div>
+                                    <div style="font-size:0.8125rem;color:#ccc;">Document appears to be forged.
+                                        Signatures do not match official records.</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button></div>
+                        </div>
+                        <!-- Card 4 - Pending -->
+                        <div class="prop-card" data-prop-status="Pending" data-seller="Sneha Reddy"
+                            data-name="Penthouse with City View" data-doctype="Building Approval"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Penthouse
+                                            with City View</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Gachibowli, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">●
+                                    Pending</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2860</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Penthouse</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Building Approval</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-09</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Sneha Reddy
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">sneha.reddy@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL004</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button><button onclick="verifyProperty(this)"
+                                    style="flex:1;background:#1DB954;color:#000;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✓
+                                    Verify</button><button onclick="rejectProperty(this)"
+                                    style="flex:1;background:rgba(239,68,68,0.15);color:#ef4444;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✕
+                                    Reject</button></div>
+                        </div>
+                        <!-- Card 5 - Verified -->
+                        <div class="prop-card" data-prop-status="Verified" data-seller="Vikram Singh"
+                            data-name="Farmhouse with 5 Acres" data-doctype="Land Survey Report"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Farmhouse
+                                            with 5 Acres</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Shamshabad, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✓
+                                    Verified</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2858</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Farmhouse</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Land Survey Report</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-05</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Vikram Singh
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">vikram.singh@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL005</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button></div>
+                        </div>
+                        <!-- Card 6 - Rejected -->
+                        <div class="prop-card" data-prop-status="Rejected" data-seller="Ravi Teja"
+                            data-name="2BHK Independent House" data-doctype="Sale Deed"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">2BHK
+                                            Independent House</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Kukatpally, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(239,68,68,0.1);color:#ef4444;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✕
+                                    Rejected</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2862</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Independent House</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Sale Deed</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-04</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Ravi Teja</div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">ravi.teja@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL006</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 0.75rem;">
+                                <div
+                                    style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:0.5rem;padding:0.75rem;">
+                                    <div style="color:#ef4444;font-size:0.75rem;font-weight:600;margin-bottom:0.25rem;">
+                                        ⚠ Rejection Reason</div>
+                                    <div style="font-size:0.8125rem;color:#ccc;">Property boundaries do not match the
+                                        survey report dimensions.</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button></div>
+                        </div>
+                        <!-- Card 7 - Pending -->
+                        <div class="prop-card" data-prop-status="Pending" data-seller="Deepa Nair"
+                            data-name="Gated Community Villa" data-doctype="Encumbrance Certificate"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Gated
+                                            Community Villa</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Miyapur, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">●
+                                    Pending</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2865</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Villa</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Encumbrance Certificate</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-10</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Deepa Nair
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">deepa.nair@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL007</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button><button onclick="verifyProperty(this)"
+                                    style="flex:1;background:#1DB954;color:#000;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✓
+                                    Verify</button><button onclick="rejectProperty(this)"
+                                    style="flex:1;background:rgba(239,68,68,0.15);color:#ef4444;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✕
+                                    Reject</button></div>
+                        </div>
+                        <!-- Card 8 - Verified -->
+                        <div class="prop-card" data-prop-status="Verified" data-seller="Anand Rao"
+                            data-name="3BHK in Gated Society" data-doctype="Property Tax Receipt"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">3BHK in
+                                            Gated Society</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Kondapur, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✓
+                                    Verified</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2870</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Apartment</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Property Tax Receipt</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-03</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Anand Rao</div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">anand.rao@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL008</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button></div>
+                        </div>
+                        <!-- Card 9 - Rejected -->
+                        <div class="prop-card" data-prop-status="Rejected" data-seller="Meera Kapoor"
+                            data-name="Studio Apartment" data-doctype="Completion Certificate"
+                            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;">
+                            <div
+                                style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+                                <div style="display:flex;gap:0.75rem;align-items:center;">
+                                    <div
+                                        style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                        <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:0.9375rem;" class="prop-name">Studio
+                                            Apartment</div>
+                                        <div style="color:#9ca3af;font-size:0.8125rem;">📍 Madhapur, Hyderabad</div>
+                                    </div>
+                                </div><span class="prop-status-badge"
+                                    style="background:rgba(239,68,68,0.1);color:#ef4444;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✕
+                                    Rejected</span>
+                            </div>
+                            <div
+                                style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">PROP2875</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Property Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">Studio</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                    <div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">
+                                        Completion Certificate</div>
+                                </div>
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div style="font-size:0.75rem;color:#9ca3af;">Submitted</div>
+                                    <div style="font-weight:600;font-size:0.875rem;">2026-03-02</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 1rem;">
+                                <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                    <div
+                                        style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">
+                                        👤 Seller Information</div>
+                                    <div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Meera Kapoor
+                                    </div>
+                                    <div style="font-size:0.8125rem;color:#9ca3af;">meera.kapoor@email.com</div>
+                                    <div style="font-size:0.75rem;color:#666;">ID: SEL009</div>
+                                </div>
+                            </div>
+                            <div style="padding:0 1.25rem 0.75rem;">
+                                <div
+                                    style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:0.5rem;padding:0.75rem;">
+                                    <div style="color:#ef4444;font-size:0.75rem;font-weight:600;margin-bottom:0.25rem;">
+                                        ⚠ Rejection Reason</div>
+                                    <div style="font-size:0.8125rem;color:#ccc;">Certificate expired. Need updated
+                                        completion certificate from authorities.</div>
+                                </div>
+                            </div>
+                            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;"><button
+                                    onclick="viewDocument(this)"
+                                    style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁
+                                    View Document</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Document View Modal -->
+            <div id="docModal"
+                style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:10000;display:none;align-items:center;justify-content:center;">
+                <div
+                    style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);width:90%;max-width:600px;max-height:90vh;overflow-y:auto;">
+                    <div
+                        style="padding:1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            <div
+                                style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;">
+                                <svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954"
+                                    stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div id="modal-doctype" style="font-weight:600;">Document</div>
+                                <div id="modal-propname" style="font-size:0.8125rem;color:#9ca3af;">Property</div>
+                            </div>
+                        </div>
+                        <button onclick="closeDocModal()"
+                            style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.5rem;line-height:1;">⊗</button>
+                    </div>
+                    <div style="padding:1.25rem;">
+                        <div
+                            style="background:#111;border-radius:0.5rem;padding:3rem;text-align:center;margin-bottom:1.25rem;">
+                            <div style="margin-bottom:1rem;"><svg style="width:3rem;height:3rem;margin:0 auto;"
+                                    fill="none" stroke="#666" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                </svg></div>
+                            <div style="font-weight:600;margin-bottom:0.25rem;">Document Preview</div>
+                            <div id="modal-filepath" style="font-size:0.8125rem;color:#9ca3af;">/docs/document.pdf</div>
+                            <div style="font-size:0.75rem;color:#666;margin-top:0.5rem;">In a real implementation, the
+                                actual document would be displayed here</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;">
+                            <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                <div style="font-size:0.75rem;color:#9ca3af;">Seller</div>
+                                <div id="modal-seller" style="font-weight:600;font-size:0.875rem;">-</div>
+                                <div id="modal-selleremail" style="font-size:0.75rem;color:#9ca3af;">-</div>
+                            </div>
+                            <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                <div style="font-size:0.75rem;color:#9ca3af;">Property ID</div>
+                                <div id="modal-propid" style="font-weight:600;font-size:0.875rem;">-</div>
+                                <div id="modal-location" style="font-size:0.75rem;color:#9ca3af;">-</div>
+                            </div>
+                            <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                <div style="font-size:0.75rem;color:#9ca3af;">Document Type</div>
+                                <div id="modal-doctypefull" style="font-weight:600;font-size:0.875rem;color:#1DB954;">-
+                                </div>
+                            </div>
+                            <div style="background:#111;padding:0.75rem;border-radius:0.5rem;">
+                                <div style="font-size:0.75rem;color:#9ca3af;">Submitted Date</div>
+                                <div id="modal-date" style="font-weight:600;font-size:0.875rem;">-</div>
+                            </div>
+                        </div>
+                        <div id="modal-actions" style="display:flex;gap:0.75rem;"></div>
+                    </div>
+                </div>
+            </div>
+            <div data-section="profile" class="admin-section" style="display:none;">
+                <!-- Header -->
+                <div
+                    style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.25rem;">Admin Profile</h1>
+                        <p style="color:#9ca3af;font-size:0.875rem;">Manage your admin account settings</p>
+                    </div>
+                    <button onclick="window.location.href='index.html'"
+                        style="background:#282828;color:#fff;padding:0.625rem 1.25rem;border-radius:0.5rem;border:1px solid rgba(255,255,255,0.1);font-size:0.875rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:0.5rem;">→
+                        Log out</button>
+                </div>
+                <div style="padding:2rem;">
+                    <!-- Profile Card -->
+                    <div
+                        style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:2rem;margin-bottom:1.5rem;">
+                        <div style="display:flex;align-items:center;gap:1.5rem;">
+                            <div style="position:relative;">
+                                <div
+                                    style="width:5rem;height:5rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:#000;">
+                                    AD</div>
+                                <div style="position:absolute;bottom:0;right:0;width:1.5rem;height:1.5rem;background:#282828;border:2px solid #1a1a1a;border-radius:9999px;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+                                    onclick="showToast('Photo upload coming soon!')"><svg
+                                        style="width:0.75rem;height:0.75rem;" fill="none" stroke="#9ca3af"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path
+                                            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                        <circle cx="12" cy="13" r="4" />
+                                    </svg></div>
+                            </div>
+                            <div>
+                                <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.25rem;">Admin User</h2>
+                                <p style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.5rem;">System Administrator •
+                                    Full Access</p>
+                                <div style="display:flex;align-items:center;gap:0.75rem;">
+                                    <span
+                                        style="background:rgba(29,185,84,0.15);color:#1DB954;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">✓
+                                        Super Admin</span>
+                                    <button onclick="showToast('Photo upload coming soon!')"
+                                        style="background:none;border:none;color:#1DB954;font-size:0.8125rem;font-weight:500;cursor:pointer;text-decoration:underline;">Change
+                                        Photo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Personal Information -->
+                    <div style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:2rem;margin-bottom:1.5rem;">
+                        <h3 style="font-size:1.125rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">👤 Personal Information</h3>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">First Name <span style="color:#ef4444;">*</span></label>
+                                <input type="text" value="Admin" id="profile-fname" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Last Name <span style="color:#ef4444;">*</span></label>
+                                <input type="text" value="User" id="profile-lname" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Email Address <span style="color:#ef4444;">*</span></label>
+                                <input type="email" value="admin@truestate.com" id="profile-email" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Phone Number <span style="color:#ef4444;">*</span></label>
+                                <input type="tel" value="+91 9876543210" id="profile-phone" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Date of Birth <span style="color:#ef4444;">*</span></label>
+                                <input type="date" value="1985-06-15" id="profile-dob" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Admin ID</label>
+                                <input type="text" value="ADM-2024-001" readonly style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#9ca3af;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Role</label>
+                                <select id="profile-role" style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                                    <option>Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Office Details -->
+                    <div style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:2rem;margin-bottom:1.5rem;">
+                        <h3 style="font-size:1.125rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">🏢 Office Details</h3>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Office
+                                    Address</label>
+                                <input type="text" id="office-address" value="Plot 42, Jubilee Hills"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">City</label>
+                                <input type="text" id="office-city" value="Hyderabad"
+                                    oninput="this.value=this.value.replace(/[0-9]/g,'')"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">State</label>
+                                <input type="text" id="office-state" value="Telangana"
+                                    oninput="this.value=this.value.replace(/[0-9]/g,'')"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Pincode</label>
+                                <input type="text" id="office-pincode" value="500033"
+                                    maxlength="6"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Security Settings -->
+                    <div
+                        style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:2rem;margin-bottom:1.5rem;">
+                        <h3
+                            style="font-size:1.125rem;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">
+                            🔒 Security Settings</h3>
+                        <div
+                            style="background:rgba(29,185,84,0.08);border:1px solid rgba(29,185,84,0.2);border-radius:0.5rem;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">
+                            <span style="color:#1DB954;">🔒</span>
+                            <span style="color:#1DB954;font-size:0.8125rem;">Your credentials are encrypted and secure.
+                                Two-factor authentication is enabled for this account.</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Username</label>
+                                <input type="text" value="admin_user" readonly
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#9ca3af;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Current
+                                    Password <span style="color:#ef4444;">*</span></label>
+                                <input type="password" id="current-password" placeholder="Enter current password"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">New
+                                    Password <span style="color:#ef4444;">*</span></label>
+                                <input type="password" id="new-password" placeholder="Enter new password"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.8125rem;color:#9ca3af;margin-bottom:0.5rem;">Confirm
+                                    New Password <span style="color:#ef4444;">*</span></label>
+                                <input type="password" id="confirm-password" placeholder="Confirm new password"
+                                    style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="margin-top:1rem;"><button
+                                onclick="showToast('Password reset mail has been sent to admin@truestate.com')"
+                                style="background:none;border:none;color:#1DB954;font-size:0.8125rem;font-weight:500;cursor:pointer;text-decoration:underline;padding:0;">Forgot
+                                Password?</button></div>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div style="display:flex;justify-content:flex-end;gap:1rem;">
+                        <button onclick="showToast('Changes cancelled')"
+                            style="background:#282828;color:#fff;padding:0.75rem 2rem;border-radius:0.5rem;border:1px solid rgba(255,255,255,0.1);font-weight:600;cursor:pointer;font-size:0.875rem;">Cancel</button>
+                        <button onclick="saveAdminProfile()"
+                            style="background:#1DB954;color:#000;padding:0.75rem 2rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">Save
+                            Changes</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+    <script>
+        function showToast(msg) { const t = document.createElement('div'); t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#1DB954;color:#000;padding:1rem 1.5rem;border-radius:0.75rem;font-weight:600;z-index:9999;animation:fadeIn 0.3s ease;'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
+
+        function saveAdminProfile() {
+            if (typeof tvValidateAdminProfile === 'function' && !tvValidateAdminProfile()) {
+                showToast('⚠️ Please fill in all required profile fields.');
+                return;
+            }
+            const profile = {
+                name: ((document.getElementById('profile-fname')?.value || '') + ' ' + (document.getElementById('profile-lname')?.value || '')).trim(),
+                email: document.getElementById('profile-email')?.value || '',
+                phone: document.getElementById('profile-phone')?.value || ''
+            };
+            localStorage.setItem('adminProfile', JSON.stringify(profile));
+            // ── Sync back to globalUsers so Super Admin sees real email ──
+            try {
+                let gUsers = JSON.parse(localStorage.getItem('globalUsers')) || [];
+                const entry = gUsers.find(u => u.role === 'Admin');
+                if (entry) {
+                    if (profile.name)  entry.name  = profile.name;
+                    if (profile.email) entry.email = profile.email;
+                    localStorage.setItem('globalUsers', JSON.stringify(gUsers));
+                }
+            } catch (_) {}
+            showToast('✅ Profile updated successfully!');
+        }
+        function switchAdminPage(sectionId) {
+            document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+            const target = document.querySelector(`[data-section="${sectionId}"]`);
+            if (target) { target.style.display = 'block'; target.style.animation = 'fadeIn 0.3s ease'; }
+            // Remove ALL existing indicators first
+            document.querySelectorAll('.nav-indicator').forEach(ind => ind.remove());
+            document.querySelectorAll('.admin-nav-item').forEach(link => {
+                link.style.backgroundColor = ''; link.style.color = '#9ca3af';
+            });
+            const activeLink = document.querySelector(`.admin-nav-item[data-nav="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.style.backgroundColor = '#282828'; activeLink.style.color = '#ffffff';
+                const ind = document.createElement('div');
+                ind.className = 'nav-indicator';
+                ind.style.cssText = 'margin-left:auto;width:0.25rem;height:2rem;background:#1DB954;border-radius:9999px;';
+                activeLink.appendChild(ind);
+            }
+        }
+        document.querySelectorAll('.admin-nav-item').forEach(link => {
+            link.addEventListener('click', function (e) { e.preventDefault(); const nav = this.getAttribute('data-nav'); if (nav) switchAdminPage(nav); });
+        });
+        function filterListings(btn, status) {
+            document.querySelectorAll('#listing-filters .pill-btn').forEach(b => { b.classList.remove('active'); });
+            btn.classList.add('active');
+            document.querySelectorAll('.listing-row').forEach(r => {
+                r.style.display = (status === 'all' || r.dataset.status === status) ? '' : 'none';
+            });
+        }
+        function toggleBlock(btn) {
+            const row = btn.closest('tr');
+            const name = row.querySelector('.user-name').textContent;
+            const statusCell = row.querySelector('.user-status');
+            const actionCell = row.querySelector('.user-action');
+            const isBlocked = row.dataset.status === 'Blocked';
+            if (isBlocked) {
+                row.dataset.status = 'Active';
+                statusCell.innerHTML = '<span style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>';
+                actionCell.innerHTML = '<button onclick="toggleBlock(this)" style="background:none;color:#ef4444;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #ef444440;font-size:0.75rem;font-weight:600;cursor:pointer;">Block</button>';
+                showToast(name + ' has been unblocked');
+            } else {
+                row.dataset.status = 'Blocked';
+                statusCell.innerHTML = '<span style="background:rgba(239,68,68,0.1);color:#ef4444;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Blocked</span>';
+                actionCell.innerHTML = '<button onclick="toggleBlock(this)" style="background:none;color:#1DB954;padding:0.375rem 0.75rem;border-radius:0.375rem;border:1px solid #1DB95440;font-size:0.75rem;font-weight:600;cursor:pointer;">Unblock</button>';
+                showToast(name + ' has been blocked');
+            }
+        }
+        function filterUsers() {
+            const query = document.getElementById('userSearchInput').value.toLowerCase();
+            const role = document.getElementById('userRoleFilter').value;
+            document.querySelectorAll('.user-row').forEach(row => {
+                const name = (row.querySelector('.user-name') ? row.querySelector('.user-name').textContent : '').toLowerCase();
+                const email = (row.querySelector('.user-email') ? row.querySelector('.user-email').textContent : '').toLowerCase();
+                const id = row.querySelector('td').textContent.toLowerCase();
+                const rowRole = row.dataset.role;
+                const matchesSearch = !query || name.includes(query) || email.includes(query) || id.includes(query);
+                const matchesRole = role === 'all' || rowRole === role;
+                row.style.display = (matchesSearch && matchesRole) ? '' : 'none';
+            });
+        }
+        // Property Management Functions
+        let currentModalCard = null;
+        let currentPropFilter = 'all';
+        function updatePropCounts() {
+            const cards = document.querySelectorAll('.prop-card');
+            let total = cards.length, pending = 0, verified = 0, rejected = 0;
+            cards.forEach(c => {
+                const s = c.dataset.propStatus;
+                if (s === 'Pending') pending++;
+                else if (s === 'Verified') verified++;
+                else if (s === 'Rejected') rejected++;
+            });
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-verified').textContent = verified;
+            document.getElementById('stat-rejected').textContent = rejected;
+            document.getElementById('count-all').textContent = total;
+            document.getElementById('count-pending').textContent = pending;
+            document.getElementById('count-verified').textContent = verified;
+            document.getElementById('count-rejected').textContent = rejected;
+        }
+
+        function updateLocalPropStatus(id, newStatus) {
+            if (!id) return;
+            let props = JSON.parse(localStorage.getItem('properties')) || [];
+            let p = props.find(x => x.id === id);
+            if (p) {
+                p.status = newStatus;
+                localStorage.setItem('properties', JSON.stringify(props));
+            }
+        }
+
+        function verifyProperty(btn) {
+            const card = btn.closest('.prop-card');
+            const name = card.querySelector('.prop-name').textContent;
+            card.dataset.propStatus = 'Verified';
+            card.querySelector('.prop-status-badge').style.background = 'rgba(29,185,84,0.1)';
+            card.querySelector('.prop-status-badge').style.color = '#1DB954';
+            card.querySelector('.prop-status-badge').textContent = '✓ Verified';
+            // Remove rejection reason if exists
+            const rejDiv = card.querySelector('[style*="rgba(239,68,68,0.08)"]');
+            if (rejDiv) rejDiv.closest('div[style*="padding:0 1.25rem 0.75rem"]').remove();
+            // Update actions to only show View Document
+            const actionsDiv = card.querySelector('.prop-actions');
+            actionsDiv.innerHTML = '<button onclick="viewDocument(this)" style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁 View Document</button>';
+            updatePropCounts();
+            filterPropStatusApply();
+            if (card.dataset.id) updateLocalPropStatus(card.dataset.id, 'approved');
+            showToast(name + ' has been verified ✓');
+        }
+        function rejectProperty(btn) {
+            const card = btn.closest('.prop-card');
+            const name = card.querySelector('.prop-name').textContent;
+            card.dataset.propStatus = 'Rejected';
+            card.querySelector('.prop-status-badge').style.background = 'rgba(239,68,68,0.1)';
+            card.querySelector('.prop-status-badge').style.color = '#ef4444';
+            card.querySelector('.prop-status-badge').textContent = '✕ Rejected';
+            // Add rejection reason if not exists
+            const existing = card.querySelector('[style*="rgba(239,68,68,0.08)"]');
+            if (!existing) {
+                const rejDiv = document.createElement('div');
+                rejDiv.style.cssText = 'padding:0 1.25rem 0.75rem;';
+                rejDiv.innerHTML = '<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:0.5rem;padding:0.75rem;"><div style="color:#ef4444;font-size:0.75rem;font-weight:600;margin-bottom:0.25rem;">⚠ Rejection Reason</div><div style="font-size:0.8125rem;color:#ccc;">Document rejected by admin upon review.</div></div>';
+                const actionsDiv = card.querySelector('.prop-actions');
+                actionsDiv.parentNode.insertBefore(rejDiv, actionsDiv);
+            }
+            // Update actions to only show View Document
+            const actionsDiv = card.querySelector('.prop-actions');
+            actionsDiv.innerHTML = '<button onclick="viewDocument(this)" style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁 View Document</button>';
+            updatePropCounts();
+            filterPropStatusApply();
+            if (card.dataset.id) updateLocalPropStatus(card.dataset.id, 'rejected');
+            showToast(name + ' has been rejected ✕');
+        }
+        function filterPropStatus(btn, status) {
+            document.querySelectorAll('#prop-filters .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPropFilter = status;
+            filterPropStatusApply();
+        }
+        function filterPropStatusApply() {
+            const query = (document.getElementById('propSearchInput') ? document.getElementById('propSearchInput').value : '').toLowerCase();
+            document.querySelectorAll('.prop-card').forEach(card => {
+                const s = card.dataset.propStatus;
+                const matchStatus = currentPropFilter === 'all' || s === currentPropFilter;
+                const seller = (card.dataset.seller || '').toLowerCase();
+                const name = (card.dataset.name || '').toLowerCase();
+                const doctype = (card.dataset.doctype || '').toLowerCase();
+                const matchSearch = !query || seller.includes(query) || name.includes(query) || doctype.includes(query);
+                card.style.display = (matchStatus && matchSearch) ? '' : 'none';
+            });
+        }
+        function filterProperties() {
+            filterPropStatusApply();
+        }
+        function viewDocument(btn) {
+            const card = btn.closest('.prop-card');
+            currentModalCard = card;
+            const name = card.querySelector('.prop-name').textContent;
+            const seller = card.querySelector('.prop-seller').textContent;
+            const doctype = card.querySelector('.prop-doctype').textContent;
+            const propId = card.querySelectorAll('[style*="background:#111"] div[style*="font-weight:600"]')[0].textContent;
+            const location = card.querySelector('[style*="color:#9ca3af;font-size:0.8125rem"]').textContent.replace('📍 ', '');
+            const date = card.querySelectorAll('[style*="background:#111"] div[style*="font-weight:600"]')[3].textContent;
+            const sellerEmail = card.querySelectorAll('[style*="background:#111"] div[style*="font-size:0.8125rem;color:#9ca3af"]')[0];
+            document.getElementById('modal-doctype').textContent = doctype;
+            document.getElementById('modal-propname').textContent = name;
+            document.getElementById('modal-seller').textContent = seller;
+            document.getElementById('modal-selleremail').textContent = sellerEmail ? sellerEmail.textContent : '-';
+            document.getElementById('modal-propid').textContent = propId;
+            document.getElementById('modal-location').textContent = location;
+            document.getElementById('modal-doctypefull').textContent = doctype;
+            document.getElementById('modal-date').textContent = date;
+            document.getElementById('modal-filepath').textContent = '/docs/' + doctype.toLowerCase().replace(/\s+/g, '-') + '.pdf';
+            const status = card.dataset.propStatus;
+            const actionsDiv = document.getElementById('modal-actions');
+            if (status === 'Pending') {
+                actionsDiv.innerHTML = '<button onclick="modalVerify()" style="flex:1;background:#1DB954;color:#000;padding:0.75rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">✓ Verify Document</button><button onclick="modalReject()" style="flex:1;background:rgba(239,68,68,0.15);color:#ef4444;padding:0.75rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">✕ Reject Document</button>';
+            } else {
+                actionsDiv.innerHTML = '<div style="flex:1;text-align:center;padding:0.75rem;border-radius:0.5rem;font-size:0.875rem;font-weight:600;' + (status === 'Verified' ? 'background:rgba(29,185,84,0.1);color:#1DB954;' : 'background:rgba(239,68,68,0.1);color:#ef4444;') + '">' + (status === 'Verified' ? '✓ Document Verified' : '✕ Document Rejected') + '</div>';
+            }
+            const modal = document.getElementById('docModal');
+            modal.style.display = 'flex';
+        }
+        function closeDocModal() {
+            document.getElementById('docModal').style.display = 'none';
+            currentModalCard = null;
+        }
+        function modalVerify() {
+            if (currentModalCard) {
+                const btn = currentModalCard.querySelector('.prop-actions button');
+                verifyProperty(btn);
+                closeDocModal();
+            }
+        }
+        function modalReject() {
+            if (currentModalCard) {
+                const btn = currentModalCard.querySelector('.prop-actions button');
+                rejectProperty(btn);
+                closeDocModal();
+            }
+        }
+        // Close modal on outside click
+        document.getElementById('docModal').addEventListener('click', function (e) { if (e.target === this) closeDocModal(); });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let properties = JSON.parse(localStorage.getItem('properties')) || [];
+            const container = document.getElementById('property-cards');
+            if (!container) return;
+
+            properties.forEach(prop => {
+                let displayStatus = prop.status.charAt(0).toUpperCase() + prop.status.slice(1);
+                if (displayStatus === 'Approved') displayStatus = 'Verified';
+
+                let badgeStyle = "background:rgba(234,179,8,0.2);color:#eab308;";
+                let badgeText = "● Pending";
+                let buttons = '';
+
+                if (prop.status === 'pending') {
+                    buttons = `<button onclick="viewDocument(this)" style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁 View Document</button>
+            <button onclick="verifyProperty(this)" style="flex:1;background:#1DB954;color:#000;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✓ Verify</button>
+            <button onclick="rejectProperty(this)" style="flex:1;background:rgba(239,68,68,0.15);color:#ef4444;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">✕ Reject</button>`;
+                } else if (prop.status === 'approved') {
+                    badgeStyle = "background:rgba(29,185,84,0.1);color:#1DB954;";
+                    badgeText = "✓ Verified";
+                    buttons = `<button onclick="viewDocument(this)" style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁 View Document</button>`;
+                } else {
+                    badgeStyle = "background:rgba(239,68,68,0.1);color:#ef4444;";
+                    badgeText = "✕ Rejected";
+                    buttons = `<button onclick="viewDocument(this)" style="flex:1;background:#282828;color:#fff;padding:0.625rem;border-radius:0.5rem;border:none;font-size:0.8125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.375rem;">👁 View Document</button>`;
+                }
+
+                const div = document.createElement('div');
+                div.className = "prop-card";
+                div.setAttribute("data-prop-status", displayStatus);
+                div.setAttribute("data-seller", "Seller (From LS)");
+                div.setAttribute("data-name", prop.name);
+                div.setAttribute("data-doctype", "Deed / Document");
+                div.setAttribute("data-id", prop.id);
+                div.style.cssText = "background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);overflow:hidden;";
+                div.innerHTML = `
+            <div style="padding:1.25rem;display:flex;justify-content:space-between;align-items:flex-start;"><div style="display:flex;gap:0.75rem;align-items:center;"><div style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:rgba(29,185,84,0.1);display:flex;align-items:center;justify-content:center;"><svg style="width:1.125rem;height:1.125rem;" fill="none" stroke="#1DB954" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><div><div style="font-weight:600;font-size:0.9375rem;" class="prop-name">${prop.name}</div><div style="color:#9ca3af;font-size:0.8125rem;">📍 ${prop.location}</div></div></div><span class="prop-status-badge" style="${badgeStyle}padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.75rem;font-weight:600;">${badgeText}</span></div>
+            <div style="padding:0 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;"><div style="background:#111;padding:0.75rem;border-radius:0.5rem;"><div style="font-size:0.75rem;color:#9ca3af;">Property ID</div><div style="font-weight:600;font-size:0.875rem;">${prop.id}</div></div><div style="background:#111;padding:0.75rem;border-radius:0.5rem;"><div style="font-size:0.75rem;color:#9ca3af;">Property Type</div><div style="font-weight:600;font-size:0.875rem;">${prop.type}</div></div><div style="background:#111;padding:0.75rem;border-radius:0.5rem;"><div style="font-size:0.75rem;color:#9ca3af;">Document Type</div><div style="font-weight:600;font-size:0.875rem;color:#1DB954;" class="prop-doctype">Deed / Document</div></div><div style="background:#111;padding:0.75rem;border-radius:0.5rem;"><div style="font-size:0.75rem;color:#9ca3af;">Submitted</div><div style="font-weight:600;font-size:0.875rem;">Recently</div></div></div>
+            <div style="padding:0 1.25rem 1rem;"><div style="background:#111;padding:0.75rem;border-radius:0.5rem;"><div style="display:flex;align-items:center;gap:0.375rem;font-size:0.75rem;color:#9ca3af;margin-bottom:0.375rem;">👤 Seller Information</div><div style="font-weight:600;font-size:0.875rem;" class="prop-seller">Seller (From LS)</div><div style="font-size:0.8125rem;color:#9ca3af;">seller@local.node</div><div style="font-size:0.75rem;color:#666;">ID: LOCAL</div></div></div>
+            <div class="prop-actions" style="padding:0 1.25rem 1.25rem;display:flex;gap:0.5rem;">${buttons}</div>
+        `;
+                container.insertBefore(div, container.firstChild);
+            });
+            // Init counts
+            updatePropCounts();
+        });
+    </script>
+<script src="tab-persistence.js"></script>
+<script src="form-validation.js"></script>
+</body>
+
+</html>

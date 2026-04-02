@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super User Dashboard - truEstate</title>
+    <!-- We avoid inline CSS by linking to an external stylesheet -->
+    <link rel="stylesheet" href="superuser-dashboard.css">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+            </div>
+            <div class="logo-text">
+                <span class="logo-text-bold">Tru</span>Estate
+                <span class="logo-badge">Super</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-nav="dashboard">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                <span>Dashboard</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-nav="users">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>User Management</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-nav="properties">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>Property Operations</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-nav="settings">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>System Settings</span>
+                <div class="nav-indicator"></div>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile-mini">
+                <div class="user-avatar">SU</div>
+                <div class="user-info-mini">
+                    <div class="name">Super Admin</div>
+                    <div class="role">System Creator</div>
+                </div>
+            </div>
+            <button id="btn-logout" class="logout-btn">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Section -->
+    <main class="main-content">
+        <!-- Dashboard Overview -->
+        <section id="section-dashboard" class="section active">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1>Super Admin Overview</h1>
+                    <p>Global statistics and platform health metrics.</p>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon primary">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-total-users">4</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon info">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-total-props">4</div>
+                        <div class="stat-label">Total Properties</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon warning">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="stat-active-users">3</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon danger">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">OK</div>
+                        <div class="stat-label">System Status</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Management (Full CRUD) -->
+        <section id="section-users" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1>User Management (CRUD)</h1>
+                    <p>Create, Read, Update, and Delete platform users.</p>
+                </div>
+                <div class="section-actions">
+                    <button class="btn-primary" id="btn-add-user">
+                        <span>+ Add User</span>
+                    </button>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="table-container">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                        <div class="search-bar">
+                            <input type="text" id="userSearchInput" class="input-field" placeholder="Search users...">
+                            <select id="userRoleFilter" class="select-field">
+                                <option value="all">All Roles</option>
+                                <option value="Buyer">Buyer</option>
+                                <option value="Seller">Seller</option>
+                                <option value="Agent">Agent</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Populated via Javascript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Property Management (Full CRUD) -->
+        <section id="section-properties" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1>Property Operations (CRUD)</h1>
+                    <p>Global property catalog management.</p>
+                </div>
+                <div class="section-actions">
+                    <button class="btn-primary" id="btn-add-prop">
+                        <span>+ Add Property</span>
+                    </button>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="table-container">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                        <div class="search-bar">
+                            <input type="text" id="propSearchInput" class="input-field" placeholder="Search properties...">
+                            <select id="propStatusFilter" class="select-field">
+                                <option value="all">All Statuses</option>
+                                <option value="Listed">Listed</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Property ID</th>
+                                <th>Details</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="props-tbody">
+                            <!-- Populated via Javascript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Settings -->
+        <section id="section-settings" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1>System Configurations</h1>
+                    <p>Manage application-wide environment variables and rules.</p>
+                </div>
+                <div class="section-actions">
+                    <button class="btn-primary" id="btn-save-settings">Save Settings</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="settings-grid">
+                    <div class="settings-nav">
+                        <button class="settings-nav-item active">General Constants</button>
+                        <button class="settings-nav-item">Database Configs</button>
+                        <button class="settings-nav-item">Security Policies</button>
+                        <button class="settings-nav-item">API Keys</button>
+                    </div>
+                    <div class="settings-panel">
+                        <h2 class="settings-panel-title">General Application Constants</h2>
+                        <form id="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">Platform Name</label>
+                                <input type="text" class="form-control" value="truEstate">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Maintenance Mode</label>
+                                <select class="form-control">
+                                    <option value="false" selected>Disabled - Full Operations</option>
+                                    <option value="true">Enabled - Rejecting Login Traffic</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Max Property Upload Size (MB)</label>
+                                <input type="number" class="form-control" value="25">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modals -->
+<!-- User Modal -->
+<div class="modal-overlay" id="user-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title" id="user-modal-title">Add New User</div>
+        </div>
+        <form id="user-form" novalidate>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="user-name" class="form-control" required>
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="user-email" class="form-control" required>
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select id="user-role" class="form-control">
+                        <option value="Buyer">Buyer</option>
+                        <option value="Seller">Seller</option>
+                        <option value="Agent">Agent</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="user-status" class="form-control">
+                        <option value="Active">Active</option>
+                        <option value="Blocked">Blocked</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancel-user-btn">Cancel</button>
+                <button type="submit" class="btn-primary">Save User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Property Modal -->
+<div class="modal-overlay" id="prop-modal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title" id="prop-modal-title">Add Property</div>
+        </div>
+        <form id="prop-form" novalidate>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Property Title</label>
+                    <input type="text" id="prop-title" class="form-control" required>
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" id="prop-location" class="form-control" required>
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price</label>
+                    <input type="text" id="prop-price" class="form-control" placeholder="e.g. Rs 50,00,000" required>
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Listing Status</label>
+                    <select id="prop-status" class="form-control">
+                        <option value="Listed">Listed</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancel-prop-btn">Cancel</button>
+                <button type="submit" class="btn-primary">Save Property</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Link to external JS, averting inline javascript -->
+<script src="superuser-dashboard.js"></script>
+<script src="form-validation.js"></script>
+
+</body>
+</html>

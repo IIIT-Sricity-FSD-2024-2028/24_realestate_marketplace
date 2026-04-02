@@ -1,0 +1,31 @@
+/* EXACT FIGMA VALUES - NO MODIFICATIONS */
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background-color: #000000;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/* Hover States */
+button:hover,
+a:hover {
+    opacity: 0.9;
+}
+
+select:focus,
+input:focus {
+    outline: none;
+    border-color: #1DB954;
+}
+
+/* Placeholder */
+input::placeholder {
+    color: #666;
+}

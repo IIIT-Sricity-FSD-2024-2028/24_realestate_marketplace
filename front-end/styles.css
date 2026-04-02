@@ -1,0 +1,2063 @@
+/* ================================
+   TruEstate Platform - Complete CSS
+   Dark Theme with Green Accents
+   ================================ */
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    background-color: #000000;
+    color: #ffffff;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ================================
+   LANDING PAGE STYLES
+   ================================ */
+
+.landing-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+    padding: 2rem;
+}
+
+.landing-container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+.landing-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.logo-icon {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #000000;
+}
+
+.logo-text {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tagline {
+    font-size: 1.25rem;
+    color: #9ca3af;
+    margin-top: 0.5rem;
+}
+
+.role-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.role-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.role-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.role-card:hover::before {
+    opacity: 0.1;
+}
+
+.role-card:hover {
+    transform: translateY(-8px);
+    border-color: #1DB954;
+    box-shadow: 0 20px 40px rgba(29, 185, 84, 0.2);
+}
+
+.role-icon {
+    width: 5rem;
+    height: 5rem;
+    margin: 0 auto 1.5rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.role-icon svg {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.role-icon-buyer {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.role-icon-seller {
+    background: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.role-icon-agent {
+    background: rgba(168, 85, 247, 0.2);
+    color: #a855f7;
+}
+
+.role-icon-admin {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.role-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.role-description {
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+}
+
+.role-arrow {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 auto;
+    background-color: rgba(29, 185, 84, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1DB954;
+}
+
+.landing-footer {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ================================
+   DASHBOARD LAYOUT
+   ================================ */
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background-color: #000000;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-icon-small {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #1DB954;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-icon-small svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #000000;
+}
+
+.logo-text-small {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    color: #9ca3af;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    position: relative;
+}
+
+.nav-item svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.nav-item:hover {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.nav-item.active {
+    background-color: #1DB954;
+    color: #000000;
+    font-weight: 600;
+}
+
+.badge-small {
+    background-color: #ef4444;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: auto;
+}
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    background-color: #000000;
+    min-height: 100vh;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.page-subtitle {
+    color: #9ca3af;
+    font-size: 1rem;
+}
+
+.stat-summary {
+    text-align: right;
+}
+
+/* ================================
+   STATS CARDS
+   ================================ */
+
+.stats-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stats-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stats-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
+}
+
+.stat-card:hover {
+    border-color: rgba(29, 185, 84, 0.3);
+}
+
+.stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.stat-icon-green {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1DB954;
+}
+
+.stat-icon-blue {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.stat-icon-orange {
+    background-color: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.stat-icon-purple {
+    background-color: rgba(168, 85, 247, 0.2);
+    color: #a855f7;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.stat-change {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.stat-change.positive {
+    color: #1DB954;
+}
+
+/* ================================
+   SEARCH BAR
+   ================================ */
+
+.search-container {
+    background-color: #1a1a1a;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #9ca3af;
+}
+
+.search-input {
+    width: 100%;
+    background-color: #282828;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #1DB954;
+}
+
+.search-input::placeholder {
+    color: #6b7280;
+}
+
+/* ================================
+   FILTER PILLS (KEY FEATURE!)
+   ================================ */
+
+.filter-pills {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.pill-active {
+    background-color: #1DB954;
+    color: #000000;
+}
+
+.pill-green {
+    background-color: #282828;
+    color: #1DB954;
+}
+
+.pill-green:hover {
+    background-color: #383838;
+}
+
+.pill-blue {
+    background-color: #282828;
+    color: #3b82f6;
+}
+
+.pill-blue:hover {
+    background-color: #383838;
+}
+
+.pill-orange {
+    background-color: #282828;
+    color: #f97316;
+}
+
+.pill-orange:hover {
+    background-color: #383838;
+}
+
+.pill-red {
+    background-color: #282828;
+    color: #ef4444;
+}
+
+.pill-red:hover {
+    background-color: #383838;
+}
+
+.pill-gray {
+    background-color: #282828;
+    color: #9ca3af;
+}
+
+.pill-gray:hover {
+    background-color: #383838;
+}
+
+.badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-green {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #1DB954;
+}
+
+.badge-blue {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #3b82f6;
+}
+
+.badge-orange {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #f97316;
+}
+
+.badge-red {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ef4444;
+}
+
+.badge-gray {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+}
+
+.pill-active .badge {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #000000;
+}
+
+/* ================================
+   PROPERTY CARDS
+   ================================ */
+
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.property-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.property-card:hover {
+    transform: translateY(-4px);
+    border-color: #1DB954;
+    box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2);
+}
+
+.property-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
+.badge-success {
+    background-color: rgba(29, 185, 84, 0.9);
+    color: #000000;
+}
+
+.badge-warning {
+    background-color: rgba(249, 115, 22, 0.9);
+    color: #000000;
+}
+
+.property-favorite {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+}
+
+.property-favorite:hover {
+    background-color: #1DB954;
+    color: #000000;
+}
+
+.property-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.property-details {
+    padding: 1.25rem;
+}
+
+.property-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.property-location,
+.property-seller {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.property-location svg,
+.property-seller svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.property-specs {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.property-specs span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.property-specs svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.property-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.property-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.property-stats svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.property-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.property-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1DB954;
+}
+
+.property-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+
+.btn-primary {
+    background-color: #1DB954;
+    color: #000000;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #1ed760;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #1DB954;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: 2px solid #1DB954;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(29, 185, 84, 0.1);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: #ffffff;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-danger {
+    background-color: transparent;
+    color: #ef4444;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: 1px solid #ef4444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.2s;
+}
+
+.btn-small.btn-primary {
+    background-color: #1DB954;
+    color: #000000;
+}
+
+.btn-small.btn-secondary {
+    background-color: transparent;
+    color: #1DB954;
+    border: 2px solid #1DB954;
+}
+
+.btn-small.btn-outline {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-small.btn-danger {
+    background-color: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+.btn-icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.btn-icon.btn-success {
+    color: #1DB954;
+    border-color: #1DB954;
+}
+
+.btn-icon.btn-success:hover {
+    background-color: rgba(29, 185, 84, 0.1);
+}
+
+.btn-icon.btn-danger {
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.btn-icon.btn-danger:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.full-width {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ================================
+   STATUS BADGES
+   ================================ */
+
+.status-badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-active {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1DB954;
+}
+
+.status-pending {
+    background-color: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.status-confirmed {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.status-upcoming {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.status-ongoing {
+    background-color: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.status-negotiating {
+    background-color: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.status-completed {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1DB954;
+}
+
+.status-cancelled {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.status-rejected {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* ================================
+   BUYER/SELLER CARDS (AGENT VIEW)
+   ================================ */
+
+.buyers-list,
+.sellers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.buyer-card-agent,
+.seller-card-agent {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
+}
+
+.buyer-card-agent:hover,
+.seller-card-agent:hover {
+    border-color: rgba(29, 185, 84, 0.5);
+}
+
+.buyer-photo-large {
+    flex-shrink: 0;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(29, 185, 84, 0.3);
+    float: left;
+    margin-right: 1.5rem;
+}
+
+.buyer-photo-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.buyer-info-full {
+    overflow: hidden;
+}
+
+.buyer-name-large {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.buyer-contact-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.buyer-contact-row span {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.buyer-contact-row svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.buyer-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.join-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.buyer-requirements {
+    background-color: rgba(40, 40, 40, 0.5);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.requirement {
+    display: flex;
+    flex-direction: column;
+}
+
+.requirement-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.requirement-label svg {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+.requirement-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.buyer-activity-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.activity-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.activity-stat svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.activity-stat strong {
+    color: #ffffff;
+}
+
+.buyer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    clear: both;
+    padding-top: 1rem;
+}
+
+/* Seller Card Specific */
+.seller-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.seller-info-top {
+    display: flex;
+    gap: 1rem;
+}
+
+.seller-photo {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(29, 185, 84, 0.3);
+}
+
+.seller-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.seller-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.seller-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.seller-contact svg {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.seller-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: rgba(40, 40, 40, 0.5);
+    border-radius: 0.5rem;
+}
+
+.seller-stat {
+    text-align: center;
+}
+
+.seller-stat-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.seller-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.seller-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* ================================
+   VISIT CARDS
+   ================================ */
+
+.visit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.visit-card,
+.visit-card-agent {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
+}
+
+.visit-card:hover,
+.visit-card-agent:hover {
+    border-color: rgba(29, 185, 84, 0.3);
+}
+
+.visit-header,
+.visit-header-full {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.visit-property,
+.visit-property-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.visit-location,
+.visit-buyer,
+.visit-participants {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.visit-participants .separator {
+    margin: 0 0.5rem;
+    color: #6b7280;
+}
+
+.visit-participants svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.visit-details,
+.visit-details-full {
+    display: flex;
+    gap: 2rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+
+.visit-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.visit-info svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.visit-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* ================================
+   NEGOTIATION CARDS
+   ================================ */
+
+.negotiation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.negotiation-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: all 0.2s;
+}
+
+.negotiation-card:hover {
+    border-color: rgba(29, 185, 84, 0.3);
+}
+
+.negotiation-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.negotiation-property {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.negotiation-meta,
+.negotiation-buyer {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.negotiation-buyer {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.negotiation-buyer svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.negotiation-prices {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background-color: rgba(40, 40, 40, 0.5);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+}
+
+.price-box {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+}
+
+.price-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.price-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.price-offer {
+    color: #3b82f6;
+}
+
+.price-counter {
+    color: #f97316;
+}
+
+.price-arrow {
+    color: #6b7280;
+    flex-shrink: 0;
+}
+
+.price-arrow svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.negotiation-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* ================================
+   NOTIFICATIONS
+   ================================ */
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.notification-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    transition: all 0.2s;
+}
+
+.notification-card.unread {
+    border-color: rgba(29, 185, 84, 0.3);
+    background-color: rgba(29, 185, 84, 0.05);
+}
+
+.notification-card:hover {
+    border-color: rgba(29, 185, 84, 0.5);
+}
+
+.notification-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.notification-icon-success {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1DB954;
+}
+
+.notification-icon-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.notification-icon-warning {
+    background-color: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.notification-text {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* ================================
+   PROFILE
+   ================================ */
+
+.profile-section {
+    max-width: 600px;
+}
+
+.profile-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 8rem;
+    height: 8rem;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #1DB954;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.profile-email,
+.profile-phone {
+    color: #9ca3af;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.profile-card .btn-primary {
+    margin-top: 1.5rem;
+}
+
+/* ================================
+   SECTION BOX
+   ================================ */
+
+.section-box {
+    background-color: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ================================
+   ACTIVITY LIST
+   ================================ */
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activity-item-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.activity-icon-wrapper {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-icon-wrapper svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.activity-icon-success {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1DB954;
+}
+
+.activity-icon-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.activity-desc {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* ================================
+   FILTER ROW (Search Filters)
+   ================================ */
+
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #282828;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+    border-color: #1DB954;
+}
+
+.filter-select option {
+    background-color: #282828;
+    color: #ffffff;
+}
+
+/* ================================
+   TABLES
+   ================================ */
+
+.table-container {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background-color: #121212;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table th {
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.data-table td {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.table-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.table-user img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.role-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.role-buyer {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.role-seller {
+    background-color: rgba(249, 115, 22, 0.2);
+    color: #f97316;
+}
+
+.role-agent {
+    background-color: rgba(168, 85, 247, 0.2);
+    color: #a855f7;
+}
+
+/* ================================
+   AGENT CARD
+   ================================ */
+
+.agent-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.agent-photo {
+    width: 6rem;
+    height: 6rem;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #1DB954;
+}
+
+.agent-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.agent-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.agent-email {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+}
+
+.agent-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1.5rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.agent-stat-item {
+    text-align: center;
+}
+
+.agent-stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1DB954;
+    margin-bottom: 0.25rem;
+}
+
+.agent-stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* ================================
+   VERIFICATION CARDS (Admin)
+   ================================ */
+
+.verification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.verification-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+}
+
+.verification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.user-info-inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-avatar-small {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.user-meta {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.verification-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* ================================
+   REPORT CARDS
+   ================================ */
+
+.report-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.report-title {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.report-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.report-change {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.report-change.positive {
+    color: #1DB954;
+}
+
+/* ================================
+   SETTINGS
+   ================================ */
+
+.settings-section {
+    max-width: 600px;
+}
+
+.settings-card {
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.settings-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+.settings-item {
+    margin-bottom: 1.5rem;
+}
+
+.settings-item label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.settings-input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #282828;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.settings-input:focus {
+    border-color: #1DB954;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 240px;
+    }
+
+    .main-content {
+        margin-left: 240px;
+    }
+
+    .stats-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .stats-grid-2,
+    .stats-grid-3,
+    .stats-grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .property-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-pills {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.5rem;
+    }
+
+    .buyer-requirements {
+        grid-template-columns: 1fr;
+    }
+
+    .negotiation-prices {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .price-arrow {
+        transform: rotate(90deg);
+        align-self: center;
+    }
+
+    .role-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .landing-header .logo-text {
+        font-size: 2rem;
+    }
+
+    .landing-header .tagline {
+        font-size: 1rem;
+    }
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+
+.text-center {
+    text-align: center;
+}
+
+.mb-1 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-2 {
+    margin-bottom: 1rem;
+}
+
+.mb-3 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-1 {
+    gap: 0.5rem;
+}
+
+.gap-2 {
+    gap: 1rem;
+}

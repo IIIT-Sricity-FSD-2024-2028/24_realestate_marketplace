@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard - truEstate</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="agent-dashboard.css">
+</head>
+
+<body
+  style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto',sans-serif;background:#000;color:#fff;">
+  <div style="display:flex;height:100vh;">
+    <aside
+      style="width:16rem;background:#000;border-right:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;">
+      <div style="padding:1.5rem;display:flex;align-items:center;gap:0.5rem;">
+        <div style="background:#1DB954;padding:0.5rem;border-radius:0.5rem;"><svg
+            style="width:1.5rem;height:1.5rem;color:#000;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg></div>
+        <div style="font-size:1.25rem;"><span style="font-weight:700;">Tru</span><span>Estate</span><span
+            style="font-size:0.75rem;color:#1DB954;margin-left:0.5rem;">Agent</span></div>
+      </div>
+      <nav style="flex:1;padding:0.75rem;overflow-y:auto;" id="agent-nav">
+        <a href="#" class="agent-nav-item" data-nav="dashboard"
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;background:#282828;color:#fff;font-size:0.875rem;font-weight:500;"><svg
+            style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg><span>Dashboard</span>
+          <div class="nav-ind"
+            style="margin-left:auto;width:0.25rem;height:2rem;background:#1DB954;border-radius:9999px;"></div>
+        </a>
+        <div><a href="#" class="drop-toggle agent-nav-item" data-nav="buyers-group"
+            onclick="toggleAgentDrop(event,'buyers')"
+            style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+              style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg><span>Buyers</span><svg class="chevron" style="width:1rem;height:1rem;margin-left:auto;" fill="none"
+              stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></a>
+          <div class="agent-drop" id="drop-buyers">
+            <a href="#" class="agent-nav-item" data-nav="current-buyers" onclick="switchAgentPage('current-buyers')"
+              style="display:block;padding:0.5rem 1rem 0.5rem 2.5rem;color:#9ca3af;text-decoration:none;font-size:0.8125rem;border-radius:0.375rem;margin-bottom:0.125rem;">Current
+              Buyers</a>
+            <a href="#" class="agent-nav-item" data-nav="buyer-requests" onclick="switchAgentPage('buyer-requests')"
+              style="display:block;padding:0.5rem 1rem 0.5rem 2.5rem;color:#9ca3af;text-decoration:none;font-size:0.8125rem;border-radius:0.375rem;margin-bottom:0.125rem;">Buyer
+              Requests</a>
+          </div>
+        </div>
+        <div><a href="#" class="drop-toggle agent-nav-item" data-nav="sellers-group"
+            onclick="toggleAgentDrop(event,'sellers')"
+            style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+              style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+            </svg><span>Sellers</span><svg class="chevron" style="width:1rem;height:1rem;margin-left:auto;" fill="none"
+              stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></a>
+          <div class="agent-drop" id="drop-sellers">
+            <a href="#" class="agent-nav-item" data-nav="current-sellers" onclick="switchAgentPage('current-sellers')"
+              style="display:block;padding:0.5rem 1rem 0.5rem 2.5rem;color:#9ca3af;text-decoration:none;font-size:0.8125rem;border-radius:0.375rem;margin-bottom:0.125rem;">Current
+              Sellers</a>
+          </div>
+        </div>
+        <a href="#" class="agent-nav-item" data-nav="schedule"
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+            style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg><span>Schedule Visits</span></a>
+        <a href="#" class="agent-nav-item" data-nav="purchase-tracking"
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+            style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg><span>Purchase Tracking</span></a>
+        <a href="#" class="agent-nav-item" data-nav="notifications"
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+            style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg><span>Notifications</span></a>
+        <a href="#" class="agent-nav-item" data-nav="profile"
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border-radius:0.5rem;margin-bottom:0.25rem;text-decoration:none;color:#9ca3af;font-size:0.875rem;font-weight:500;"><svg
+            style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg><span>Profile</span></a>
+      </nav>
+      <div style="padding:1rem;border-top:1px solid rgba(255,255,255,0.1);">
+        <div
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem;border-radius:0.5rem;margin-bottom:0.75rem;">
+          <div
+            style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;color:#000;">
+            MJ</div>
+          <div style="flex:1;">
+            <div style="font-size:0.875rem;font-weight:500;">Mike Johnson</div>
+            <div style="font-size:0.75rem;color:#9ca3af;">Agent Account</div>
+          </div>
+        </div>
+        <button onclick="window.location.href='index.html'"
+          style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 1rem;width:100%;border-radius:0.5rem;color:#9ca3af;background:none;border:none;cursor:pointer;font-size:0.875rem;"><svg
+            style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg><span>Logout</span></button>
+      </div>
+    </aside>
+    <main style="flex:1;overflow-y:auto;background:#121212;">
+      <div data-section="dashboard" class="agent-section" style="display:block;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Agent Dashboard</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Manage your buyers, sellers, and property deals</p>
+        </div>
+        <div style="padding:2rem;">
+          <!-- Stats Row 1: 3 cards -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.25rem;">
+            <div
+              style="background:#1a1a1a;padding:1.25rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+                <div class="stat-icon" style="background:rgba(29,185,84,0.15);"><svg style="width:1.5rem;height:1.5rem;"
+                    fill="none" stroke="#1DB954" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg></div><span style="color:#1DB954;font-size:0.75rem;font-weight:600;">+12%</span>
+              </div>
+              <div style="font-size:1.75rem;font-weight:700;margin-bottom:0.25rem;">3</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Current Buyers</div>
+            </div>
+            <div
+              style="background:#1a1a1a;padding:1.25rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+                <div class="stat-icon" style="background:rgba(249,115,22,0.15);"><svg
+                    style="width:1.5rem;height:1.5rem;" fill="none" stroke="#f97316" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                  </svg></div><span style="color:#f97316;font-size:0.75rem;font-weight:600;">+8%</span>
+              </div>
+              <div style="font-size:1.75rem;font-weight:700;margin-bottom:0.25rem;">2</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Current Sellers</div>
+            </div>
+            <div
+              style="background:#1a1a1a;padding:1.25rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+                <div class="stat-icon" style="background:rgba(29,185,84,0.15);"><svg style="width:1.5rem;height:1.5rem;"
+                    fill="none" stroke="#1DB954" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg></div><span style="color:#1DB954;font-size:0.75rem;font-weight:600;">+3</span>
+              </div>
+              <div style="font-size:1.75rem;font-weight:700;margin-bottom:0.25rem;">12</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Deals Closed</div>
+            </div>
+          </div>
+          <!-- Stats Row 2: 1 card -->
+          <div style="display:grid;grid-template-columns:1fr;gap:1.25rem;margin-bottom:2rem;">
+            <div
+              style="background:#1a1a1a;padding:1.25rem;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+                <div class="stat-icon" style="background:rgba(239,68,68,0.15);"><svg style="width:1.5rem;height:1.5rem;"
+                    fill="none" stroke="#ef4444" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg></div><span style="color:#ef4444;font-size:0.75rem;font-weight:600;">2 today</span>
+              </div>
+              <div style="font-size:1.75rem;font-weight:700;margin-bottom:0.25rem;">8</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Pending Visits</div>
+            </div>
+          </div>
+
+          <!-- Upcoming Visits quick view -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <h2 style="font-size:1.25rem;font-weight:700;">Upcoming Visits</h2>
+            <button onclick="switchAgentPage('schedule')"
+              style="background:none;border:1px solid rgba(29,185,84,0.4);color:#1DB954;padding:0.4rem 1rem;border-radius:0.5rem;font-size:0.8125rem;font-weight:600;cursor:pointer;">View
+              All →</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(249,115,22,0.25);padding:1.1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:0.875rem;">
+                <div
+                  style="width:2.25rem;height:2.25rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:0.8rem;">
+                  JD</div>
+                <div>
+                  <div style="font-weight:600;font-size:0.9375rem;">John Doe</div>
+                  <div style="color:#9ca3af;font-size:0.8rem;">Modern Downtown Apartment • Banjara Hills</div>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.875rem;color:#fff;">📅 Mar 29, 2026 &nbsp; ⏰ 2:00 PM</div>
+                <span
+                  style="background:rgba(249,115,22,0.12);color:#f97316;padding:0.2rem 0.6rem;border-radius:0.375rem;font-size:0.72rem;font-weight:600;">⏳
+                  Pending</span>
+              </div>
+            </div>
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(249,115,22,0.25);padding:1.1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:0.875rem;">
+                <div
+                  style="width:2.25rem;height:2.25rem;border-radius:9999px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:0.8rem;">
+                  PS</div>
+                <div>
+                  <div style="font-weight:600;font-size:0.9375rem;">Priya Sharma</div>
+                  <div style="color:#9ca3af;font-size:0.8rem;">Luxury Villa with Garden • Jubilee Hills</div>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.875rem;color:#fff;">📅 Mar 30, 2026 &nbsp; ⏰ 11:00 AM</div>
+                <span
+                  style="background:rgba(249,115,22,0.12);color:#f97316;padding:0.2rem 0.6rem;border-radius:0.375rem;font-size:0.72rem;font-weight:600;">⏳
+                  Pending</span>
+              </div>
+            </div>
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(29,185,84,0.25);padding:1.1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:0.875rem;">
+                <div
+                  style="width:2.25rem;height:2.25rem;border-radius:9999px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:0.8rem;">
+                  RV</div>
+                <div>
+                  <div style="font-weight:600;font-size:0.9375rem;">Rahul Verma</div>
+                  <div style="color:#9ca3af;font-size:0.8rem;">Spacious Family Home • Gachibowli</div>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.875rem;color:#fff;">📅 Mar 28, 2026 &nbsp; ⏰ 4:00 PM</div>
+                <span
+                  style="background:rgba(29,185,84,0.12);color:#1DB954;padding:0.2rem 0.6rem;border-radius:0.375rem;font-size:0.72rem;font-weight:600;">✓
+                  Accepted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-section="schedule" class="agent-section" style="display:none; flex-direction:column; height:100%;">
+        <!-- Header -->
+        <div
+          style="padding:2rem 2.5rem 1rem 2.5rem; display:flex; justify-content:space-between; align-items:center; background:#000; border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:2rem; font-weight:700; color:#fff; margin-bottom:0.5rem;">Scheduled Visits</h1>
+        </div>
+
+        <!-- Tabs -->
+        <div style="padding:1.5rem 2.5rem; display:flex; gap:0.5rem;">
+          <button id="vtab-upcoming" class="visit-subtab" onclick="switchVisitTab('upcoming')"
+            style="background:#1DB954; color:#000; padding:0.5rem 1.25rem; border-radius:0.5rem; font-weight:600; font-size:0.875rem; border:none; cursor:pointer;">Upcoming</button>
+          <button id="vtab-completed" class="visit-subtab" onclick="switchVisitTab('completed')"
+            style="background:transparent; color:#9ca3af; padding:0.5rem 1.25rem; border-radius:0.5rem; font-weight:600; font-size:0.875rem; border:none; cursor:pointer;">Completed</button>
+          <button id="vtab-failed" class="visit-subtab" onclick="switchVisitTab('failed')"
+            style="background:transparent; color:#9ca3af; padding:0.5rem 1.25rem; border-radius:0.5rem; font-weight:600; font-size:0.875rem; border:none; cursor:pointer;">Failed</button>
+        </div>
+
+        <!-- Card Container -->
+        <div style="padding:0 2.5rem 2.5rem 2.5rem; flex:1;">
+          <div
+            style="background:#1a1a1a; border:1px solid rgba(255,255,255,0.05); border-radius:0.75rem; overflow:hidden; min-height: 400px;">
+            <div style="padding:1.5rem 2rem; border-bottom:1px solid rgba(255,255,255,0.05);">
+              <h2 style="font-size:1.25rem; font-weight:700; color:#fff;">Visits</h2>
+            </div>
+            <div id="agent-visits-container">
+              <!-- Dynamically populated by agent-crud.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reschedule Modal -->
+      <div id="reschedule-modal" onclick="if(event.target===this)closeRescheduleModal()"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:5000;align-items:center;justify-content:center;">
+        <div
+          style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:420px;width:90%;position:relative;">
+          <button onclick="closeRescheduleModal()"
+            style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+          <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.375rem;">Reschedule Visit</h3>
+          <p id="reschedule-buyer-name" style="color:#9ca3af;font-size:0.875rem;margin-bottom:1.5rem;"></p>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.8125rem;color:#9ca3af;display:block;margin-bottom:0.4rem;">New Date</label>
+            <input type="date" id="reschedule-date"
+              style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.75rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <label style="font-size:0.8125rem;color:#9ca3af;display:block;margin-bottom:0.4rem;">New Time</label>
+            <select id="reschedule-time"
+              style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.75rem;color:#fff;font-size:0.875rem;">
+              <option>9:00 AM</option>
+              <option>10:00 AM</option>
+              <option>11:00 AM</option>
+              <option>12:00 PM</option>
+              <option>1:00 PM</option>
+              <option>2:00 PM</option>
+              <option>3:00 PM</option>
+              <option>4:00 PM</option>
+              <option>5:00 PM</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:0.75rem;">
+            <button onclick="closeRescheduleModal()"
+              style="flex:1;background:#282828;color:#fff;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:600;cursor:pointer;">Cancel</button>
+            <button onclick="confirmReschedule()"
+              style="flex:1;background:#1DB954;color:#000;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:700;cursor:pointer;">Confirm
+              Use Update</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Verification Modal -->
+      <div id="doc-verify-modal" onclick="if(event.target===this)closeDocVerifyModal()"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:5500;align-items:center;justify-content:center;">
+        <div
+          style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:480px;width:92%;position:relative;max-height:90vh;overflow-y:auto;">
+          <button onclick="closeDocVerifyModal()"
+            style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+          <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.25rem;">📄 Document Verification</h3>
+          <p id="doc-verify-deal-name" style="color:#9ca3af;font-size:0.875rem;margin-bottom:1.25rem;"></p>
+          <!-- Progress bar -->
+          <div style="background:#282828;border-radius:9999px;height:6px;margin-bottom:0.5rem;">
+            <div id="doc-progress-bar"
+              style="height:6px;border-radius:9999px;background:#1DB954;width:0%;transition:width 0.3s;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:1.25rem;">
+            <span style="font-size:0.75rem;color:#9ca3af;">Documents verified</span>
+            <span id="doc-count" style="font-size:0.75rem;font-weight:700;color:#1DB954;">0 / 6</span>
+          </div>
+          <!-- Checklist -->
+          <div id="doc-checklist" style="display:flex;flex-direction:column;gap:0.625rem;margin-bottom:1.5rem;"></div>
+          <!-- Buttons -->
+          <div style="display:flex;gap:0.75rem;">
+            <button onclick="closeDocVerifyModal()"
+              style="flex:1;background:#282828;color:#fff;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:600;cursor:pointer;">Cancel</button>
+            <button id="doc-verify-confirm-btn" onclick="confirmDocVerification()"
+              style="flex:1;background:#282828;color:#9ca3af;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:700;cursor:not-allowed;"
+              disabled>Confirm Verification</button>
+          </div>
+        </div>
+      </div>
+      <div data-section="current-buyers" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Current Buyers</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Buyers currently under your management</p>
+        </div>
+        <div style="padding:2rem;">
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1rem;">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+              <div
+                style="width:3rem;height:3rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;">
+                JD</div>
+              <div style="flex:1;">
+                <h3 style="font-weight:600;margin-bottom:0.1rem;">John Doe</h3>
+                <p style="color:#9ca3af;font-size:0.8125rem;">Modern Downtown Apartment • Banjara Hills</p>
+              </div>
+              <span
+                style="background:rgba(249,115,22,0.12);color:#f97316;padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Site
+                Visit Scheduled</span>
+            </div>
+            <div style="display:flex;gap:0.5rem;"><button onclick="switchAgentPage('schedule')"
+                style="background:#1DB954;color:#000;padding:0.45rem 1rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">View
+                Visits</button><button onclick="openBuyerContact('jd')"
+                style="background:#282828;color:#fff;padding:0.45rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">📞
+                Contact</button></div>
+          </div>
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1rem;">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+              <div
+                style="width:3rem;height:3rem;border-radius:9999px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;">
+                PS</div>
+              <div style="flex:1;">
+                <h3 style="font-weight:600;margin-bottom:0.1rem;">Priya Sharma</h3>
+                <p style="color:#9ca3af;font-size:0.8125rem;">Luxury Villa with Garden • Jubilee Hills</p>
+              </div>
+              <span
+                style="background:rgba(29,185,84,0.12);color:#1DB954;padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Negotiating</span>
+            </div>
+            <div style="display:flex;gap:0.5rem;"><button onclick="switchAgentPage('purchase-tracking')"
+                style="background:#1DB954;color:#000;padding:0.45rem 1rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">Track
+                Deal</button><button onclick="openBuyerContact('ps')"
+                style="background:#282828;color:#fff;padding:0.45rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">📞
+                Contact</button></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Buyer Contact Modal -->
+      <div id="buyer-contact-modal" onclick="if(event.target===this)closeBuyerContact()"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:6000;align-items:center;justify-content:center;">
+        <div
+          style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:440px;width:92%;position:relative;">
+          <button onclick="closeBuyerContact()"
+            style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+          <!-- Avatar + name -->
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+            <div id="bcm-avatar"
+              style="width:3.5rem;height:3.5rem;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.125rem;flex-shrink:0;">
+            </div>
+            <div>
+              <h3 id="bcm-name" style="font-size:1.125rem;font-weight:700;margin-bottom:0.1rem;"></h3>
+              <p id="bcm-status" style="font-size:0.8rem;"></p>
+            </div>
+          </div>
+          <!-- Contact details grid -->
+          <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+              <span style="font-size:1.1rem;">📞</span>
+              <div>
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">PHONE</div>
+                <div id="bcm-phone" style="font-weight:600;font-size:0.9375rem;"></div>
+              </div>
+            </div>
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+              <span style="font-size:1.1rem;">✉️</span>
+              <div>
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">EMAIL</div>
+                <div id="bcm-email" style="font-weight:600;font-size:0.9375rem;"></div>
+              </div>
+            </div>
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+              <span style="font-size:1.1rem;">📍</span>
+              <div>
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">PREFERRED AREA</div>
+                <div id="bcm-area" style="font-weight:600;font-size:0.9375rem;"></div>
+              </div>
+            </div>
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+              <span style="font-size:1.1rem;">💰</span>
+              <div>
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">BUDGET</div>
+                <div id="bcm-budget" style="font-weight:600;font-size:0.9375rem;color:#1DB954;"></div>
+              </div>
+            </div>
+            <div style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;">
+              <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.35rem;">📝 AGENT NOTE</div>
+              <p id="bcm-note" style="font-size:0.8125rem;color:#d1d5db;line-height:1.55;margin:0;"></p>
+            </div>
+          </div>
+          <!-- Action buttons -->
+          <div style="display:flex;gap:0.75rem;">
+            <button id="bcm-call-btn"
+              style="flex:1;background:#1DB954;color:#000;padding:0.75rem;border-radius:0.75rem;border:none;font-weight:700;cursor:pointer;">📞
+              Call Now</button>
+            <button onclick="closeBuyerContact()"
+              style="flex:1;background:#282828;color:#fff;padding:0.75rem;border-radius:0.75rem;border:none;font-weight:600;cursor:pointer;">Close</button>
+          </div>
+        </div>
+      </div>
+      <div data-section="buyer-requests" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Buyer Requests</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Incoming requests from buyers looking for an agent</p>
+        </div>
+        <div style="padding:2rem;">
+          <div id="agent-buyer-requests-list">
+            <!-- Dynamically populated buyer requests will appear here -->
+          </div>
+        </div>
+      </div>
+      <div data-section="explore-sellers" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Explore Sellers</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Find new seller clients</p>
+        </div>
+        <div style="padding:2rem;">
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;">
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;">
+              <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                <div
+                  style="width:3rem;height:3rem;border-radius:9999px;background:#f97316;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;">
+                  SP</div>
+                <div style="flex:1;">
+                  <h3 style="font-weight:600;">Sarah Parker</h3>
+                  <p style="color:#9ca3af;font-size:0.8125rem;">4 Active Listings • 2 Sold</p>
+                </div>
+              </div><button onclick="showToast('Contacting Sarah Parker...')"
+                style="width:100%;background:#1DB954;color:#000;padding:0.5rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">Contact</button>
+            </div>
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;">
+              <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                <div
+                  style="width:3rem;height:3rem;border-radius:9999px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;">
+                  RK</div>
+                <div style="flex:1;">
+                  <h3 style="font-weight:600;">Raj Kapoor</h3>
+                  <p style="color:#9ca3af;font-size:0.8125rem;">2 Active Listings • 5 Sold</p>
+                </div>
+              </div><button onclick="showToast('Contacting Raj Kapoor...')"
+                style="width:100%;background:#1DB954;color:#000;padding:0.5rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">Contact</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-section="current-sellers" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Current Sellers Under Me</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Sellers you are currently managing — view their listed properties
+          </p>
+        </div>
+        <div style="padding:2rem;">
+
+          <!-- Seller Card 1 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1.25rem;">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+              <div
+                style="width:3rem;height:3rem;border-radius:9999px;background:#f97316;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;flex-shrink:0;">
+                SP</div>
+              <div style="flex:1;">
+                <h3 style="font-weight:700;margin-bottom:0.1rem;">Sarah Parker</h3>
+                <p style="color:#9ca3af;font-size:0.8125rem;">sarah.parker@email.com &nbsp;•&nbsp; +91 98765 43210</p>
+                <p style="color:#9ca3af;font-size:0.8125rem;">Since: <span style="color:#fff;">Jan 2026</span>
+                  &nbsp;•&nbsp; Listed Properties: <span style="color:#1DB954;font-weight:600;">2</span></p>
+              </div>
+              <span
+                style="background:rgba(29,185,84,0.12);color:#1DB954;padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+            </div>
+            <!-- Property 1a -->
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:1rem;margin-bottom:0.75rem;border:1px solid rgba(255,255,255,0.06);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <div>
+                  <div style="font-weight:600;font-size:0.9375rem;">Luxury Villa with Garden</div>
+                  <div style="color:#9ca3af;font-size:0.8rem;">📍 Jubilee Hills &nbsp;•&nbsp; 4 BHK &nbsp;•&nbsp; 3,200
+                    sq ft</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="color:#1DB954;font-weight:700;font-size:1rem;">₹1,25,00,000</div>
+                  <span
+                    style="background:rgba(29,185,84,0.1);color:#1DB954;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:0.25rem;font-weight:600;">Active</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.5rem;">
+                <button onclick="openPropertyModal('sp1')"
+                  style="background:#1DB954;color:#000;padding:0.4rem 1rem;border-radius:0.5rem;border:none;font-weight:700;cursor:pointer;font-size:0.8rem;">View
+                  Property Details</button>
+                <button onclick="openSellerContact('sp')"
+                  style="background:#282828;color:#fff;padding:0.4rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8rem;">📞
+                  Contact Seller</button>
+              </div>
+            </div>
+            <!-- Property 1b -->
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:1rem;border:1px solid rgba(255,255,255,0.06);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <div>
+                  <div style="font-weight:600;font-size:0.9375rem;">Modern Studio Apartment</div>
+                  <div style="color:#9ca3af;font-size:0.8rem;">📍 Madhapur &nbsp;•&nbsp; 1 BHK &nbsp;•&nbsp; 650 sq ft
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="color:#1DB954;font-weight:700;font-size:1rem;">₹28,00,000</div>
+                  <span
+                    style="background:rgba(234,179,8,0.1);color:#eab308;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:0.25rem;font-weight:600;">Under
+                    Review</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.5rem;">
+                <button onclick="openPropertyModal('sp2')"
+                  style="background:#1DB954;color:#000;padding:0.4rem 1rem;border-radius:0.5rem;border:none;font-weight:700;cursor:pointer;font-size:0.8rem;">View
+                  Property Details</button>
+                <button onclick="openSellerContact('sp')"
+                  style="background:#282828;color:#fff;padding:0.4rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8rem;">📞
+                  Contact Seller</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seller Card 2 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1.25rem;">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+              <div
+                style="width:3rem;height:3rem;border-radius:9999px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;">
+                RK</div>
+              <div style="flex:1;">
+                <h3 style="font-weight:700;margin-bottom:0.1rem;">Raj Kapoor</h3>
+                <p style="color:#9ca3af;font-size:0.8125rem;">raj.kapoor@email.com &nbsp;•&nbsp; +91 97654 32109</p>
+                <p style="color:#9ca3af;font-size:0.8125rem;">Since: <span style="color:#fff;">Feb 2026</span>
+                  &nbsp;•&nbsp; Listed Properties: <span style="color:#1DB954;font-weight:600;">1</span></p>
+              </div>
+              <span
+                style="background:rgba(29,185,84,0.12);color:#1DB954;padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+            </div>
+            <!-- Property 2a -->
+            <div
+              style="background:#121212;border-radius:0.625rem;padding:1rem;border:1px solid rgba(255,255,255,0.06);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <div>
+                  <div style="font-weight:600;font-size:0.9375rem;">Modern Downtown Apartment</div>
+                  <div style="color:#9ca3af;font-size:0.8rem;">📍 Banjara Hills &nbsp;•&nbsp; 3 BHK &nbsp;•&nbsp; 1,800
+                    sq ft</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="color:#1DB954;font-weight:700;font-size:1rem;">₹45,00,000</div>
+                  <span
+                    style="background:rgba(29,185,84,0.1);color:#1DB954;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:0.25rem;font-weight:600;">Active</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.5rem;">
+                <button onclick="openPropertyModal('rk1')"
+                  style="background:#1DB954;color:#000;padding:0.4rem 1rem;border-radius:0.5rem;border:none;font-weight:700;cursor:pointer;font-size:0.8rem;">View
+                  Property Details</button>
+                <button onclick="openSellerContact('rk')"
+                  style="background:#282828;color:#fff;padding:0.4rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8rem;">📞
+                  Contact Seller</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- Edit Profile Modal -->
+        <div id="edit-profile-modal" onclick="if(event.target===this)closeEditProfile()"
+          style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:7000;align-items:center;justify-content:center;">
+          <div
+            style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:480px;width:92%;position:relative;max-height:90vh;overflow-y:auto;">
+            <button onclick="closeEditProfile()"
+              style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+            <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.25rem;">✏️ Edit Profile</h3>
+            <p style="color:#9ca3af;font-size:0.8125rem;margin-bottom:1.5rem;">Update your agent information</p>
+
+            <!-- Avatar row -->
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+              <div id="ep-avatar"
+                style="width:4rem;height:4rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#000;flex-shrink:0;">
+                MJ</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Profile photo update coming soon</div>
+            </div>
+
+            <!-- Fields -->
+            <div style="display:flex;flex-direction:column;gap:0.875rem;margin-bottom:1.5rem;">
+              <div>
+                <label style="font-size:0.75rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Full Name</label>
+                <input id="ep-name" type="text" value="Mike Johnson"
+                  style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.625rem;padding:0.75rem 1rem;color:#fff;font-size:0.9375rem;box-sizing:border-box;outline:none;">
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Email</label>
+                <input id="ep-email" type="email" value="mike.johnson@email.com"
+                  style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.625rem;padding:0.75rem 1rem;color:#fff;font-size:0.9375rem;box-sizing:border-box;outline:none;">
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Phone</label>
+                <input id="ep-phone" type="tel" value="+91 99887 76655"
+                  style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.625rem;padding:0.75rem 1rem;color:#fff;font-size:0.9375rem;box-sizing:border-box;outline:none;">
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Location</label>
+                <input id="ep-location" type="text" value="Hyderabad, India"
+                  style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.625rem;padding:0.75rem 1rem;color:#fff;font-size:0.9375rem;box-sizing:border-box;outline:none;">
+              </div>
+              <div>
+                <label
+                  style="font-size:0.75rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Specialisation</label>
+                <select id="ep-spec"
+                  style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.625rem;padding:0.75rem 1rem;color:#fff;font-size:0.9375rem;box-sizing:border-box;outline:none;">
+                  <option>Residential &amp; Luxury</option>
+                  <option>Commercial</option>
+                  <option>Plots &amp; Land</option>
+                  <option>Industrial</option>
+                  <option>Residential &amp; Commercial</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Coverage
+                  Area</label>
+                <input id="ep-area" type="text" value="Banjara Hills, Jubilee Hills, Gachibowli"
+                  style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.625rem;padding:0.75rem 1rem;color:#fff;font-size:0.9375rem;box-sizing:border-box;outline:none;">
+              </div>
+            </div>
+
+            <div style="display:flex;gap:0.75rem;">
+              <button onclick="closeEditProfile()"
+                style="flex:1;background:#282828;color:#fff;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:600;cursor:pointer;">Cancel</button>
+              <button onclick="saveAgentProfile()"
+                style="flex:1;background:#1DB954;color:#000;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:700;cursor:pointer;">💾
+                Save Changes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seller Contact Modal -->
+
+        <div id="seller-contact-modal" onclick="if(event.target===this)closeSellerContact()"
+          style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:6000;align-items:center;justify-content:center;">
+          <div
+            style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:440px;width:92%;position:relative;">
+            <button onclick="closeSellerContact()"
+              style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+              <div id="scm-avatar"
+                style="width:3.5rem;height:3.5rem;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.125rem;flex-shrink:0;">
+              </div>
+              <div>
+                <h3 id="scm-name" style="font-size:1.125rem;font-weight:700;margin-bottom:0.1rem;"></h3>
+                <p id="scm-role" style="font-size:0.8rem;color:#9ca3af;"></p>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
+              <div
+                style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+                <span style="font-size:1.1rem;">📞</span>
+                <div>
+                  <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">PHONE</div>
+                  <div id="scm-phone" style="font-weight:600;font-size:0.9375rem;"></div>
+                </div>
+              </div>
+              <div
+                style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+                <span style="font-size:1.1rem;">✉️</span>
+                <div>
+                  <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">EMAIL</div>
+                  <div id="scm-email" style="font-weight:600;font-size:0.9375rem;"></div>
+                </div>
+              </div>
+              <div
+                style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+                <span style="font-size:1.1rem;">🏠</span>
+                <div>
+                  <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">PROPERTIES LISTED</div>
+                  <div id="scm-listings" style="font-weight:600;font-size:0.9375rem;"></div>
+                </div>
+              </div>
+              <div
+                style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;display:flex;align-items:center;gap:0.875rem;">
+                <span style="font-size:1.1rem;">📋</span>
+                <div>
+                  <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.1rem;">RERA ID</div>
+                  <div id="scm-rera" style="font-weight:600;font-size:0.9375rem;color:#1DB954;"></div>
+                </div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:0.875rem 1rem;">
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.35rem;">📝 AGENT NOTE</div>
+                <p id="scm-note" style="font-size:0.8125rem;color:#d1d5db;line-height:1.55;margin:0;"></p>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <button id="scm-call-btn"
+                style="flex:1;background:#1DB954;color:#000;padding:0.75rem;border-radius:0.75rem;border:none;font-weight:700;cursor:pointer;">📞
+                Call Now</button>
+              <button onclick="closeSellerContact()"
+                style="flex:1;background:#282828;color:#fff;padding:0.75rem;border-radius:0.75rem;border:none;font-weight:600;cursor:pointer;">Close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property Details Modal -->
+        <div id="property-modal" onclick="if(event.target===this)closePropertyModal()"
+          style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:6000;align-items:center;justify-content:center;">
+          <div
+            style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:560px;width:92%;position:relative;max-height:90vh;overflow-y:auto;">
+            <button onclick="closePropertyModal()"
+              style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+            <h3 id="pm-title" style="font-size:1.25rem;font-weight:700;margin-bottom:0.25rem;"></h3>
+            <p id="pm-location" style="color:#9ca3af;font-size:0.875rem;margin-bottom:1.5rem;"></p>
+            <!-- Price + Status -->
+            <div
+              style="display:flex;justify-content:space-between;align-items:center;background:#121212;border-radius:0.75rem;padding:1rem 1.25rem;margin-bottom:1.25rem;">
+              <div>
+                <div style="font-size:0.75rem;color:#9ca3af;">Listed Price</div>
+                <div id="pm-price" style="font-size:1.375rem;font-weight:700;color:#1DB954;"></div>
+              </div>
+              <span id="pm-status"
+                style="padding:0.375rem 0.875rem;border-radius:0.5rem;font-size:0.8rem;font-weight:600;"></span>
+            </div>
+            <!-- Key Details Grid -->
+            <div id="pm-details"
+              style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.25rem;"></div>
+            <!-- Description -->
+            <div style="margin-bottom:1.25rem;">
+              <div style="font-size:0.8125rem;font-weight:600;color:#9ca3af;margin-bottom:0.5rem;">DESCRIPTION</div>
+              <p id="pm-desc" style="font-size:0.875rem;line-height:1.65;color:#d1d5db;"></p>
+            </div>
+            <!-- Amenities -->
+            <div style="margin-bottom:1.5rem;">
+              <div style="font-size:0.8125rem;font-weight:600;color:#9ca3af;margin-bottom:0.625rem;">AMENITIES</div>
+              <div id="pm-amenities" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <button onclick="showToast('Sharing property link...');closePropertyModal()"
+                style="flex:1;background:#1DB954;color:#000;padding:0.75rem;border-radius:0.75rem;border:none;font-weight:700;cursor:pointer;">Share
+                with Buyer</button>
+              <button onclick="closePropertyModal()"
+                style="flex:1;background:#282828;color:#fff;padding:0.75rem;border-radius:0.75rem;border:none;font-weight:600;cursor:pointer;">Close</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div data-section="active-properties" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">My Active Properties</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Properties under your management</p>
+        </div>
+        <div style="padding:2rem;">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem;">
+              <div style="font-size:1.5rem;font-weight:700;color:#1DB954;margin-bottom:0.25rem;">24</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Total Listings</div>
+            </div>
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem;">
+              <div style="font-size:1.5rem;font-weight:700;color:#1DB954;margin-bottom:0.25rem;">1,847</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Total Views</div>
+            </div>
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem;">
+              <div style="font-size:1.5rem;font-weight:700;color:#1DB954;margin-bottom:0.25rem;">156</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Total Inquiries</div>
+            </div>
+            <div
+              style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem;">
+              <div style="font-size:1.5rem;font-weight:700;color:#1DB954;margin-bottom:0.25rem;">89</div>
+              <div style="font-size:0.8125rem;color:#9ca3af;">Shortlisted</div>
+            </div>
+          </div>
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+              <div style="display:flex;align-items:center;gap:1rem;">
+                <div
+                  style="width:3.5rem;height:3.5rem;border-radius:0.75rem;background:#282828;display:flex;align-items:center;justify-content:center;">
+                  <svg style="width:2rem;height:2rem;" fill="none" stroke="#9ca3af" stroke-width="1.5"
+                    viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 style="font-size:1.125rem;font-weight:700;">Modern Downtown Apartment</h3>
+                  <p style="color:#9ca3af;font-size:0.875rem;">Banjara Hills, Hyderabad</p>
+                </div>
+              </div>
+              <div style="text-align:right;"><span
+                  style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.375rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                <div style="font-size:1.125rem;font-weight:700;color:#1DB954;margin-top:0.5rem;">Rs 45,00,000</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-bottom:1rem;"><span
+                style="background:#282828;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;color:#9ca3af;">Villa</span><span
+                style="background:#282828;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;color:#9ca3af;">4
+                BHK</span><span
+                style="background:#282828;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;color:#9ca3af;">3,500
+                sq ft</span></div>
+            <div
+              style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;background:#121212;border-radius:0.5rem;padding:1rem;margin-bottom:1rem;">
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Listed</div>
+                <div style="font-weight:600;font-size:0.875rem;">Mar 15, 2026</div>
+              </div>
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Views</div>
+                <div style="font-weight:600;font-size:0.875rem;">342</div>
+              </div>
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Inquiries</div>
+                <div style="font-weight:600;font-size:0.875rem;">28</div>
+              </div>
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Shortlisted</div>
+                <div style="font-weight:600;font-size:0.875rem;">15</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><button onclick="showToast('Opening details...')"
+                style="background:#1DB954;color:#000;padding:0.5rem 1rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">View
+                Details</button><button
+                style="background:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">Edit
+                Property</button><button
+                style="background:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">Promote</button><button
+                style="background:none;color:#ef4444;padding:0.5rem 1rem;border-radius:0.5rem;border:1px solid rgba(239,68,68,0.3);cursor:pointer;font-size:0.8125rem;">Remove</button>
+            </div>
+          </div>
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+              <div style="display:flex;align-items:center;gap:1rem;">
+                <div
+                  style="width:3.5rem;height:3.5rem;border-radius:0.75rem;background:#282828;display:flex;align-items:center;justify-content:center;">
+                  <svg style="width:2rem;height:2rem;" fill="none" stroke="#9ca3af" stroke-width="1.5"
+                    viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 style="font-size:1.125rem;font-weight:700;">Luxury Villa with Garden</h3>
+                  <p style="color:#9ca3af;font-size:0.875rem;">Jubilee Hills, Hyderabad</p>
+                </div>
+              </div>
+              <div style="text-align:right;"><span
+                  style="background:rgba(29,185,84,0.1);color:#1DB954;padding:0.375rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">Active</span>
+                <div style="font-size:1.125rem;font-weight:700;color:#1DB954;margin-top:0.5rem;">Rs 1,25,00,000</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-bottom:1rem;"><span
+                style="background:#282828;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;color:#9ca3af;">Apartment</span><span
+                style="background:#282828;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;color:#9ca3af;">3
+                BHK</span><span
+                style="background:#282828;padding:0.25rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;color:#9ca3af;">1,200
+                sq ft</span></div>
+            <div
+              style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;background:#121212;border-radius:0.5rem;padding:1rem;margin-bottom:1rem;">
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Listed</div>
+                <div style="font-weight:600;font-size:0.875rem;">Mar 10, 2026</div>
+              </div>
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Views</div>
+                <div style="font-weight:600;font-size:0.875rem;">567</div>
+              </div>
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Inquiries</div>
+                <div style="font-weight:600;font-size:0.875rem;">42</div>
+              </div>
+              <div>
+                <div style="font-size:0.6875rem;color:#9ca3af;">Shortlisted</div>
+                <div style="font-weight:600;font-size:0.875rem;">23</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><button onclick="showToast('Opening details...')"
+                style="background:#1DB954;color:#000;padding:0.5rem 1rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">View
+                Details</button><button
+                style="background:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">Edit
+                Property</button><button
+                style="background:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">Promote</button><button
+                style="background:none;color:#ef4444;padding:0.5rem 1rem;border-radius:0.5rem;border:1px solid rgba(239,68,68,0.3);cursor:pointer;font-size:0.8125rem;">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-section="property-inquiries" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Property Inquiries</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Inquiries on your properties</p>
+        </div>
+        <div style="padding:2rem;">
+          <p style="color:#9ca3af;">156 total inquiries across all properties.</p>
+        </div>
+      </div>
+
+
+      <!-- Reschedule Modal -->
+      <div id="reschedule-modal" onclick="if(event.target===this)closeRescheduleModal()"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:5000;align-items:center;justify-content:center;">
+        <div
+          style="background:#1a1a1a;border-radius:1.25rem;border:1px solid rgba(255,255,255,0.12);padding:2rem;max-width:420px;width:90%;position:relative;">
+          <button onclick="closeRescheduleModal()"
+            style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.25rem;">✕</button>
+          <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:0.375rem;">Reschedule Visit</h3>
+          <p id="reschedule-buyer-name" style="color:#9ca3af;font-size:0.875rem;margin-bottom:1.5rem;"></p>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.8125rem;color:#9ca3af;display:block;margin-bottom:0.4rem;">New Date</label>
+            <input type="date" id="reschedule-date"
+              style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.75rem;color:#fff;font-size:0.875rem;box-sizing:border-box;">
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <label style="font-size:0.8125rem;color:#9ca3af;display:block;margin-bottom:0.4rem;">New Time</label>
+            <select id="reschedule-time"
+              style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.75rem;color:#fff;font-size:0.875rem;">
+              <option>9:00 AM</option>
+              <option>10:00 AM</option>
+              <option>11:00 AM</option>
+              <option>12:00 PM</option>
+              <option>1:00 PM</option>
+              <option>2:00 PM</option>
+              <option>3:00 PM</option>
+              <option>4:00 PM</option>
+              <option>5:00 PM</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:0.75rem;">
+            <button onclick="closeRescheduleModal()"
+              style="flex:1;background:#282828;color:#fff;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:600;cursor:pointer;">Cancel</button>
+            <button onclick="confirmReschedule()"
+              style="flex:1;background:#1DB954;color:#000;border:none;padding:0.75rem;border-radius:0.75rem;font-weight:700;cursor:pointer;">Confirm
+              Reschedule</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Purchase Tracking Section -->
+      <div data-section="purchase-tracking" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Purchase Tracking</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Manage ongoing deal steps — verify offline, then mark done here
+          </p>
+        </div>
+        <div style="padding:2rem;" id="agent-ptrack-container">
+          <!-- Deal cards injected here dynamically -->
+        </div>
+      </div>
+      <div data-section="messages" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Messages</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Communication with clients</p>
+        </div>
+        <div style="padding:2rem;">
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1rem;cursor:pointer;"
+            onclick="showToast('Opening conversation')">
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <div
+                style="width:3rem;height:3rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;">
+                JD</div>
+              <div style="flex:1;">
+                <h3 style="font-weight:600;">John Doe</h3>
+                <p style="color:#9ca3af;font-size:0.875rem;">Looking forward to the visit!</p>
+              </div><span style="color:#666;font-size:0.75rem;">2h ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-section="negotiations" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Negotiations</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Active deal negotiations</p>
+        </div>
+        <div style="padding:2rem;">
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.5rem;margin-bottom:1rem;">
+            <h3 style="font-weight:600;margin-bottom:0.5rem;">Luxury Villa with Garden</h3>
+            <p style="color:#9ca3af;font-size:0.875rem;">Buyer: Priya Sharma • Seller: Sarah Parker</p>
+            <p style="color:#9ca3af;font-size:0.875rem;margin-top:0.5rem;">Offered: <span
+                style="color:#f97316;font-weight:600;">₹8.5 Cr</span> • Listed: <span style="color:#fff;">₹9.55
+                Cr</span></p>
+            <div style="display:flex;gap:0.5rem;margin-top:1rem;"><button onclick="showToast('Mediating...')"
+                style="background:#1DB954;color:#000;padding:0.5rem 1rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">Mediate</button><button
+                onclick="showToast('Scheduling...')"
+                style="background:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.875rem;">Schedule
+                Meeting</button></div>
+          </div>
+        </div>
+      </div>
+      <div data-section="notifications" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Notifications</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Your latest updates &amp; activity alerts</p>
+        </div>
+        <div style="padding:2rem;">
+
+          <!-- 1 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem 1.5rem;margin-bottom:0.875rem;border-left:3px solid #f97316;display:flex;align-items:flex-start;gap:1rem;">
+            <div style="font-size:1.375rem;flex-shrink:0;">📅</div>
+            <div style="flex:1;">
+              <h3 style="font-weight:600;margin-bottom:0.2rem;font-size:0.9375rem;">New Visit Request — John Doe</h3>
+              <p style="color:#9ca3af;font-size:0.8125rem;">Requested a site visit for <strong
+                  style="color:#fff;">Modern
+                  Downtown Apartment, Banjara Hills</strong> on Mar 29 at 2:00 PM</p>
+              <p style="color:#666;font-size:0.75rem;margin-top:0.4rem;">Today, 10:15 AM</p>
+            </div>
+            <span
+              style="background:rgba(249,115,22,0.12);color:#f97316;font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:0.375rem;white-space:nowrap;">⏳
+              Pending</span>
+          </div>
+
+          <!-- 2 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem 1.5rem;margin-bottom:0.875rem;border-left:3px solid #8b5cf6;display:flex;align-items:flex-start;gap:1rem;">
+            <div style="font-size:1.375rem;flex-shrink:0;">📝</div>
+            <div style="flex:1;">
+              <h3 style="font-weight:600;margin-bottom:0.2rem;font-size:0.9375rem;">New Buyer Request — Sneha Mehta</h3>
+              <p style="color:#9ca3af;font-size:0.8125rem;">Looking for a <strong style="color:#fff;">2 BHK / Villa in
+                  Jubilee Hills</strong>, budget ₹90L–1.2 Cr. Investment purpose.</p>
+              <p style="color:#666;font-size:0.75rem;margin-top:0.4rem;">Today, 9:42 AM</p>
+            </div>
+            <span
+              style="background:rgba(139,92,246,0.12);color:#8b5cf6;font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:0.375rem;white-space:nowrap;">New
+              Request</span>
+          </div>
+
+          <!-- 3 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem 1.5rem;margin-bottom:0.875rem;border-left:3px solid #1DB954;display:flex;align-items:flex-start;gap:1rem;">
+            <div style="font-size:1.375rem;flex-shrink:0;">🏠</div>
+            <div style="flex:1;">
+              <h3 style="font-weight:600;margin-bottom:0.2rem;font-size:0.9375rem;">Deal Step Updated — Luxury Villa
+                with Garden</h3>
+              <p style="color:#9ca3af;font-size:0.8125rem;">Token Payment confirmed by buyer <strong
+                  style="color:#fff;">Priya Sharma</strong>. Deal now at Step 3 of 5.</p>
+              <p style="color:#666;font-size:0.75rem;margin-top:0.4rem;">Yesterday, 4:30 PM</p>
+            </div>
+            <span
+              style="background:rgba(29,185,84,0.12);color:#1DB954;font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:0.375rem;white-space:nowrap;">⭐
+              In Progress</span>
+          </div>
+
+          <!-- 4 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem 1.5rem;margin-bottom:0.875rem;border-left:3px solid #1DB954;display:flex;align-items:flex-start;gap:1rem;">
+            <div style="font-size:1.375rem;flex-shrink:0;">💰</div>
+            <div style="flex:1;">
+              <h3 style="font-weight:600;margin-bottom:0.2rem;font-size:0.9375rem;">Commission Credited</h3>
+              <p style="color:#9ca3af;font-size:0.8125rem;"><strong style="color:#1DB954;">₹1,84,000</strong> commission
+                received for <strong style="color:#fff;">Cozy Studio Apartment</strong> deal closure.</p>
+              <p style="color:#666;font-size:0.75rem;margin-top:0.4rem;">Mar 26, 2026 · 2:10 PM</p>
+            </div>
+            <span
+              style="background:rgba(29,185,84,0.12);color:#1DB954;font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:0.375rem;white-space:nowrap;">✅
+              Credited</span>
+          </div>
+
+          <!-- 5 -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:1.25rem 1.5rem;margin-bottom:0.875rem;border-left:3px solid #3b82f6;display:flex;align-items:flex-start;gap:1rem;">
+            <div style="font-size:1.375rem;flex-shrink:0;">📋</div>
+            <div style="flex:1;">
+              <h3 style="font-weight:600;margin-bottom:0.2rem;font-size:0.9375rem;">RERA Compliance Reminder</h3>
+              <p style="color:#9ca3af;font-size:0.8125rem;">Your RERA certificate <strong
+                  style="color:#fff;">AGENT-2024-HYD-1234</strong> is valid. Next renewal due <strong
+                  style="color:#fff;">Dec 2026</strong>.</p>
+              <p style="color:#666;font-size:0.75rem;margin-top:0.4rem;">Mar 25, 2026 · System</p>
+            </div>
+            <span
+              style="background:rgba(59,130,246,0.12);color:#3b82f6;font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:0.375rem;white-space:nowrap;">Info</span>
+          </div>
+
+        </div>
+      </div>
+      <div data-section="profile" class="agent-section" style="display:none;">
+        <div style="background:#000;padding:2rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <h1 style="font-size:1.875rem;font-weight:700;margin-bottom:0.5rem;">Profile</h1>
+          <p style="color:#9ca3af;font-size:0.875rem;">Your agent account &amp; performance overview</p>
+        </div>
+        <div style="padding:2rem;">
+
+          <!-- Header card -->
+          <div
+            style="background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(255,255,255,0.1);padding:2rem;margin-bottom:1.25rem;">
+            <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.75rem;">
+              <div
+                style="width:5rem;height:5rem;border-radius:9999px;background:#1DB954;display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;color:#000;flex-shrink:0;">
+                MJ</div>
+              <div style="flex:1;">
+                <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.25rem;">Mike Johnson</h2>
+                <p style="color:#9ca3af;font-size:0.875rem;">mike.johnson@email.com</p>
+                <p style="color:#9ca3af;font-size:0.875rem;">+91 99887 76655 &nbsp;•&nbsp; Hyderabad, India</p>
+              </div>
+              <span
+                style="background:rgba(29,185,84,0.12);color:#1DB954;padding:0.375rem 0.875rem;border-radius:0.5rem;font-size:0.8125rem;font-weight:600;">⭐
+                Active Agent</span>
+            </div>
+
+            <!-- Stats grid -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.875rem;margin-bottom:1.75rem;">
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;text-align:center;">
+                <div style="font-size:1.5rem;font-weight:700;color:#1DB954;">2</div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.2rem;">Current Buyers</div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;text-align:center;">
+                <div style="font-size:1.5rem;font-weight:700;color:#f97316;">2</div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.2rem;">Current Sellers</div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;text-align:center;">
+                <div style="font-size:1.5rem;font-weight:700;color:#3b82f6;">2</div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.2rem;">Active Deals</div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;text-align:center;">
+                <div style="font-size:1.5rem;font-weight:700;color:#1DB954;">124</div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.2rem;">Deals Closed</div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;text-align:center;">
+                <div style="font-size:1.5rem;font-weight:700;color:#eab308;">4.8 ★</div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.2rem;">Client Rating</div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;text-align:center;">
+                <div style="font-size:1.5rem;font-weight:700;color:#1DB954;">8 Yrs</div>
+                <div style="font-size:0.75rem;color:#9ca3af;margin-top:0.2rem;">Experience</div>
+              </div>
+            </div>
+
+            <!-- RERA Info (read-only) -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;margin-bottom:1.75rem;">
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;">
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.3rem;">RERA ID</div>
+                <div style="font-weight:600;color:#1DB954;font-size:0.875rem;">AGENT-2024-HYD-1234</div>
+              </div>
+              <div style="background:#121212;border-radius:0.625rem;padding:1rem;">
+                <div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.3rem;">RERA Valid Until</div>
+                <div style="font-weight:600;font-size:0.875rem;">December 2026</div>
+              </div>
+            </div>
+
+            <!-- Editable fields -->
+            <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:1.5rem;">
+              <p style="font-size:0.8125rem;color:#9ca3af;margin-bottom:1.25rem;">Update your profile details below and
+                click <strong style="color:#fff;">Save Changes</strong>.</p>
+              <div style="display:flex;flex-direction:column;gap:0.875rem;margin-bottom:1.25rem;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;">
+                  <div>
+                    <label style="font-size:0.72rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Full
+                      Name</label>
+                    <input id="pf-name" type="text" value="Mike Johnson"
+                      style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.65rem 0.875rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
+                  </div>
+                  <div>
+                    <label style="font-size:0.72rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Phone</label>
+                    <input id="pf-phone" type="tel" value="+91 99887 76655"
+                      style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.65rem 0.875rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size:0.72rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Email</label>
+                  <input id="pf-email" type="email" value="mike.johnson@email.com"
+                    style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.65rem 0.875rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
+                </div>
+                <div>
+                  <label style="font-size:0.72rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Location</label>
+                  <input id="pf-location" type="text" value="Hyderabad, India"
+                    style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.65rem 0.875rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
+                </div>
+                <div>
+                  <label style="font-size:0.72rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Date of Birth <span style="color:#ef4444;">*</span></label>
+                  <input id="pf-dob" type="date" value="1990-01-01"
+                    style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.65rem 0.875rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
+                </div>
+                <div>
+                  <label style="font-size:0.72rem;color:#9ca3af;display:block;margin-bottom:0.35rem;">Coverage
+                    Area</label>
+                  <input id="pf-area" type="text" value="Banjara Hills, Jubilee Hills, Gachibowli"
+                    style="width:100%;background:#282828;border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;padding:0.65rem 0.875rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
+                </div>
+              </div>
+              <div style="display:flex;gap:0.75rem;">
+                <button onclick="cancelProfileEdit()"
+                  style="flex:1;background:#282828;color:#fff;border:none;padding:0.75rem;border-radius:0.5rem;font-weight:600;cursor:pointer;">Cancel</button>
+                <button onclick="saveProfileInline()"
+                  style="flex:1;background:#1DB954;color:#000;border:none;padding:0.75rem;border-radius:0.5rem;font-weight:700;cursor:pointer;">💾
+                  Save Changes</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    function showToast(msg, color) {
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:' + (color || '#1DB954') + ';color:#000;padding:1rem 1.5rem;border-radius:0.75rem;font-weight:600;z-index:9999;animation:fadeIn 0.3s ease;max-width:340px;';
+      t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2800);
+    }
+    function switchAgentPage(sectionId) {
+      document.querySelectorAll('.agent-section').forEach(s => s.style.display = 'none');
+      const target = document.querySelector('[data-section="' + sectionId + '"]');
+      if (target) { target.style.display = 'block'; }
+      document.querySelectorAll('.agent-nav-item').forEach(link => {
+        link.style.backgroundColor = ''; link.style.color = '#9ca3af';
+        const ind = link.querySelector('.nav-ind'); if (ind) ind.remove();
+      });
+      const activeLink = document.querySelector('.agent-nav-item[data-nav="' + sectionId + '"]');
+      if (activeLink) {
+        activeLink.style.backgroundColor = '#282828'; activeLink.style.color = '#ffffff';
+        const ind = document.createElement('div'); ind.className = 'nav-ind';
+        ind.style.cssText = 'margin-left:auto;width:0.25rem;height:2rem;background:#1DB954;border-radius:9999px;';
+        activeLink.appendChild(ind);
+      }
+    }
+    function toggleAgentDrop(e, id) {
+      e.preventDefault();
+      const drop = document.getElementById('drop-' + id);
+      const toggle = e.currentTarget;
+      if (drop.classList.contains('open')) { drop.classList.remove('open'); toggle.classList.remove('open'); }
+      else { drop.classList.add('open'); toggle.classList.add('open'); }
+    }
+
+    // ---- Buyer Contact Details Modal ----
+    const buyerContactData = {
+      jd: {
+        initials: 'JD', avatarBg: '#1DB954', avatarColor: '#000',
+        name: 'John Doe',
+        statusText: 'Site Visit Scheduled', statusColor: '#f97316',
+        phone: '+91 98001 23456',
+        email: 'john.doe@gmail.com',
+        area: 'Banjara Hills, Hyderabad',
+        budget: '₹40 – 50 Lakhs',
+        note: 'Very keen on the Modern Downtown Apartment. Site visit confirmed for Mar 29. Follow up on document checklist before the visit.'
+      },
+      ps: {
+        initials: 'PS', avatarBg: '#3b82f6', avatarColor: '#fff',
+        name: 'Priya Sharma',
+        statusText: 'Negotiating', statusColor: '#1DB954',
+        phone: '+91 91234 56789',
+        email: 'priya.sharma@outlook.com',
+        area: 'Jubilee Hills, Hyderabad',
+        budget: '₹1.1 – 1.3 Cr',
+        note: 'Negotiating on Luxury Villa with Garden. Buyer offered ₹1.2 Cr, seller listed at ₹1.25 Cr. Good chance of closing. Mediation meeting tentative Apr 1.'
+      },
+      rv: {
+        initials: 'RV', avatarBg: '#a855f7', avatarColor: '#fff',
+        name: 'Rahul Verma',
+        statusText: 'Shortlisted', statusColor: '#eab308',
+        phone: '+91 87654 32100',
+        email: 'rahul.verma@yahoo.com',
+        area: 'Gachibowli, Hyderabad',
+        budget: '₹60 – 80 Lakhs',
+        note: 'Has shortlisted Spacious Family Home. Still exploring 2 more options. Schedule a follow-up call to pitch the Gachibowli villa exclusively.'
+      }
+    };
+    function openBuyerContact(key) {
+      const d = buyerContactData[key]; if (!d) return;
+      const av = document.getElementById('bcm-avatar');
+      av.textContent = d.initials; av.style.background = d.avatarBg; av.style.color = d.avatarColor;
+      document.getElementById('bcm-name').textContent = d.name;
+      const st = document.getElementById('bcm-status');
+      st.textContent = d.statusText; st.style.color = d.statusColor;
+      document.getElementById('bcm-phone').textContent = d.phone;
+      document.getElementById('bcm-email').textContent = d.email;
+      document.getElementById('bcm-area').textContent = d.area;
+      document.getElementById('bcm-budget').textContent = d.budget;
+      document.getElementById('bcm-note').textContent = d.note;
+      const callBtn = document.getElementById('bcm-call-btn');
+      callBtn.onclick = () => showToast('Calling ' + d.name + ' at ' + d.phone + '...');
+      document.getElementById('buyer-contact-modal').style.display = 'flex';
+    }
+    function closeBuyerContact() {
+      document.getElementById('buyer-contact-modal').style.display = 'none';
+    }
+    document.querySelectorAll('.agent-nav-item').forEach(link => {
+      link.addEventListener('click', function (e) {
+        if (this.classList.contains('drop-toggle')) return;
+        e.preventDefault(); const nav = this.getAttribute('data-nav'); if (nav) switchAgentPage(nav);
+      });
+    });
+
+    // ---- Visit accept/reschedule/decline ----
+    const visitBuyerNames = { 1: 'John Doe — Modern Downtown Apt', 2: 'Priya Sharma — Luxury Villa', 3: 'Rahul Verma — Spacious Family Home' };
+    let rescheduleTargetCard = null;
+    function acceptVisit(id) {
+      const badge = document.getElementById('visit-card-' + id + '-badge');
+      const actions = document.getElementById('visit-card-' + id + '-actions');
+      const card = document.getElementById('visit-card-' + id);
+      if (!badge) return;
+      badge.textContent = '✓ Accepted'; badge.style.background = 'rgba(29,185,84,0.12)'; badge.style.color = '#1DB954';
+      card.style.borderColor = 'rgba(29,185,84,0.35)';
+      actions.innerHTML = '<button onclick="openRescheduleModal(' + id + ')" style="background:#282828;color:#fff;padding:0.5rem 1.25rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">↺ Reschedule</button><button onclick="markVisited(' + id + ')" style="background:transparent;border:1px solid #1DB954;color:#1DB954;padding:0.5rem 1.25rem;border-radius:0.5rem;font-weight:600;cursor:pointer;font-size:0.875rem;">✓ Mark as Visited</button>';
+      showToast('Visit accepted! Buyer has been notified.');
+    }
+    function declineVisit(id) {
+      const badge = document.getElementById('visit-card-' + id + '-badge');
+      const actions = document.getElementById('visit-card-' + id + '-actions');
+      const card = document.getElementById('visit-card-' + id);
+      badge.textContent = '✕ Declined'; badge.style.background = 'rgba(239,68,68,0.12)'; badge.style.color = '#ef4444';
+      card.style.borderColor = 'rgba(239,68,68,0.3)'; card.style.opacity = '0.6';
+      actions.innerHTML = '<span style="color:#9ca3af;font-size:0.875rem;">Visit declined. Buyer notified.</span>';
+      showToast('Visit declined.');
+    }
+    function markVisited(id) {
+      const badge = document.getElementById('visit-card-' + id + '-badge');
+      const actions = document.getElementById('visit-card-' + id + '-actions');
+      const card = document.getElementById('visit-card-' + id);
+      badge.textContent = '✅ Visited'; badge.style.background = 'rgba(29,185,84,0.2)'; badge.style.color = '#1DB954';
+      card.style.opacity = '0.75';
+      actions.innerHTML = '<span style="color:#1DB954;font-size:0.875rem;font-weight:600;">✅ Visit completed</span>';
+      showToast('Visit marked as completed!');
+    }
+    function openRescheduleModal(id) {
+      rescheduleTargetCard = id;
+      document.getElementById('reschedule-buyer-name').textContent = visitBuyerNames[id] || '';
+      const today = new Date(); const d = today.toISOString().split('T')[0];
+      document.getElementById('reschedule-date').value = d;
+      const modal = document.getElementById('reschedule-modal');
+      modal.style.display = 'flex';
+    }
+    function closeRescheduleModal() {
+      document.getElementById('reschedule-modal').style.display = 'none';
+      rescheduleTargetCard = null;
+    }
+    function confirmReschedule() {
+      const id = rescheduleTargetCard; if (!id) return;
+      const date = document.getElementById('reschedule-date').value;
+      const time = document.getElementById('reschedule-time').value;
+      const d = new Date(date);
+      const dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      document.getElementById('visit-card-' + id + '-time').innerHTML = '📅 ' + dateStr + ' &nbsp; ⏰ ' + time;
+      const badge = document.getElementById('visit-card-' + id + '-badge');
+      badge.textContent = '↺ Rescheduled'; badge.style.background = 'rgba(59,130,246,0.12)'; badge.style.color = '#3b82f6';
+      const card = document.getElementById('visit-card-' + id);
+      card.style.borderColor = 'rgba(59,130,246,0.35)';
+      const actions = document.getElementById('visit-card-' + id + '-actions');
+      actions.innerHTML = '<button onclick="openRescheduleModal(' + id + ')" style="background:#282828;color:#fff;padding:0.5rem 1.25rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.875rem;">↺ Reschedule Again</button><button onclick="markVisited(' + id + ')" style="background:transparent;border:1px solid #1DB954;color:#1DB954;padding:0.5rem 1.25rem;border-radius:0.5rem;font-weight:600;cursor:pointer;font-size:0.875rem;">✓ Mark as Visited</button>';
+      closeRescheduleModal();
+      showToast('Visit rescheduled to ' + dateStr + ' at ' + time + '. Buyer notified!');
+    }
+
+    // ---- Document Verification Modal ----
+    const docVerifyDealNames = { 1: 'Luxury Villa with Garden — Priya Sharma', 2: 'Modern Downtown Apartment — John Doe' };
+    const docItems = [
+      { id: 'doc-aadhar', label: 'Aadhar Card', desc: 'Buyer + Seller Aadhar verified' },
+      { id: 'doc-pan', label: 'PAN Card', desc: 'Buyer + Seller PAN verified' },
+      { id: 'doc-sale', label: 'Sale Deed Draft', desc: 'Original sale deed reviewed' },
+      { id: 'doc-encumb', label: 'Encumbrance Certificate', desc: 'EC for last 15 years verified' },
+      { id: 'doc-khata', label: 'Khata / Title Deed', desc: 'Property title documents verified' },
+      { id: 'doc-noc', label: 'NOC from Society/Builder', desc: 'No-objection certificate obtained' },
+    ];
+    let docVerifyDealId = null;
+    function openDocVerifyModal(dealId) {
+      docVerifyDealId = dealId;
+      document.getElementById('doc-verify-deal-name').textContent = docVerifyDealNames[dealId] || '';
+      const list = document.getElementById('doc-checklist');
+      list.innerHTML = docItems.map(d => `
+    <label style="display:flex;align-items:flex-start;gap:0.875rem;background:#121212;border-radius:0.625rem;padding:0.875rem;cursor:pointer;border:1px solid rgba(255,255,255,0.05);transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(29,185,84,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+      <input type="checkbox" id="${d.id}" onchange="updateDocProgress()" style="width:1.1rem;height:1.1rem;accent-color:#1DB954;cursor:pointer;flex-shrink:0;margin-top:0.1rem;">
+      <div>
+        <div style="font-size:0.875rem;font-weight:600;margin-bottom:0.15rem;">${d.label}</div>
+        <div style="font-size:0.75rem;color:#9ca3af;">${d.desc}</div>
+      </div>
+    </label>`).join('');
+      updateDocProgress();
+      document.getElementById('doc-verify-modal').style.display = 'flex';
+    }
+    function updateDocProgress() {
+      const checked = docItems.filter(d => document.getElementById(d.id) && document.getElementById(d.id).checked).length;
+      const total = docItems.length;
+      document.getElementById('doc-count').textContent = checked + ' / ' + total;
+      document.getElementById('doc-progress-bar').style.width = Math.round(checked / total * 100) + '%';
+      const btn = document.getElementById('doc-verify-confirm-btn');
+      if (checked === total) {
+        btn.style.background = '#1DB954'; btn.style.color = '#000'; btn.style.cursor = 'pointer'; btn.disabled = false;
+      } else {
+        btn.style.background = '#282828'; btn.style.color = '#9ca3af'; btn.style.cursor = 'not-allowed'; btn.disabled = true;
+      }
+    }
+    function closeDocVerifyModal() {
+      document.getElementById('doc-verify-modal').style.display = 'none';
+      docVerifyDealId = null;
+    }
+    function confirmDocVerification() {
+      const dealId = docVerifyDealId; if (!dealId) return;
+      closeDocVerifyModal();
+      markDealStep(dealId, 2);
+      const banner = document.getElementById('deal' + dealId + '-doc-verified');
+      if (banner) banner.style.display = 'block';
+      showToast('📄 Documents verified! Step 2 complete.');
+    }
+
+    // ---- Purchase step tracking ----
+    const dealStepLabels = ['', 'Offer Accepted', 'Document Verification', 'Token Payment', 'Full Payment', 'Registration'];
+    const dealCurrentStep = { 1: 3, 2: 1 };
+    function markDealStep(dealId, step) {
+      const cur = dealCurrentStep[dealId];
+      if (step !== cur) {
+        showToast('⚠️ Complete step ' + (cur) + ' first!', '#f97316');
+        return;
+      }
+
+      // ── 1. Mark current circle green ──
+      const circle = document.getElementById('deal' + dealId + '-step' + step);
+      if (circle) {
+        circle.style.background = '#1DB954';
+        circle.style.color = '#000';
+        circle.textContent = '✓';
+        circle.style.boxShadow = 'none';
+        circle.style.border = 'none';
+      }
+
+      // ── 2. Update label colour under the circle ──
+      const wrap = document.getElementById('deal' + dealId + '-step' + step + '-wrap');
+      if (wrap) {
+        const lbl = wrap.querySelector('div:nth-child(2)');
+        const sub = wrap.querySelector('div:nth-child(3)');
+        if (lbl) lbl.style.color = '#1DB954';
+        if (sub) { sub.style.color = '#6b7280'; sub.textContent = 'Done'; }
+      }
+
+      // ── 3. Disable current action button ──
+      const curBtn = document.getElementById('deal' + dealId + '-btn' + step);
+      if (curBtn) {
+        curBtn.style.background = '#282828';
+        curBtn.style.color = '#6b7280';
+        curBtn.disabled = true;
+        curBtn.textContent = '✓ ' + dealStepLabels[step] + ' — Done';
+      }
+
+      // ── 4. Update progress track bar ──
+      const pct = [0, 0, 25, 50, 75, 100];
+      const track = document.getElementById('deal' + dealId + '-track');
+      if (track) track.style.width = pct[step] + '%';
+
+      // ── 5. Advance step counter ──
+      dealCurrentStep[dealId] = step + 1;
+
+      // ── 6. COMPLETED: all 5 steps done ──
+      if (step === 5) {
+        // Update status badge → Completed
+        const statusBadge = document.getElementById('deal' + dealId + '-status');
+        if (statusBadge) {
+          statusBadge.textContent = '✅ Completed';
+          statusBadge.style.background = 'rgba(29,185,84,0.15)';
+          statusBadge.style.color = '#1DB954';
+        }
+        // Update card left border
+        const dealCard = document.getElementById('deal' + dealId + '-card');
+        if (dealCard) dealCard.style.borderLeft = '3px solid #1DB954';
+        // Collapse action area to completion message
+        const actionArea = document.getElementById('deal' + dealId + '-actions');
+        if (actionArea) {
+          actionArea.innerHTML = '<div style="background:rgba(29,185,84,0.08);border:1px solid rgba(29,185,84,0.3);border-radius:0.75rem;padding:1rem 1.25rem;text-align:center;">'
+            + '<div style="font-size:1.375rem;margin-bottom:0.35rem;">🎉</div>'
+            + '<div style="font-weight:700;color:#1DB954;font-size:0.9375rem;">Deal Successfully Completed!</div>'
+            + '<div style="color:#9ca3af;font-size:0.8125rem;margin-top:0.25rem;">Registration done. Buyer & Seller have been notified.</div>'
+            + '</div>';
+        }
+        showToast('🎉 Deal ' + dealId + ' Complete! All steps done. Buyer notified!');
+        return;
+      }
+
+      // ── 7. Enable NEXT button ──
+      const nextBtn = document.getElementById('deal' + dealId + '-btn' + (step + 1));
+      if (nextBtn) {
+        if (dealId === 2 && step + 1 === 2) {
+          // Step 2 of deal 2 → doc verify modal
+          nextBtn.style.background = '#eab308';
+          nextBtn.style.color = '#000';
+          nextBtn.disabled = false;
+          nextBtn.style.cursor = 'pointer';
+          nextBtn.textContent = '📄 Verify Documents';
+        } else {
+          nextBtn.style.background = '#f97316';
+          nextBtn.style.color = '#000';
+          nextBtn.disabled = false;
+          nextBtn.style.cursor = 'pointer';
+        }
+      }
+
+      // ── 8. Pulse orange on next step circle ──
+      const nextCircle = document.getElementById('deal' + dealId + '-step' + (step + 1));
+      if (nextCircle) {
+        nextCircle.style.background = '#f97316';
+        nextCircle.style.color = '#000';
+        nextCircle.textContent = '●';
+        nextCircle.style.border = 'none';
+        nextCircle.style.boxShadow = '0 0 0 4px rgba(249,115,22,0.2)';
+      }
+
+      showToast('✅ ' + dealStepLabels[step] + ' marked done! Buyer tracking updated.');
+    }
+
+    // ---- Buyer Request Accept / Decline ----
+    window.buyerRequestData = {
+      1: { initials: 'AK', avatarBg: '#f97316', avatarColor: '#000', name: 'Arjun Kumar', property: '3 BHK Apartment • Gachibowli', statusLabel: 'New Buyer', statusColor: '#3b82f6', statusBg: 'rgba(59,130,246,0.12)', phone: '+91 90001 11222', email: 'arjun.kumar@gmail.com', area: 'Gachibowli, Hyderabad', budget: '₹55 – 70 Lakhs', note: 'Accepted from Buyer Requests. Looking for gated community with gym & parking near IT corridor.' },
+      2: { initials: 'SM', avatarBg: '#8b5cf6', avatarColor: '#fff', name: 'Sneha Mehta', property: '2 BHK / Villa • Jubilee Hills', statusLabel: 'New Buyer', statusColor: '#3b82f6', statusBg: 'rgba(59,130,246,0.12)', phone: '+91 90002 22333', email: 'sneha.mehta@outlook.com', area: 'Jubilee Hills, Hyderabad', budget: '₹90L – 1.2 Cr', note: 'Accepted from Buyer Requests. Investment buyer, needs 2 covered parking & 24/7 security.' },
+      3: { initials: 'VR', avatarBg: '#0ea5e9', avatarColor: '#fff', name: 'Vikram Rao', property: '4 BHK Villa • Kondapur', statusLabel: 'New Buyer', statusColor: '#3b82f6', statusBg: 'rgba(59,130,246,0.12)', phone: '+91 90003 33444', email: 'vikram.rao@yahoo.com', area: 'Kondapur, Hyderabad', budget: '₹1.5 – 2 Cr', note: 'Accepted from Buyer Requests. NRI buyer, needs vastu-compliant, west-facing villa near international schools.' }
+    };
+    function acceptBuyerReq(id, name) {
+      const badge = document.getElementById('breq-badge-' + id);
+      const actions = document.getElementById('breq-actions-' + id);
+      const card = document.getElementById('breq-card-' + id);
+
+      // Update request card UI
+      badge.textContent = '✓ Accepted';
+      badge.style.background = 'rgba(29,185,84,0.12)'; badge.style.color = '#1DB954';
+      card.style.borderColor = 'rgba(29,185,84,0.3)';
+      actions.innerHTML = '<span style="color:#1DB954;font-size:0.875rem;font-weight:600;">✅ ' + name + ' added to Current Buyers.</span>'
+        + ' <button onclick="switchAgentPage(\'current-buyers\')" style="background:none;border:none;color:#1DB954;font-size:0.875rem;font-weight:600;cursor:pointer;text-decoration:underline;">View in Current Buyers →</button>';
+
+      const d = buyerRequestData[id]; if (!d) return;
+
+      // Register in buyerContactData so Contact modal works
+      const key = 'req' + id;
+      buyerContactData[key] = { initials: d.initials, avatarBg: d.avatarBg, avatarColor: d.avatarColor, name: d.name, statusText: d.statusLabel, statusColor: d.statusColor, phone: d.phone, email: d.email, area: d.area, budget: d.budget, note: d.note };
+
+      // Build and prepend new card to Current Buyers list
+      const container = document.querySelector('[data-section="current-buyers"] > div:last-child');
+      const newCard = document.createElement('div');
+      newCard.style.cssText = 'background:#1a1a1a;border-radius:0.75rem;border:1px solid rgba(59,130,246,0.3);padding:1.5rem;margin-bottom:1rem;';
+      newCard.innerHTML = `
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <div style="width:3rem;height:3rem;border-radius:9999px;background:${d.avatarBg};display:flex;align-items:center;justify-content:center;font-weight:700;color:${d.avatarColor};">${d.initials}</div>
+      <div style="flex:1;"><h3 style="font-weight:600;margin-bottom:0.1rem;">${d.name}</h3><p style="color:#9ca3af;font-size:0.8125rem;">${d.property}</p></div>
+      <span style="background:${d.statusBg};color:${d.statusColor};padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:600;">${d.statusLabel}</span>
+    </div>
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="switchAgentPage('schedule')" style="background:#1DB954;color:#000;padding:0.45rem 1rem;border-radius:0.5rem;border:none;font-weight:600;cursor:pointer;font-size:0.8125rem;">View Visits</button>
+      <button onclick="openBuyerContact('${key}')" style="background:#282828;color:#fff;padding:0.45rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.8125rem;">📞 Contact</button>
+    </div>`;
+      container.prepend(newCard);
+
+      showToast('✅ ' + name + ' added to Current Buyers!');
+    }
+    function declineBuyerReq(id) {
+      const badge = document.getElementById('breq-badge-' + id);
+      const actions = document.getElementById('breq-actions-' + id);
+      const card = document.getElementById('breq-card-' + id);
+      badge.textContent = '✕ Declined'; badge.style.background = 'rgba(239,68,68,0.12)'; badge.style.color = '#ef4444';
+      card.style.borderColor = 'rgba(239,68,68,0.3)'; card.style.opacity = '0.6';
+      actions.innerHTML = '<span style="color:#9ca3af;font-size:0.875rem;">Request declined.</span>';
+      showToast('Buyer request declined.');
+    }
+
+    // ---- Property Details Modal ----
+    const propertyData = {
+      sp1: {
+        title: 'Luxury Villa with Garden',
+        location: '📍 Jubilee Hills, Hyderabad &nbsp;•&nbsp; Seller: Sarah Parker',
+        price: '₹1,25,00,000',
+        status: 'Active', statusColor: '#1DB954', statusBg: 'rgba(29,185,84,0.12)',
+        details: [{ k: 'Type', v: 'Villa' }, { k: 'BHK', v: '4 BHK' }, { k: 'Area', v: '3,200 sq ft' }, { k: 'Floor', v: 'G + 2' }, { k: 'Facing', v: 'East' }, { k: 'Age', v: '2 Years' }],
+        desc: 'A premium villa featuring a lush private garden, Italian marble flooring, modular kitchen, and a rooftop terrace with panoramic city views. Located in one of Hyderabad\'s most sought-after localities with close proximity to top schools and hospitals.',
+        amenities: ['Swimming Pool', 'Gym', '24/7 Security', 'Power Backup', 'Covered Parking (2)', 'Garden', 'Clubhouse', 'CCTV', 'Intercom', 'Rainwater Harvesting']
+      },
+      sp2: {
+        title: 'Modern Studio Apartment',
+        location: '📍 Madhapur, Hyderabad &nbsp;•&nbsp; Seller: Sarah Parker',
+        price: '₹28,00,000',
+        status: 'Under Review', statusColor: '#eab308', statusBg: 'rgba(234,179,8,0.12)',
+        details: [{ k: 'Type', v: 'Apartment' }, { k: 'BHK', v: '1 BHK' }, { k: 'Area', v: '650 sq ft' }, { k: 'Floor', v: '7th' }, { k: 'Facing', v: 'West' }, { k: 'Age', v: 'New' }],
+        desc: 'Compact and modern studio apartment perfect for working professionals. Fully furnished with modular kitchen and smart home features. Close to Hitech City metro station and major IT parks.',
+        amenities: ['24/7 Security', 'Power Backup', 'Lift', 'CCTV', '1 Parking Slot', 'Gym', 'Rooftop Lounge']
+      },
+      rk1: {
+        title: 'Modern Downtown Apartment',
+        location: '📍 Banjara Hills, Hyderabad &nbsp;•&nbsp; Seller: Raj Kapoor',
+        price: '₹45,00,000',
+        status: 'Active', statusColor: '#1DB954', statusBg: 'rgba(29,185,84,0.12)',
+        details: [{ k: 'Type', v: 'Apartment' }, { k: 'BHK', v: '3 BHK' }, { k: 'Area', v: '1,800 sq ft' }, { k: 'Floor', v: '4th' }, { k: 'Facing', v: 'North' }, { k: 'Age', v: '5 Years' }],
+        desc: 'Spacious 3 BHK apartment in the heart of Banjara Hills. Features a large living area, premium fittings, and a semi-furnished kitchen. Walking distance to shopping malls, restaurants, and public transport.',
+        amenities: ['24/7 Security', 'Power Backup', 'Covered Parking', 'Lift', 'CCTV', 'Children Play Area', 'Clubhouse']
+      }
+    };
+    function openPropertyModal(key) {
+      const d = propertyData[key]; if (!d) return;
+      document.getElementById('pm-title').textContent = d.title;
+      document.getElementById('pm-location').innerHTML = d.location;
+      document.getElementById('pm-price').textContent = d.price;
+      const st = document.getElementById('pm-status');
+      st.textContent = d.status; st.style.background = d.statusBg; st.style.color = d.statusColor;
+      document.getElementById('pm-details').innerHTML = d.details.map(x =>
+        `<div style="background:#282828;border-radius:0.5rem;padding:0.75rem;text-align:center;"><div style="font-size:0.7rem;color:#9ca3af;margin-bottom:0.25rem;">${x.k}</div><div style="font-weight:600;font-size:0.875rem;">${x.v}</div></div>`
+      ).join('');
+      document.getElementById('pm-desc').textContent = d.desc;
+      document.getElementById('pm-amenities').innerHTML = d.amenities.map(a =>
+        `<span style="background:#282828;color:#9ca3af;padding:0.3rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;">${a}</span>`
+      ).join('');
+      document.getElementById('property-modal').style.display = 'flex';
+    }
+    function closePropertyModal() {
+      document.getElementById('property-modal').style.display = 'none';
+    }
+
+    // ---- Seller Contact Modal ----
+    const sellerContactData = {
+      sp: {
+        initials: 'SP', avatarBg: '#f97316', avatarColor: '#000',
+        name: 'Sarah Parker',
+        role: 'Seller · Active since Jan 2026',
+        phone: '+91 98765 43210',
+        email: 'sarah.parker@email.com',
+        listings: '2 Active (Luxury Villa + Studio Apartment)',
+        rera: 'RERA-SELL-HYD-2024-0456',
+        note: 'Motivated seller. Luxury Villa has had 42 inquiries — good candidate for closing. Follow up on Madhapur studio pricing; she may consider a 5% reduction.'
+      },
+      rk: {
+        initials: 'RK', avatarBg: '#3b82f6', avatarColor: '#fff',
+        name: 'Raj Kapoor',
+        role: 'Seller · Active since Feb 2026',
+        phone: '+91 97654 32109',
+        email: 'raj.kapoor@email.com',
+        listings: '1 Active (Modern Downtown Apartment)',
+        rera: 'RERA-SELL-HYD-2024-0789',
+        note: 'Flexible on pricing for quick sale. Has a buyer shortlisted (John Doe). Coordinate doc verification call this week.'
+      }
+    };
+    function openSellerContact(key) {
+      const d = sellerContactData[key]; if (!d) return;
+      const av = document.getElementById('scm-avatar');
+      av.textContent = d.initials; av.style.background = d.avatarBg; av.style.color = d.avatarColor;
+      document.getElementById('scm-name').textContent = d.name;
+      document.getElementById('scm-role').textContent = d.role;
+      document.getElementById('scm-phone').textContent = d.phone;
+      document.getElementById('scm-email').textContent = d.email;
+      document.getElementById('scm-listings').textContent = d.listings;
+      document.getElementById('scm-rera').textContent = d.rera;
+      document.getElementById('scm-note').textContent = d.note;
+      const btn = document.getElementById('scm-call-btn');
+      btn.onclick = () => showToast('Calling ' + d.name + ' at ' + d.phone + '...');
+      document.getElementById('seller-contact-modal').style.display = 'flex';
+    }
+    function closeSellerContact() {
+      document.getElementById('seller-contact-modal').style.display = 'none';
+    }
+
+    // ---- Edit Profile ----
+    function openEditProfile() {
+      document.getElementById('edit-profile-modal').style.display = 'flex';
+    }
+    function closeEditProfile() {
+      document.getElementById('edit-profile-modal').style.display = 'none';
+    }
+    // ---- Inline Profile Save/Cancel ----
+    function saveProfileInline() {
+      if (typeof saveAgentProfile === 'function') {
+        saveAgentProfile();
+      } else {
+        showToast('Error: Agent CRUD script not loaded');
+      }
+    }
+    function cancelProfileEdit() {
+      if (typeof loadAgentProfile === 'function') {
+        loadAgentProfile();
+        showToast('Changes discarded.');
+      }
+    }
+  </script>
+  <script src="agent-crud.js"></script>
+  <script src="form-validation.js"></script>
+  <script src="tab-persistence.js"></script>
+</body>
+
+</html>

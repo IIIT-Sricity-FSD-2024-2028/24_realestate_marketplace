@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>truEstate - Premium Real Estate Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page">
+        <!-- Header -->
+        <header style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); background-color: #000000;">
+            <div
+                style="max-width: 80rem; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; padding-top: 1.5rem; padding-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="background-color: #1DB954; padding: 0.625rem; border-radius: 0.75rem;">
+                        <svg style="width: 1.5rem; height: 1.5rem; color: #000000;" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 1.125rem; font-weight: 700; color: #ffffff;">truEstate</h1>
+                        <p style="font-size: 0.75rem; color: #9ca3af;">Premium Real Estate Platform</p>
+                    </div>
+                </div>
+                <button onclick="showAuth()"
+                    style="background-color: #1DB954; color: #000000; font-weight: 600; padding-left: 1.5rem; padding-right: 1.5rem; padding-top: 0.625rem; padding-bottom: 0.625rem; border-radius: 0.5rem; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer;">
+                    <span>Login / Sign Up</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section
+            style="max-width: 80rem; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; padding-top: 4rem; padding-bottom: 4rem;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2 style="font-size: 3rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">
+                    Welcome to <span style="color: #1DB954;">truEstate</span>
+                </h2>
+                <p style="color: #9ca3af; font-size: 1.125rem; margin-bottom: 2rem;">
+                    Find your dream property from thousands of verified listings
+                </p>
+
+                <!-- Search Bar -->
+                <div
+                    style="max-width: 56rem; margin: 0 auto; background-color: #1a1a1a; border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">BUY
+                                / RENT</label>
+                            <select id="filter-buyrent"
+                                style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;">
+                                <option>Buy</option>
+                                <option>Rent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">LOCATION</label>
+                            <select id="filter-location"
+                                style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;">
+                                <option>All Locations</option>
+                                <option>Banjara Hills</option>
+                                <option>Jubilee Hills</option>
+                                <option>HITEC City</option>
+                                <option>Gachibowli</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">PROPERTY
+                                TYPE</label>
+                            <select id="filter-type"
+                                style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;">
+                                <option>All Types</option>
+                                <option>Apartment</option>
+                                <option>Villa</option>
+                                <option>Penthouse</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">BUDGET</label>
+                            <select id="filter-budget"
+                                style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;">
+                                <option>All Prices</option>
+                                <option>50L - 1Cr</option>
+                                <option>1Cr - 2Cr</option>
+                                <option>2Cr - 5Cr</option>
+                                <option>5Cr+</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="searchProperties()"
+                        style="width: 100%; background-color: #1DB954; color: #000000; font-weight: 600; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; transition: colors 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border: none; cursor: pointer;">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                        Search Properties
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 48rem; margin: 0 auto 4rem;">
+                <div
+                    style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">10K+</div>
+                    <div style="color: #9ca3af;">Properties</div>
+                </div>
+                <div
+                    style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">50K+</div>
+                    <div style="color: #9ca3af;">Happy Clients</div>
+                </div>
+                <div
+                    style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">2K+</div>
+                    <div style="color: #9ca3af;">Expert Agents</div>
+                </div>
+            </div>
+
+            <!-- Featured Properties -->
+            <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                    <h3 id="properties-heading" style="font-size: 1.875rem; font-weight: 700; color: #ffffff;">Featured
+                        Properties</h3>
+                    <button onclick="resetFilters()" id="reset-filters-btn"
+                        style="color: #1DB954; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; display: none;">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <polyline points="1 4 1 10 7 10" />
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                        </svg>
+                        Show All
+                    </button>
+                </div>
+
+                <div id="property-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <!-- Properties rendered dynamically by JS -->
+                </div>
+
+                <!-- No results message -->
+                <div id="no-results" style="display: none; text-align: center; padding: 3rem 1rem;">
+                    <svg style="width: 3rem; height: 3rem; color: #9ca3af; margin: 0 auto 1rem;" fill="none"
+                        stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                    </svg>
+                    <h4 style="color: #ffffff; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">No
+                        properties found</h4>
+                    <p style="color: #9ca3af; margin-bottom: 1rem;">Try adjusting your search filters</p>
+                    <button onclick="resetFilters()"
+                        style="background-color: #1DB954; color: #000000; padding: 0.625rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer;">Reset
+                        Filters</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="background-color: #0a0a0a; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div
+                style="max-width: 80rem; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; padding-top: 3rem; padding-bottom: 3rem;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-bottom: 2rem;">
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">About truEstate</h4>
+                        <p style="color: #9ca3af; font-size: 0.875rem; line-height: 1.6; margin-bottom: 0.75rem;">
+                            An innovative platform dedicated to property buyers and sellers.
+                            Property search made easy with advanced filters and verified listings.
+                        </p>
+                        <button
+                            style="color: #1DB954; font-size: 0.875rem; font-weight: 600; background: none; border: none; cursor: pointer; padding: 0;">
+                            Read more
+                        </button>
+                        <div style="margin-top: 1.5rem;">
+                            <h5 style="color: #ffffff; font-weight: 600; margin-bottom: 0.75rem; font-size: 0.875rem;">
+                                Follow us</h5>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <a href="#"
+                                    style="width: 2rem; height: 2rem; background-color: #3b5998; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                    </svg>
+                                </a>
+                                <a href="#"
+                                    style="width: 2rem; height: 2rem; background-color: #1DA1F2; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+                                    </svg>
+                                </a>
+                                <a href="#"
+                                    style="width: 2rem; height: 2rem; background-color: #0077b5; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                        <rect x="2" y="9" width="4" height="12" />
+                                        <circle cx="4" cy="4" r="2" />
+                                    </svg>
+                                </a>
+                                <a href="#"
+                                    style="width: 2rem; height: 2rem; background-color: #FF0000; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                                    </svg>
+                                </a>
+                                <a href="#"
+                                    style="width: 2rem; height: 2rem; background: linear-gradient(to top right, #FD5949, #D6249F, #285AEB); border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">Properties in India</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Mumbai</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Delhi</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Bangalore</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Chennai</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Pune</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Hyderabad</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Kolkata</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">New Projects in India</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Delhi</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Mumbai</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Bangalore</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Pune</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Gurgaon</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Chennai</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Hyderabad</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">Property Services</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">PG/Co-living</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Paying
+                                Guest</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Home
+                                Loans</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                Management</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Legal
+                                Services</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Interior
+                                Design</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Vastu
+                                Consultation</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.5rem;">
+                    <div
+                        style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+                        <a href="#"
+                            style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Sitemap</a>
+                        <span style="color: #666;">|</span>
+                        <a href="#"
+                            style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Terms
+                            & Conditions</a>
+                        <span style="color: #666;">|</span>
+                        <a href="#"
+                            style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Privacy
+                            Policy</a>
+                        <span style="color: #666;">|</span>
+                        <a href="#"
+                            style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Help
+                            Center</a>
+                        <span style="color: #666;">|</span>
+                        <a href="#"
+                            style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Feedback</a>
+                    </div>
+                    <p style="text-align: center; color: #777; font-size: 0.75rem;">
+                        All rights reserved © 2026 truEstate.com. All trademarks, logos and names are properties of
+                        their respective owners.
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Auth Page -->
+    <div id="auth-page" style="display: none;">
+        <div style="min-height: 100vh; display: flex; position: relative;">
+            <button onclick="showLanding()"
+                style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 50; display: flex; align-items: center; gap: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; background-color: #282828; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; color: #ffffff; transition: background-color 0.3s; cursor: pointer;">
+                <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                </svg>
+                <span style="font-size: 0.875rem; font-weight: 500;">Back</span>
+            </button>
+
+            <!-- Left Side -->
+            <div
+                style="width: 50%; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 5rem;">
+                <div style="max-width: 36rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem;">
+                        <div style="background-color: #1DB954; padding: 0.75rem; border-radius: 0.75rem;">
+                            <svg style="width: 2rem; height: 2rem; color: #000000;" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                <polyline points="9 22 9 12 15 12 15 22" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 style="font-size: 1.25rem; font-weight: 700; color: #ffffff;">truEstate</h1>
+                            <p style="font-size: 0.75rem; color: #9ca3af;">Premium Real Estate Platform</p>
+                        </div>
+                    </div>
+                    <h2
+                        style="font-size: 3rem; font-weight: 700; color: #ffffff; margin-bottom: 1.5rem; line-height: 1.2;">
+                        Find Your Dream Property <span style="color: #1DB954;">With Confidence</span>
+                    </h2>
+                    <p style="color: #9ca3af; font-size: 1.125rem; margin-bottom: 3rem;">
+                        Join thousands of buyers, sellers, and agents who trust truEstate for their real estate needs.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                        <div>
+                            <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                10K+</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Properties</div>
+                        </div>
+                        <div>
+                            <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                50K+</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Happy Clients</div>
+                        </div>
+                        <div>
+                            <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                2K+</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Expert Agents</div>
+                        </div>
+                    </div>
+                    <p style="color: #777; font-size: 0.875rem; margin-top: 3rem;">Trusted by industry leaders since
+                        2020</p>
+                </div>
+            </div>
+
+            <!-- Right Side -->
+            <div
+                style="width: 50%; background-color: #2a2a2a; display: flex; align-items: center; justify-content: center; padding: 3rem;">
+                <div style="width: 100%; max-width: 28rem;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.875rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">
+                            Welcome to truEstate</h3>
+                        <p style="color: #9ca3af;">Your journey to finding the perfect property starts here</p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
+                        <button id="login-tab" onclick="switchTab('login')"
+                            style="flex: 1; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s; cursor: pointer; background-color: #1DB954; color: #000000; border: none;">
+                            Login
+                        </button>
+                        <button id="signup-tab" onclick="switchTab('signup')"
+                            style="flex: 1; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s; cursor: pointer; background-color: #1a1a1a; color: #9ca3af; border: none;">
+                            Sign Up
+                        </button>
+                    </div>
+
+                    <form style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <h4 id="form-heading" style="color: #ffffff; font-weight: 600; margin-bottom: 0.5rem;">Login
+                            with your email address</h4>
+
+                        <div id="name-field" style="display: none;">
+                            <label
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Full
+                                Name</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;"
+                                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <input type="text" placeholder="Enter your full name"
+                                    style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Email</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;"
+                                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                    <polyline points="22,6 12,13 2,6" />
+                                </svg>
+                                <input type="email" placeholder="Enter your email address"
+                                    style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Password</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;"
+                                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                                <input type="password" id="password" placeholder="Enter your password"
+                                    style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 3rem; color: #ffffff;">
+                                <button type="button" onclick="togglePassword()"
+                                    style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; background: none; border: none; cursor: pointer; padding: 0;">
+                                    <svg id="eye-icon" style="width: 1.25rem; height: 1.25rem;" fill="none"
+                                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="confirm-password-field" style="display: none;">
+                            <label
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Confirm
+                                Password</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;"
+                                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                                <input type="password" placeholder="Confirm your password"
+                                    style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.75rem;">Login
+                                as</label>
+                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+                                <button type="button" class="role-btn" data-role="buyer"
+                                    onclick="selectRole(this, 'buyer'); window._selectedRole='buyer';"
+                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #1DB954; background-color: rgba(29, 185, 84, 0.1); color: #1DB954; transition: all 0.3s; cursor: pointer;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Buyer</span>
+                                </button>
+                                <button type="button" class="role-btn" data-role="seller"
+                                    onclick="selectRole(this, 'seller'); window._selectedRole='seller';"
+                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        <polyline points="9 22 9 12 15 12 15 22" />
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Seller</span>
+                                </button>
+                                <button type="button" class="role-btn" data-role="agent"
+                                    onclick="selectRole(this, 'agent'); window._selectedRole='agent';"
+                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <polyline points="16 11 18 13 22 9" />
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Agent</span>
+                                </button>
+                                <button type="button" class="role-btn" data-role="admin"
+                                    onclick="selectRole(this, 'admin'); window._selectedRole='admin';"
+                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Admin</span>
+                                </button>
+                                <button type="button" class="role-btn" data-role="superuser"
+                                    onclick="selectRole(this, 'superuser'); window._selectedRole='superuser';"
+                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer; text-align: center;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
+                                        stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Super User</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox"
+                                    style="width: 1rem; height: 1rem; border-radius: 0.25rem; border: 1px solid #444; background-color: #1a1a1a; cursor: pointer;">
+                                <span style="font-size: 0.875rem; color: #9ca3af;">Remember me</span>
+                            </label>
+                            <button id="forgot-link" type="button"
+                                style="font-size: 0.875rem; color: #1DB954; background: none; border: none; cursor: pointer; transition: color 0.3s;">
+                                Forgot password?
+                            </button>
+                        </div>
+
+                        <button type="submit" id="submit-btn"
+                            style="width: 100%; background-color: #1DB954; color: #000000; font-weight: 600; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; transition: background-color 0.3s; cursor: pointer; border: none;">
+                            Login
+                        </button>
+
+                        <p style="font-size: 0.75rem; text-align: center; color: #777;">
+                            By logging in, you agree to the
+                            <a href="#" style="color: #1DB954; transition: color 0.3s; text-decoration: none;">Terms of
+                                Use</a>
+                            and
+                            <a href="#" style="color: #1DB954; transition: color 0.3s; text-decoration: none;">Privacy
+                                Policy</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Details Modal -->
+    <div id="property-detail-modal"
+        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;">
+        <div id="property-detail-content"
+            style="background-color: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; max-width: 720px; width: 92%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <!-- Close button -->
+            <button onclick="closePropertyDetail()"
+                style="position: absolute; top: 1rem; right: 1rem; z-index: 10; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: none; color: #ffffff; width: 2.5rem; height: 2.5rem; border-radius: 9999px; cursor: pointer; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s;">✕</button>
+            <!-- Image -->
+            <div style="width: 100%; height: 22rem; overflow: hidden; border-radius: 1rem 1rem 0 0;">
+                <img id="pd-image" src="" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <!-- Details -->
+            <div style="padding: 2rem;">
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <h2 id="pd-name" style="font-size: 1.75rem; font-weight: 700; color: #ffffff;"></h2>
+                    <div
+                        style="display: flex; align-items: center; gap: 0.375rem; background-color: #282828; padding: 0.375rem 0.75rem; border-radius: 9999px;">
+                        <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                        <span id="pd-rating" style="color: #ffffff; font-size: 0.875rem; font-weight: 600;"></span>
+                    </div>
+                </div>
+                <div
+                    style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                    <svg style="width: 1.125rem; height: 1.125rem; color: #1DB954;" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span id="pd-location"></span>
+                </div>
+                <!-- Specs -->
+                <div
+                    style="display: flex; gap: 1.5rem; padding: 1.25rem; background-color: #282828; border-radius: 0.75rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        </svg>
+                        <span id="pd-beds" style="color: #ffffff; font-weight: 600;"></span>
+                        <span style="color: #9ca3af; font-size: 0.875rem;">Beds</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9" />
+                        </svg>
+                        <span id="pd-baths" style="color: #ffffff; font-weight: 600;"></span>
+                        <span style="color: #9ca3af; font-size: 0.875rem;">Baths</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                        </svg>
+                        <span id="pd-area" style="color: #ffffff; font-weight: 600;"></span>
+                    </div>
+                </div>
+                <!-- Description -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 0.75rem;">About this property</h4>
+                    <p id="pd-description" style="color: #9ca3af; font-size: 0.95rem; line-height: 1.7;"></p>
+                </div>
+                <!-- Price & CTA -->
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div>
+                        <span
+                            style="color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Price</span>
+                        <div id="pd-price" style="font-size: 2rem; font-weight: 700; color: #1DB954;"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button onclick="closePropertyDetail()"
+                            style="background-color: #282828; color: #ffffff; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.3s;">Close</button>
+                        <button onclick="closePropertyDetail(); showAuth();"
+                            style="background-color: #1DB954; color: #000000; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s;">
+                            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M3 3h18v18H3z" />
+                                <path d="M3 9h18" />
+                                <path d="M9 21V9" />
+                            </svg>
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="form-validation.js"></script>
+    <script>
+        // Property data for the featured properties
+        // ========== ALL PROPERTY DATA ==========
+        const allProperties = [
+            {
+                id: 1, name: 'Luxury Apartment', type: 'Apartment', locationArea: 'Banjara Hills',
+                location: 'Banjara Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1758448617677-2f8bebc56d9e?w=800',
+                rating: '4.8', beds: 3, baths: 2, area: '2,100 sqft',
+                price: '₹2.5 Cr', priceValue: 250,
+                description: 'Experience luxury living in the heart of Banjara Hills. This stunning 3-bedroom apartment features premium finishes, spacious rooms with ample natural light, a modern kitchen with high-end appliances, and a private balcony overlooking the city skyline. The gated community offers world-class amenities including a swimming pool, gym, clubhouse, and 24/7 security.'
+            },
+            {
+                id: 2, name: 'Modern Villa', type: 'Villa', locationArea: 'Jubilee Hills',
+                location: 'Jubilee Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1648147870253-c45f6f430528?w=800',
+                rating: '4.9', beds: 4, baths: 3, area: '3,500 sqft',
+                price: '₹5.2 Cr', priceValue: 520,
+                description: 'A masterpiece of modern architecture in the prestigious Jubilee Hills locality. This exquisite 4-bedroom villa boasts state-of-the-art interiors, a landscaped garden, private parking for 3 cars, and a rooftop terrace with panoramic views. Italian marble flooring, smart-home automation, and a designer modular kitchen.'
+            },
+            {
+                id: 3, name: 'Sunset Villa', type: 'Villa', locationArea: 'Gachibowli',
+                location: 'Gachibowli, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1772398539093-fc7b4a6b1bfc?w=800',
+                rating: '5.0', beds: 4, baths: 4, area: '2,800 sqft',
+                price: '₹3.8 Cr', priceValue: 380,
+                description: 'Nestled in the tech corridor of Gachibowli, this breathtaking villa offers a perfect blend of comfort and convenience. Featuring 4 luxurious bedrooms with attached bathrooms, a grand living area, a contemporary open kitchen, and a beautiful garden with a sit-out area.'
+            },
+            {
+                id: 4, name: 'Sky Penthouse', type: 'Penthouse', locationArea: 'HITEC City',
+                location: 'HITEC City, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+                rating: '4.7', beds: 3, baths: 3, area: '4,200 sqft',
+                price: '₹7.5 Cr', priceValue: 750,
+                description: 'An ultra-premium penthouse atop one of HITEC City\'s most iconic towers. Floor-to-ceiling windows offer 360-degree views. Features a private terrace pool, home office, designer interiors, and exclusive elevator access. Minutes from all major IT campuses.'
+            },
+            {
+                id: 5, name: 'Green Valley Apartment', type: 'Apartment', locationArea: 'Gachibowli',
+                location: 'Gachibowli, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+                rating: '4.5', beds: 2, baths: 2, area: '1,450 sqft',
+                price: '₹1.2 Cr', priceValue: 120,
+                description: 'A beautifully designed 2-bedroom apartment in a lush green gated community. Ideal for young professionals and small families. Features modern interiors, a kids play area, jogging track, swimming pool, and excellent connectivity to the IT corridor.'
+            },
+            {
+                id: 6, name: 'Royal Heritage Villa', type: 'Villa', locationArea: 'Banjara Hills',
+                location: 'Banjara Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+                rating: '4.9', beds: 5, baths: 5, area: '5,000 sqft',
+                price: '₹8.5 Cr', priceValue: 850,
+                description: 'An aristocratic villa in the heart of Banjara Hills with a blend of heritage architecture and modern luxury. Sprawling 5-bedroom layout with private garden, swimming pool, home theater, wine cellar, and staff quarters. The epitome of opulent living.'
+            },
+            {
+                id: 7, name: 'Tech Park Apartment', type: 'Apartment', locationArea: 'HITEC City',
+                location: 'HITEC City, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800',
+                rating: '4.3', beds: 2, baths: 1, area: '1,100 sqft',
+                price: '₹85 L', priceValue: 85,
+                description: 'A compact yet modern 2-bedroom apartment perfect for IT professionals. Walking distance to major tech parks. Features include a modular kitchen, gym access, covered parking, and 24/7 security. Great investment opportunity.'
+            },
+            {
+                id: 8, name: 'Jubilee Heights Penthouse', type: 'Penthouse', locationArea: 'Jubilee Hills',
+                location: 'Jubilee Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+                rating: '4.8', beds: 4, baths: 4, area: '3,800 sqft',
+                price: '₹6.8 Cr', priceValue: 680,
+                description: 'A spectacular duplex penthouse in Jubilee Hills with a private rooftop garden and infinity pool. Designed by an award-winning architect, it features marble flooring, imported fixtures, a chef\'s kitchen, and breathtaking views of Hussain Sagar lake.'
+            },
+            {
+                id: 9, name: 'Gachibowli Heights', type: 'Apartment', locationArea: 'Gachibowli',
+                location: 'Gachibowli, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+                rating: '4.6', beds: 3, baths: 2, area: '1,800 sqft',
+                price: '₹1.8 Cr', priceValue: 180,
+                description: 'A well-designed 3-bedroom apartment in the heart of Gachibowli. The gated community features a clubhouse, swimming pool, landscaped gardens, indoor games, and a jogging track. Close to international schools and hospitals.'
+            }
+        ];
+
+        // Build lookup for details modal
+        const featuredProperties = {};
+        allProperties.forEach(p => { featuredProperties[p.id] = p; });
+
+        // ========== RENDER PROPERTY CARDS ==========
+        function renderPropertyCards(properties) {
+            const grid = document.getElementById('property-grid');
+            const noResults = document.getElementById('no-results');
+            if (properties.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+            grid.innerHTML = properties.map(prop => `
+                <div onclick="showPropertyDetails(${prop.id})" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="${prop.image}" alt="${prop.name}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">${prop.rating}</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">${prop.type}</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">${prop.name}</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            ${prop.location}
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                                    <span>${prop.beds}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"/></svg>
+                                    <span>${prop.baths}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                                    <span>${prop.area}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">${prop.price}</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(${prop.id})" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========== SEARCH / FILTER ==========
+        function searchProperties() {
+            const location = document.getElementById('filter-location').value;
+            const type = document.getElementById('filter-type').value;
+            const budget = document.getElementById('filter-budget').value;
+
+            let filtered = allProperties.filter(prop => {
+                // Location filter
+                if (location !== 'All Locations' && prop.locationArea !== location) return false;
+                // Type filter
+                if (type !== 'All Types' && prop.type !== type) return false;
+                // Budget filter (priceValue is in Lakhs)
+                if (budget !== 'All Prices') {
+                    if (budget === '50L - 1Cr' && (prop.priceValue < 50 || prop.priceValue >= 100)) return false;
+                    if (budget === '1Cr - 2Cr' && (prop.priceValue < 100 || prop.priceValue >= 200)) return false;
+                    if (budget === '2Cr - 5Cr' && (prop.priceValue < 200 || prop.priceValue >= 500)) return false;
+                    if (budget === '5Cr+' && prop.priceValue < 500) return false;
+                }
+                return true;
+            });
+
+            renderPropertyCards(filtered);
+
+            // Update heading
+            const heading = document.getElementById('properties-heading');
+            const resetBtn = document.getElementById('reset-filters-btn');
+            if (location !== 'All Locations' || type !== 'All Types' || budget !== 'All Prices') {
+                heading.textContent = `Search Results (${filtered.length})`;
+                resetBtn.style.display = 'flex';
+            } else {
+                heading.textContent = 'Featured Properties';
+                resetBtn.style.display = 'none';
+            }
+
+            // Scroll to results
+            document.getElementById('property-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-location').value = 'All Locations';
+            document.getElementById('filter-type').value = 'All Types';
+            document.getElementById('filter-budget').value = 'All Prices';
+            document.getElementById('properties-heading').textContent = 'Featured Properties';
+            document.getElementById('reset-filters-btn').style.display = 'none';
+            renderPropertyCards(allProperties);
+        }
+
+        // ========== PROPERTY DETAIL MODAL ==========
+        function showPropertyDetails(id) {
+            const prop = featuredProperties[id];
+            if (!prop) return;
+            document.getElementById('pd-image').src = prop.image;
+            document.getElementById('pd-image').alt = prop.name;
+            document.getElementById('pd-name').textContent = prop.name;
+            document.getElementById('pd-location').textContent = prop.location;
+            document.getElementById('pd-rating').textContent = prop.rating;
+            document.getElementById('pd-beds').textContent = prop.beds;
+            document.getElementById('pd-baths').textContent = prop.baths;
+            document.getElementById('pd-area').textContent = prop.area;
+            document.getElementById('pd-price').textContent = prop.price;
+            document.getElementById('pd-description').textContent = prop.description;
+            const modal = document.getElementById('property-detail-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePropertyDetail() {
+            document.getElementById('property-detail-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on clicking outside content
+        document.getElementById('property-detail-modal').addEventListener('click', function (e) {
+            if (e.target === this) closePropertyDetail();
+        });
+
+        // --- NEW: Read Property from localStorage (The "Read" in CRUD) ---
+        try {
+            let localProps = JSON.parse(localStorage.getItem('properties')) || [];
+            localProps.forEach(lp => {
+                if (lp.status !== 'approved' && lp.status !== 'Verified') return;
+                let newProp = {
+                    id: lp.id,
+                    name: lp.name,
+                    type: lp.type || 'Apartment',
+                    locationArea: lp.location ? lp.location.split(',')[0] : 'Unknown',
+                    location: lp.location,
+                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80',
+                    rating: '4.5', beds: parseInt(lp.beds) || 2, baths: parseInt(lp.baths) || 2, area: `${lp.sqft || 1500} sqft`,
+                    price: `₹${lp.price}`,
+                    priceValue: parseInt((lp.price || '0').toString().replace(/,/g, '')) / 100000 || 0,
+                    description: 'A newly added property from the seller dashboard.'
+                };
+                allProperties.push(newProp);
+                featuredProperties[newProp.id] = newProp;
+            });
+        } catch (e) { console.error("Error loading properties from localStorage", e); }
+        // -----------------------------------------------------------------
+
+        // Render all properties on page load
+        renderPropertyCards(allProperties);
+
+        let selectedRole = 'buyer';
+
+        function showAuth() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('auth-page').style.display = 'block';
+            document.getElementById('auth-page').style.animation = 'fadeIn 0.3s ease';
+        }
+
+        function showLanding() {
+            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('landing-page').style.animation = 'fadeIn 0.3s ease';
+        }
+
+        let currentTab = 'login';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const nameField = document.getElementById('name-field');
+            const confirmPasswordField = document.getElementById('confirm-password-field');
+            const formHeading = document.getElementById('form-heading');
+            const submitBtn = document.getElementById('submit-btn');
+            const forgotLink = document.getElementById('forgot-link');
+
+            if (tab === 'login') {
+                loginTab.style.backgroundColor = '#1DB954';
+                loginTab.style.color = '#000000';
+                signupTab.style.backgroundColor = '#1a1a1a';
+                signupTab.style.color = '#9ca3af';
+                nameField.style.display = 'none';
+                confirmPasswordField.style.display = 'none';
+                formHeading.textContent = 'Login with your email address';
+                submitBtn.textContent = 'Login';
+                forgotLink.style.display = 'block';
+            } else {
+                signupTab.style.backgroundColor = '#1DB954';
+                signupTab.style.color = '#000000';
+                loginTab.style.backgroundColor = '#1a1a1a';
+                loginTab.style.color = '#9ca3af';
+                nameField.style.display = 'block';
+                confirmPasswordField.style.display = 'block';
+                formHeading.textContent = 'Create your account';
+                submitBtn.textContent = 'Sign Up';
+                forgotLink.style.display = 'none';
+            }
+        }
+
+        function selectRole(element, role) {
+            selectedRole = role;
+            const roleBtns = document.querySelectorAll('.role-btn');
+            roleBtns.forEach(btn => {
+                btn.style.border = '2px solid #444';
+                btn.style.backgroundColor = '#1a1a1a';
+                btn.style.color = '#9ca3af';
+            });
+            element.style.border = '2px solid #1DB954';
+            element.style.backgroundColor = 'rgba(29, 185, 84, 0.1)';
+            element.style.color = '#1DB954';
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            // ── Run friendly validation first (shows toasts, returns false on failure) ──
+            if (typeof tvValidateLoginForm === 'function' && !tvValidateLoginForm()) return;
+
+            const form = event.target;
+            const emailInput = form.querySelector('input[type="email"]');
+            const passwordInput = form.querySelector('input[type="password"]');
+            const nameInput = form.querySelector('#name-field input');
+            const confirmInput = form.querySelector('#confirm-password-field input');
+
+
+            // ── Field-level validation with specific messages ──
+            const emailVal    = emailInput ? emailInput.value.trim() : '';
+            const passwordVal = document.getElementById('password') ? document.getElementById('password').value : '';
+
+            if (!emailVal) {
+                if (emailInput) emailInput.style.borderColor = '#ef4444';
+                showToast('📧 Please enter your email address', 'error');
+                return;
+            }
+            if (!validateEmail(emailVal)) {
+                if (emailInput) emailInput.style.borderColor = '#ef4444';
+                showToast('📧 Please enter a valid email address', 'error');
+                return;
+            }
+            if (!passwordVal) {
+                const pwEl = document.getElementById('password');
+                if (pwEl) pwEl.style.borderColor = '#ef4444';
+                showToast('🔒 Please enter your password', 'error');
+                return;
+            }
+            if (emailInput) emailInput.style.borderColor = '';
+            const pwEl = document.getElementById('password');
+            if (pwEl) pwEl.style.borderColor = '';
+
+            // ── Fixed credentials for privileged roles (Admin / Agent / Super User) ──
+            const FIXED_CREDENTIALS = {
+                admin:     { email: 'admin@gmail.com',     password: '123456789' },
+                agent:     { email: 'agent@gmail.com',     password: '123456789' },
+                superuser: { email: 'superuser@gmail.com', password: '123456789' },
+            };
+
+            if (FIXED_CREDENTIALS[selectedRole]) {
+                const creds      = FIXED_CREDENTIALS[selectedRole];
+                const enteredEmail    = emailInput.value.trim().toLowerCase();
+                const enteredPassword = passwordInput.value;
+
+                if (enteredEmail !== creds.email || enteredPassword !== creds.password) {
+                    // Show which email is expected so the user knows what to use
+                    showToast('❌ Invalid credentials', 'error');
+                    emailInput.style.borderColor    = '#ef4444';
+                    passwordInput.style.borderColor = '#ef4444';
+                    return;
+                }
+            }
+
+            // Store user session
+            const roleNames = { buyer: 'James Morgan', seller: 'Sarah Parker', agent: 'Mike Johnson', admin: 'Admin User', superuser: 'Super Admin' };
+
+            let regUser = {
+                id: 'U' + Math.floor(Math.random() * 1000000),
+                name: currentTab === 'signup' && nameInput ? nameInput.value : roleNames[selectedRole] || 'System User',
+                email: emailInput.value,
+                role: selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1),
+                status: 'Active'
+            };
+
+            TruEstate.setUser({
+                name: regUser.name,
+                email: regUser.email,
+                role: selectedRole
+            });
+
+            // ── Sync into globalUsers so Super Admin always sees every account ──
+            try {
+                let gUsers = JSON.parse(localStorage.getItem('globalUsers')) || [];
+                if (currentTab === 'signup') {
+                    // New registration → always add a fresh entry (each account is unique)
+                    // Avoid exact duplicate (same email + role already exists)
+                    const duplicate = gUsers.find(u => u.email === regUser.email && u.role === regUser.role);
+                    if (!duplicate) {
+                        gUsers.push(regUser);
+                    }
+                } else {
+                    // Login → update the existing record matched by email, or by role as fallback
+                    const byEmail = gUsers.find(u => u.email === regUser.email && u.role === regUser.role);
+                    if (byEmail) {
+                        byEmail.name   = regUser.name;
+                        byEmail.status = 'Active';
+                    } else {
+                        // First login with this email — upsert by role as a convenience
+                        const byRole = gUsers.find(u => u.role === regUser.role && (u.email === 'buyer@truestate.com' || u.email === 'seller@truestate.com' || u.email === 'agent@truestate.com' || u.email === 'admin@truestate.com'));
+                        if (byRole) {
+                            byRole.email = regUser.email;
+                            byRole.name  = regUser.name;
+                        } else {
+                            gUsers.push(regUser);
+                        }
+                    }
+                }
+                localStorage.setItem('globalUsers', JSON.stringify(gUsers));
+            } catch (_) {}
+
+
+            showToast(currentTab === 'login' ? 'Login successful! Redirecting...' : 'Account created! Redirecting...', 'success');
+
+            // Redirect based on selected role
+            setTimeout(() => {
+                const dashboards = {
+                    buyer: 'Buyer Dashboard - truEstate.html',
+                    seller: 'seller-dashboard.html',
+                    agent: 'agent-dashboard.html',
+                    admin: 'admin-dashboard.html',
+                    superuser: 'superuser-dashboard.html'
+                };
+                window.location.href = dashboards[selectedRole];
+            }, 800);
+        }
+
+        // Landing page search filter
+        function filterProperties() {
+            showAuth();
+        }
+
+        // Add form submit handler when page loads
+        window.addEventListener('DOMContentLoaded', function () {
+            const authForm = document.querySelector('#auth-page form');
+            if (authForm) {
+                authForm.addEventListener('submit', handleLogin);
+            }
+
+            // Reset border color on input focus
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.style.borderColor = '#1DB954';
+                });
+                input.addEventListener('blur', function () {
+                    if (this.value.trim()) this.style.borderColor = '#444';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
