@@ -29,9 +29,7 @@ By integrating all stakeholders into a single structured platform, the system im
 
 1. Buyer  
 2. Seller  
-3. Agent  
-4. Admin  
-
+3. Admin 
 
 ---
 
@@ -64,23 +62,17 @@ By integrating all stakeholders into a single structured platform, the system im
 
 ---
 
-### 3. Agent
+3. Admin/Agent
 
-- Coordinate site visits between buyer and seller
-- Confirm visit schedules
-- Facilitate negotiation discussions
-- Assist in document collection
-- Support transaction processing
-- Notify stakeholders about updates
-
----
-
-### 4. Admin
-
-- Review newly submitted property listings
-- Approve or reject listings
-- Monitor platform activities
-- Maintain transaction and verification logs
-- Handle suspicious or invalid activities
-- Ensure data integrity and compliance
-
+* Review newly submitted property listings
+* Approve or reject listings
+* Monitor platform activities
+* Maintain transaction and verification logs
+* Handle suspicious or invalid activities
+* Ensure data integrity and compliance
+* Coordinate site visits between buyers and sellers
+* Confirm visit schedules
+* Facilitate negotiation discussions
+* Assist in document collection
+* Support transaction processing
+* Notify stakeholders about updates
