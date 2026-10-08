@@ -5,6 +5,6 @@ export const ROLES_KEY = 'roles';
 
 /**
  * Attach required roles to a route or controller.
- * @example @Roles(Role.ADMIN, Role.AGENT)
+ * @example @Roles(Role.ADMIN, Role.USER)
  */
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);

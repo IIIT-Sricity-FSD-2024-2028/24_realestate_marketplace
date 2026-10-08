@@ -126,7 +126,7 @@
                 <div
                     style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
                     <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">2K+</div>
-                    <div style="color: #9ca3af;">Expert Agents</div>
+                    <div style="color: #9ca3af;">Property Experts</div>
                 </div>
             </div>
 
@@ -165,6 +165,65 @@
                         style="background-color: #1DB954; color: #000000; padding: 0.625rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer;">Reset
                         Filters</button>
                 </div>
+            </div>
+        </section>
+
+        <!-- Live Property Listings — real data from the NestJS + MongoDB backend -->
+        <section style="max-width: 80rem; margin: 0 auto; padding: 0 2rem 4rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="font-size: 1.875rem; font-weight: 700; color: #ffffff; margin: 0;">Live Listings</h3>
+                    <p style="color: #9ca3af; font-size: 0.875rem; margin: 0.25rem 0 0;">Fetched in real time from the database — filter by city, type, and price.</p>
+                </div>
+            </div>
+
+            <!-- Server-side filters -->
+            <div style="background-color: #1a1a1a; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; align-items: end;">
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">City</label>
+                    <input id="live-filter-city" type="text" placeholder="e.g. Chennai"
+                        style="width:100%;box-sizing:border-box;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Type</label>
+                    <select id="live-filter-type" style="width:100%;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;">
+                        <option value="">All Types</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="plot">Plot</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="penthouse">Penthouse</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Min Price (₹)</label>
+                    <input id="live-filter-minprice" type="number" min="0" placeholder="0"
+                        style="width:100%;box-sizing:border-box;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Max Price (₹)</label>
+                    <input id="live-filter-maxprice" type="number" min="0" placeholder="Any"
+                        style="width:100%;box-sizing:border-box;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;">
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                    <button onclick="loadLiveProperties(1)" style="flex:1;background-color:#1DB954;color:#000;font-weight:600;padding:0.65rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">Search</button>
+                    <button onclick="resetLiveFilters()" style="background-color:#282828;color:#fff;font-weight:600;padding:0.65rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">Reset</button>
+                </div>
+            </div>
+
+            <div id="live-property-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                <!-- Live properties rendered dynamically by JS -->
+            </div>
+            <div id="live-property-empty" style="display:none;text-align:center;padding:2rem;color:#9ca3af;">No properties match those filters yet.</div>
+            <div id="live-property-error" style="display:none;text-align:center;padding:2rem;color:#ef4444;">Couldn't reach the API. Is the backend running?</div>
+
+            <!-- Pagination -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem;">
+                <button onclick="loadLiveProperties(livePropertiesPage - 1)" id="live-prev-btn"
+                    style="background-color:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">← Prev</button>
+                <span id="live-page-indicator" style="color:#9ca3af;font-size:0.875rem;">Page 1</span>
+                <button onclick="loadLiveProperties(livePropertiesPage + 1)" id="live-next-btn"
+                    style="background-color:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">Next →</button>
             </div>
         </section>
 
@@ -238,25 +297,16 @@
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
-                                in Mumbai</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
-                                in Delhi</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
-                                in Bangalore</a>
+                                in Hyderabad</a>
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
                                 in Chennai</a>
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
-                                in Pune</a>
+                                in Bangalore</a>
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
-                                in Hyderabad</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
-                                in Kolkata</a>
+                                in Kochi</a>
                         </div>
                     </div>
                     <div>
@@ -264,25 +314,16 @@
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
-                                Projects in Delhi</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
-                                Projects in Mumbai</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
-                                Projects in Bangalore</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
-                                Projects in Pune</a>
-                            <a href="#"
-                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
-                                Projects in Gurgaon</a>
+                                Projects in Hyderabad</a>
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
                                 Projects in Chennai</a>
                             <a href="#"
                                 style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
-                                Projects in Hyderabad</a>
+                                Projects in Bangalore</a>
+                            <a href="#"
+                                style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Kochi</a>
                         </div>
                     </div>
                     <div>
@@ -376,7 +417,7 @@
                         Find Your Dream Property <span style="color: #1DB954;">With Confidence</span>
                     </h2>
                     <p style="color: #9ca3af; font-size: 1.125rem; margin-bottom: 3rem;">
-                        Join thousands of buyers, sellers, and agents who trust truEstate for their real estate needs.
+                        Join thousands of buyers and sellers who trust truEstate for their real estate needs.
                     </p>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
                         <div>
@@ -392,7 +433,7 @@
                         <div>
                             <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
                                 2K+</div>
-                            <div style="color: #9ca3af; font-size: 0.875rem;">Expert Agents</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Property Experts</div>
                         </div>
                     </div>
                     <p style="color: #777; font-size: 0.875rem; margin-top: 3rem;">Trusted by industry leaders since
@@ -410,32 +451,27 @@
                         <p style="color: #9ca3af;">Your journey to finding the perfect property starts here</p>
                     </div>
 
-                    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
-                        <button id="login-tab" onclick="switchTab('login')"
-                            style="flex: 1; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s; cursor: pointer; background-color: #1DB954; color: #000000; border: none;">
-                            Login
-                        </button>
-                        <button id="signup-tab" onclick="switchTab('signup')"
-                            style="flex: 1; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s; cursor: pointer; background-color: #1a1a1a; color: #9ca3af; border: none;">
-                            Sign Up
-                        </button>
-                    </div>
-
                     <form style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;background:#1a1a1a;border:1px solid #444;border-radius:0.75rem;padding:0.35rem;">
+                            <button id="login-tab" type="button" onclick="switchTab('login')"
+                                style="background:#1DB954;color:#000;border:none;border-radius:0.5rem;padding:0.65rem 1rem;font-weight:700;cursor:pointer;">Login</button>
+                            <button id="signup-tab" type="button" onclick="switchTab('signup')"
+                                style="background:transparent;color:#9ca3af;border:none;border-radius:0.5rem;padding:0.65rem 1rem;font-weight:700;cursor:pointer;">Sign Up</button>
+                        </div>
+
                         <h4 id="form-heading" style="color: #ffffff; font-weight: 600; margin-bottom: 0.5rem;">Login
                             with your email address</h4>
 
-                        <div id="name-field" style="display: none;">
+                        <div id="name-field" style="display:none;">
                             <label
-                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Full
-                                Name</label>
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Full Name</label>
                             <div style="position: relative;">
                                 <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;"
                                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
-                                <input type="text" placeholder="Enter your full name"
+                                <input id="signup-name" type="text" placeholder="Enter your full name"
                                     style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;">
                             </div>
                         </div>
@@ -477,26 +513,26 @@
                             </div>
                         </div>
 
-                        <div id="confirm-password-field" style="display: none;">
+                        <div id="confirm-password-field" style="display:none;">
                             <label
-                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Confirm
-                                Password</label>
+                                style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Confirm Password</label>
                             <div style="position: relative;">
                                 <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;"
                                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                 </svg>
-                                <input type="password" placeholder="Confirm your password"
+                                <input id="confirm-password" type="password" placeholder="Re-enter your password"
                                     style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;">
                             </div>
                         </div>
 
                         <div>
                             <label
+                                id="role-label"
                                 style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.75rem;">Login
                                 as</label>
-                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
                                 <button type="button" class="role-btn" data-role="buyer"
                                     onclick="selectRole(this, 'buyer'); window._selectedRole='buyer';"
                                     style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #1DB954; background-color: rgba(29, 185, 84, 0.1); color: #1DB954; transition: all 0.3s; cursor: pointer;">
@@ -517,35 +553,6 @@
                                     </svg>
                                     <span style="font-size: 0.75rem; font-weight: 500;">Seller</span>
                                 </button>
-                                <button type="button" class="role-btn" data-role="agent"
-                                    onclick="selectRole(this, 'agent'); window._selectedRole='agent';"
-                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer;">
-                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <polyline points="16 11 18 13 22 9" />
-                                    </svg>
-                                    <span style="font-size: 0.75rem; font-weight: 500;">Agent</span>
-                                </button>
-                                <button type="button" class="role-btn" data-role="admin"
-                                    onclick="selectRole(this, 'admin'); window._selectedRole='admin';"
-                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer;">
-                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                                    </svg>
-                                    <span style="font-size: 0.75rem; font-weight: 500;">Admin</span>
-                                </button>
-                                <button type="button" class="role-btn" data-role="superuser"
-                                    onclick="selectRole(this, 'superuser'); window._selectedRole='superuser';"
-                                    style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #444; background-color: #1a1a1a; color: #9ca3af; transition: all 0.3s; cursor: pointer; text-align: center;">
-                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                    </svg>
-                                    <span style="font-size: 0.75rem; font-weight: 500;">Super User</span>
-                                </button>
                             </div>
                         </div>
 
@@ -555,7 +562,7 @@
                                     style="width: 1rem; height: 1rem; border-radius: 0.25rem; border: 1px solid #444; background-color: #1a1a1a; cursor: pointer;">
                                 <span style="font-size: 0.875rem; color: #9ca3af;">Remember me</span>
                             </label>
-                            <button id="forgot-link" type="button"
+                            <button id="forgot-link" type="button" onclick="TruEstate.openForgotPasswordModal(selectedRole)"
                                 style="font-size: 0.875rem; color: #1DB954; background: none; border: none; cursor: pointer; transition: color 0.3s;">
                                 Forgot password?
                             </button>
@@ -567,7 +574,7 @@
                         </button>
 
                         <p style="font-size: 0.75rem; text-align: center; color: #777;">
-                            By logging in, you agree to the
+                            By continuing, you agree to the
                             <a href="#" style="color: #1DB954; transition: color 0.3s; text-decoration: none;">Terms of
                                 Use</a>
                             and
@@ -675,8 +682,9 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+
     <script src="form-validation.js"></script>
+    <script src="app.js"></script>
     <script>
         // Property data for the featured properties
         // ========== ALL PROPERTY DATA ==========
@@ -860,6 +868,106 @@
             renderPropertyCards(allProperties);
         }
 
+        // ========== LIVE LISTINGS (real backend data) ==========
+        let livePropertiesPage = 1;
+        const LIVE_PAGE_SIZE = 6;
+
+        function formatInr(amount) {
+            return '₹' + Number(amount).toLocaleString('en-IN');
+        }
+
+        function renderLiveProperties(items) {
+            const grid = document.getElementById('live-property-grid');
+            const empty = document.getElementById('live-property-empty');
+            const error = document.getElementById('live-property-error');
+            error.style.display = 'none';
+
+            if (!items.length) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+
+            grid.innerHTML = items.map(prop => {
+                // Register in the shared lookup so the existing detail modal works for live data too.
+                featuredProperties[prop.id] = {
+                    id: prop.id,
+                    name: prop.title,
+                    location: prop.city + ', ' + prop.state,
+                    image: (prop.images && prop.images[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+                    rating: '—',
+                    beds: prop.bedrooms,
+                    baths: prop.bathrooms,
+                    area: prop.areaSqft + ' sqft',
+                    price: formatInr(prop.price) + (prop.listingType === 'rent' ? ' / mo' : ''),
+                    description: prop.description,
+                };
+                return `
+                <div onclick="showPropertyDetails('${prop.id}')" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="${featuredProperties[prop.id].image}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">${prop.type}</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">${prop.listingType}</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">${prop.title}</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            ${prop.city}, ${prop.state}
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>${prop.bedrooms} bd</span>
+                            <span>${prop.bathrooms} ba</span>
+                            <span>${prop.areaSqft} sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">${featuredProperties[prop.id].price}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function loadLiveProperties(page) {
+            livePropertiesPage = Math.max(1, page || 1);
+            const params = new URLSearchParams();
+            params.set('page', livePropertiesPage);
+            params.set('limit', LIVE_PAGE_SIZE);
+
+            const city = document.getElementById('live-filter-city').value.trim();
+            const type = document.getElementById('live-filter-type').value;
+            const minPrice = document.getElementById('live-filter-minprice').value;
+            const maxPrice = document.getElementById('live-filter-maxprice').value;
+            if (city) params.set('city', city);
+            if (type) params.set('type', type);
+            if (minPrice) params.set('minPrice', minPrice);
+            if (maxPrice) params.set('maxPrice', maxPrice);
+
+            try {
+                const result = await TruEstate.api('/properties?' + params.toString());
+                const { items, page: currentPage, totalPages } = result.data;
+                renderLiveProperties(items);
+                document.getElementById('live-page-indicator').textContent =
+                    `Page ${currentPage} of ${Math.max(totalPages, 1)} (${result.data.total} total)`;
+                document.getElementById('live-prev-btn').disabled = currentPage <= 1;
+                document.getElementById('live-next-btn').disabled = currentPage >= totalPages;
+            } catch (err) {
+                document.getElementById('live-property-grid').style.display = 'none';
+                document.getElementById('live-property-empty').style.display = 'none';
+                document.getElementById('live-property-error').style.display = 'block';
+                document.getElementById('live-property-error').textContent =
+                    (err.message && err.status !== undefined) ? err.message : "Couldn't reach the API. Is the backend running?";
+            }
+        }
+
+        function resetLiveFilters() {
+            document.getElementById('live-filter-city').value = '';
+            document.getElementById('live-filter-type').value = '';
+            document.getElementById('live-filter-minprice').value = '';
+            document.getElementById('live-filter-maxprice').value = '';
+            loadLiveProperties(1);
+        }
+
         // ========== PROPERTY DETAIL MODAL ==========
         function showPropertyDetails(id) {
             const prop = featuredProperties[id];
@@ -914,54 +1022,22 @@
 
         // Render all properties on page load
         renderPropertyCards(allProperties);
+        loadLiveProperties(1);
 
         let selectedRole = 'buyer';
+        let currentTab = 'login';
 
         function showAuth() {
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('auth-page').style.display = 'block';
             document.getElementById('auth-page').style.animation = 'fadeIn 0.3s ease';
+            switchTab(currentTab);
         }
 
         function showLanding() {
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('landing-page').style.display = 'block';
             document.getElementById('landing-page').style.animation = 'fadeIn 0.3s ease';
-        }
-
-        let currentTab = 'login';
-
-        function switchTab(tab) {
-            currentTab = tab;
-            const loginTab = document.getElementById('login-tab');
-            const signupTab = document.getElementById('signup-tab');
-            const nameField = document.getElementById('name-field');
-            const confirmPasswordField = document.getElementById('confirm-password-field');
-            const formHeading = document.getElementById('form-heading');
-            const submitBtn = document.getElementById('submit-btn');
-            const forgotLink = document.getElementById('forgot-link');
-
-            if (tab === 'login') {
-                loginTab.style.backgroundColor = '#1DB954';
-                loginTab.style.color = '#000000';
-                signupTab.style.backgroundColor = '#1a1a1a';
-                signupTab.style.color = '#9ca3af';
-                nameField.style.display = 'none';
-                confirmPasswordField.style.display = 'none';
-                formHeading.textContent = 'Login with your email address';
-                submitBtn.textContent = 'Login';
-                forgotLink.style.display = 'block';
-            } else {
-                signupTab.style.backgroundColor = '#1DB954';
-                signupTab.style.color = '#000000';
-                loginTab.style.backgroundColor = '#1a1a1a';
-                loginTab.style.color = '#9ca3af';
-                nameField.style.display = 'block';
-                confirmPasswordField.style.display = 'block';
-                formHeading.textContent = 'Create your account';
-                submitBtn.textContent = 'Sign Up';
-                forgotLink.style.display = 'none';
-            }
         }
 
         function selectRole(element, role) {
@@ -977,6 +1053,32 @@
             element.style.color = '#1DB954';
         }
 
+        function switchTab(tab) {
+            currentTab = tab;
+            const isSignup = tab === 'signup';
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const nameField = document.getElementById('name-field');
+            const confirmField = document.getElementById('confirm-password-field');
+            const heading = document.getElementById('form-heading');
+            const roleLabel = document.getElementById('role-label');
+            const submitBtn = document.getElementById('submit-btn');
+            const forgotLink = document.getElementById('forgot-link');
+
+            if (loginTab && signupTab) {
+                loginTab.style.background = isSignup ? 'transparent' : '#1DB954';
+                loginTab.style.color = isSignup ? '#9ca3af' : '#000';
+                signupTab.style.background = isSignup ? '#1DB954' : 'transparent';
+                signupTab.style.color = isSignup ? '#000' : '#9ca3af';
+            }
+            if (nameField) nameField.style.display = isSignup ? 'block' : 'none';
+            if (confirmField) confirmField.style.display = isSignup ? 'block' : 'none';
+            if (heading) heading.textContent = isSignup ? 'Create a Buyer or Seller account' : 'Login with your email address';
+            if (roleLabel) roleLabel.textContent = isSignup ? 'Sign up as' : 'Login as';
+            if (submitBtn) submitBtn.textContent = isSignup ? 'Create Account' : 'Login';
+            if (forgotLink) forgotLink.style.visibility = isSignup ? 'hidden' : 'visible';
+        }
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -990,7 +1092,7 @@
             }
         }
 
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
 
             // ── Run friendly validation first (shows toasts, returns false on failure) ──
@@ -999,9 +1101,6 @@
             const form = event.target;
             const emailInput = form.querySelector('input[type="email"]');
             const passwordInput = form.querySelector('input[type="password"]');
-            const nameInput = form.querySelector('#name-field input');
-            const confirmInput = form.querySelector('#confirm-password-field input');
-
 
             // ── Field-level validation with specific messages ──
             const emailVal    = emailInput ? emailInput.value.trim() : '';
@@ -1012,7 +1111,8 @@
                 showToast('📧 Please enter your email address', 'error');
                 return;
             }
-            if (!validateEmail(emailVal)) {
+            const isValidEmail = typeof tvIsEmail === 'function' ? tvIsEmail(emailVal) : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+            if (!isValidEmail) {
                 if (emailInput) emailInput.style.borderColor = '#ef4444';
                 showToast('📧 Please enter a valid email address', 'error');
                 return;
@@ -1027,88 +1127,83 @@
             const pwEl = document.getElementById('password');
             if (pwEl) pwEl.style.borderColor = '';
 
-            // ── Fixed credentials for privileged roles (Admin / Agent / Super User) ──
-            const FIXED_CREDENTIALS = {
-                admin:     { email: 'admin@gmail.com',     password: '123456789' },
-                agent:     { email: 'agent@gmail.com',     password: '123456789' },
-                superuser: { email: 'superuser@gmail.com', password: '123456789' },
-            };
+            const isSignup = currentTab === 'signup';
+            const nameInput = document.getElementById('signup-name');
+            const signupName = nameInput ? nameInput.value.trim() : '';
 
-            if (FIXED_CREDENTIALS[selectedRole]) {
-                const creds      = FIXED_CREDENTIALS[selectedRole];
-                const enteredEmail    = emailInput.value.trim().toLowerCase();
-                const enteredPassword = passwordInput.value;
-
-                if (enteredEmail !== creds.email || enteredPassword !== creds.password) {
-                    // Show which email is expected so the user knows what to use
-                    showToast('❌ Invalid credentials', 'error');
-                    emailInput.style.borderColor    = '#ef4444';
-                    passwordInput.style.borderColor = '#ef4444';
-                    return;
-                }
+            if (isSignup && !signupName) {
+                showToast('👤 Please enter your name', 'error');
+                return;
             }
 
-            // Store user session
-            const roleNames = { buyer: 'James Morgan', seller: 'Sarah Parker', agent: 'Mike Johnson', admin: 'Admin User', superuser: 'Super Admin' };
+            const submitBtn = document.getElementById('submit-btn');
+            const originalBtnText = submitBtn ? submitBtn.textContent : '';
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isSignup ? 'Creating account...' : 'Logging in...'; }
 
-            let regUser = {
-                id: 'U' + Math.floor(Math.random() * 1000000),
-                name: currentTab === 'signup' && nameInput ? nameInput.value : roleNames[selectedRole] || 'System User',
-                email: emailInput.value,
-                role: selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1),
-                status: 'Active'
-            };
-
-            TruEstate.setUser({
-                name: regUser.name,
-                email: regUser.email,
-                role: selectedRole
-            });
-
-            // ── Sync into globalUsers so Super Admin always sees every account ──
             try {
-                let gUsers = JSON.parse(localStorage.getItem('globalUsers')) || [];
-                if (currentTab === 'signup') {
-                    // New registration → always add a fresh entry (each account is unique)
-                    // Avoid exact duplicate (same email + role already exists)
-                    const duplicate = gUsers.find(u => u.email === regUser.email && u.role === regUser.role);
-                    if (!duplicate) {
-                        gUsers.push(regUser);
-                    }
-                } else {
-                    // Login → update the existing record matched by email, or by role as fallback
-                    const byEmail = gUsers.find(u => u.email === regUser.email && u.role === regUser.role);
+                // ── Real backend auth (JWT) — POST /auth/register or /auth/login ──
+                const result = isSignup
+                    ? await TruEstate.api('/auth/register', {
+                        method: 'POST',
+                        body: JSON.stringify({ name: signupName, email: emailVal, password: passwordVal, userType: selectedRole })
+                    })
+                    : await TruEstate.api('/auth/login', {
+                        method: 'POST',
+                        // userType scopes login to the selected tab — the same email can
+                        // separately own a buyer account and a seller account, so this
+                        // must match to avoid landing in the wrong dashboard.
+                        body: JSON.stringify({ email: emailVal, password: passwordVal, userType: selectedRole })
+                    });
+
+                const authData = result.data;
+                const account = authData.user;
+                // The account's own userType (buyer/seller) decides the dashboard —
+                // trust the stored account over whichever tab happened to be selected.
+                const uiRole = account.role === 'admin' ? 'admin' : (account.userType || selectedRole);
+
+                TruEstate.setUser({
+                    id: account.id,
+                    name: account.name,
+                    email: account.email,
+                    role: uiRole,
+                    token: authData.accessToken
+                });
+
+                // ── Sync into globalUsers so the Super Admin mock view keeps showing every account ──
+                try {
+                    let gUsers = JSON.parse(localStorage.getItem('globalUsers')) || [];
+                    const roleLabelForList = uiRole.charAt(0).toUpperCase() + uiRole.slice(1);
+                    const byEmail = gUsers.find(u => u.email === account.email);
                     if (byEmail) {
-                        byEmail.name   = regUser.name;
+                        byEmail.name = account.name;
                         byEmail.status = 'Active';
                     } else {
-                        // First login with this email — upsert by role as a convenience
-                        const byRole = gUsers.find(u => u.role === regUser.role && (u.email === 'buyer@truestate.com' || u.email === 'seller@truestate.com' || u.email === 'agent@truestate.com' || u.email === 'admin@truestate.com'));
-                        if (byRole) {
-                            byRole.email = regUser.email;
-                            byRole.name  = regUser.name;
-                        } else {
-                            gUsers.push(regUser);
-                        }
+                        gUsers.push({ id: account.id, name: account.name, email: account.email, role: roleLabelForList, status: 'Active' });
                     }
-                }
-                localStorage.setItem('globalUsers', JSON.stringify(gUsers));
-            } catch (_) {}
+                    localStorage.setItem('globalUsers', JSON.stringify(gUsers));
+                } catch (_) {}
 
+                showToast((isSignup ? 'Account created' : 'Login successful') + '! Redirecting...', 'success');
 
-            showToast(currentTab === 'login' ? 'Login successful! Redirecting...' : 'Account created! Redirecting...', 'success');
-
-            // Redirect based on selected role
-            setTimeout(() => {
-                const dashboards = {
-                    buyer: 'Buyer Dashboard - truEstate.html',
-                    seller: 'seller-dashboard.html',
-                    agent: 'agent-dashboard.html',
-                    admin: 'admin-dashboard.html',
-                    superuser: 'superuser-dashboard.html'
-                };
-                window.location.href = dashboards[selectedRole];
-            }, 800);
+                // Redirect based on the account's role
+                setTimeout(() => {
+                    const dashboards = {
+                        buyer: 'Buyer Dashboard - truEstate.html',
+                        seller: 'seller-dashboard.html',
+                        admin: 'admin-dashboard.html'
+                    };
+                    window.location.href = dashboards[uiRole] || 'index.html';
+                }, 800);
+            } catch (err) {
+                const detail = (err.errors && err.errors.length) ? ': ' + err.errors[0] : '';
+                // Login failures are intentionally generic on the backend (no account-existence
+                // leak), but we can still hint at the selected tab client-side for clarity.
+                const message = (!isSignup && err.status === 401)
+                    ? `No ${selectedRole} account found for that email, or the password is wrong.`
+                    : err.message + detail;
+                showToast('⚠️ ' + message, 'error');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
+            }
         }
 
         // Landing page search filter
@@ -1134,8 +1229,6 @@
             });
         });
     </script>
-    <script src="api.js"></script>
-    <script src="evaluation4-integration.js"></script>
 </body>
 
 </html>

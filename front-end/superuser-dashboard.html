@@ -9,6 +9,11 @@
 </head>
 <body>
 
+<script src="app.js"></script>
+<script>
+    TruEstate.requireAuth('superuser');
+</script>
+
 <div class="app-container">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -45,6 +50,17 @@
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
                 </svg>
                 <span>Property Operations</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-nav="revenue">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span>Revenue</span>
+            </a>
+            <a href="#" class="nav-item" data-nav="logs">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>
+                </svg>
+                <span>System Logs</span>
                 <div class="nav-indicator"></div>
             </a>
             <a href="#" class="nav-item" data-nav="settings">
@@ -145,10 +161,9 @@
                             <input type="text" id="userSearchInput" class="input-field" placeholder="Search users...">
                             <select id="userRoleFilter" class="select-field">
                                 <option value="all">All Roles</option>
-                                <option value="Buyer">Buyer</option>
-                                <option value="Seller">Seller</option>
-                                <option value="Agent">Agent</option>
-                                <option value="Admin">Admin</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                                <option value="superuser">Superuser</option>
                             </select>
                         </div>
                     </div>
@@ -176,12 +191,8 @@
             <div class="section-header">
                 <div class="section-title">
                     <h1>Property Operations (CRUD)</h1>
-                    <p>Global property catalog management.</p>
-                </div>
-                <div class="section-actions">
-                    <button class="btn-primary" id="btn-add-prop">
-                        <span>+ Add Property</span>
-                    </button>
+                    <!-- No "+ Add Property": listing a property is a seller action only. -->
+                    <p>Global property catalog. Sellers create listings — you edit and delete them.</p>
                 </div>
             </div>
             <div class="section-body">
@@ -191,9 +202,10 @@
                             <input type="text" id="propSearchInput" class="input-field" placeholder="Search properties...">
                             <select id="propStatusFilter" class="select-field">
                                 <option value="all">All Statuses</option>
-                                <option value="Listed">Listed</option>
-                                <option value="Draft">Draft</option>
-                                <option value="Archived">Archived</option>
+                                <option value="available">Available</option>
+                                <option value="under_offer">Under Offer</option>
+                                <option value="sold">Sold</option>
+                                <option value="rented">Rented</option>
                             </select>
                         </div>
                     </div>
@@ -208,6 +220,144 @@
                             </tr>
                         </thead>
                         <tbody id="props-tbody">
+                            <!-- Populated via Javascript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Logs — read-only view of logs/{http,error,app,audit}/*.log -->
+        <!-- Revenue -->
+        <section id="section-revenue" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1>Revenue</h1>
+                    <p>What the platform earns, where it comes from, and what is still owed.</p>
+                </div>
+                <button class="btn btn-secondary" id="btn-refresh-revenue">Refresh</button>
+            </div>
+            <div class="section-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header"><div class="stat-icon primary">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div></div>
+                        <div class="stat-value" id="rev-collected">₹0</div>
+                        <div class="stat-label">Collected — verified payments only</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header"><div class="stat-icon warning">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div></div>
+                        <div class="stat-value" id="rev-receivable">₹0</div>
+                        <div class="stat-label">Receivable — earned, not yet settled</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header"><div class="stat-icon info">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        </div></div>
+                        <div class="stat-value" id="rev-mrr">₹0</div>
+                        <div class="stat-label">MRR from live seller plans</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header"><div class="stat-icon danger">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </div></div>
+                        <div class="stat-value" id="rev-waived">₹0</div>
+                        <div class="stat-label">Written off</div>
+                    </div>
+                </div>
+
+                <div class="revenue-split">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h3>Collected per month</h3>
+                            <span class="panel-note">Last 6 months</span>
+                        </div>
+                        <div class="rev-chart" id="rev-chart"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head"><h3>Revenue streams</h3></div>
+                        <div id="rev-streams"></div>
+                        <div class="panel-head" style="margin-top:1.5rem;"><h3>Checkout funnel</h3></div>
+                        <div id="rev-funnel"></div>
+                    </div>
+                </div>
+
+                <div class="revenue-split" style="margin-top:1.5rem;">
+                    <div class="panel">
+                        <div class="panel-head"><h3>Commission earned by city</h3></div>
+                        <div id="rev-cities"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head"><h3>Live seller plans</h3></div>
+                        <div id="rev-plans"></div>
+                    </div>
+                </div>
+
+                <div class="table-container" style="margin-top:1.5rem;">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Receipt</th><th>Payer</th><th>For</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+                        </thead>
+                        <tbody id="rev-payments-tbody">
+                            <tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-logs" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h1>System Logs</h1>
+                    <p>Written to disk by the logging middleware — one file per channel, per day.</p>
+                </div>
+                <div class="section-actions">
+                    <label style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8125rem;color:var(--text-secondary);margin-right:0.75rem;">
+                        <input type="checkbox" id="logs-autorefresh"> Auto-refresh
+                    </label>
+                    <button class="btn-primary" id="btn-refresh-logs">Refresh</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="stats-grid" id="logs-channel-cards" style="margin-bottom:1.5rem;"></div>
+                <div class="table-container">
+                    <div style="padding:1.5rem;border-bottom:1px solid var(--border-color);">
+                        <div class="search-bar">
+                            <select id="logs-channel" class="select-field">
+                                <option value="http">http — one line per request</option>
+                                <option value="error">error — failures &amp; stack traces</option>
+                                <option value="audit">audit — logins, writes, uploads</option>
+                                <option value="app">app — application output</option>
+                            </select>
+                            <select id="logs-level" class="select-field">
+                                <option value="">All levels</option>
+                                <option value="info">info</option>
+                                <option value="warn">warn</option>
+                                <option value="error">error</option>
+                                <option value="fatal">fatal</option>
+                            </select>
+                            <select id="logs-lines" class="select-field">
+                                <option value="50">Last 50</option>
+                                <option value="100" selected>Last 100</option>
+                                <option value="250">Last 250</option>
+                            </select>
+                        </div>
+                        <p id="logs-file-label" style="margin-top:0.75rem;font-size:0.8125rem;color:var(--text-secondary);"></p>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:11rem;">Time</th>
+                                <th style="width:5.5rem;">Level</th>
+                                <th>Message</th>
+                                <th style="width:8rem;">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-tbody">
                             <!-- Populated via Javascript -->
                         </tbody>
                     </table>
@@ -279,26 +429,47 @@
                     <input type="email" id="user-email" class="form-control" required>
                     <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
                 </div>
+                <div class="form-group" id="user-password-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="user-password" class="form-control" placeholder="Min 8 chars, upper/lower/digit/special">
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Role</label>
-                    <select id="user-role" class="form-control">
-                        <option value="Buyer">Buyer</option>
-                        <option value="Seller">Seller</option>
-                        <option value="Agent">Agent</option>
-                        <option value="Admin">Admin</option>
+                    <select id="user-role" class="form-control" onchange="toggleAdminCityField()">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="superuser">Superuser</option>
                     </select>
+                </div>
+                <!-- Every admin runs exactly one city, and a city can only have
+                     one admin — so this is required for the Admin role and
+                     hidden for everyone else. The server enforces both rules. -->
+                <div class="form-group" id="user-city-group" style="display:none;">
+                    <label class="form-label">City desk (admins only)</label>
+                    <select id="user-city" class="form-control">
+                        <option value="">Select a city</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Kochi">Kochi</option>
+                    </select>
+                    <div style="color:#9ca3af;font-size:0.75rem;margin-top:0.25rem;">This admin will only see
+                        listings, visits, negotiations and purchases in this city.</div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Status</label>
-                    <select id="user-status" class="form-control">
-                        <option value="Active">Active</option>
-                        <option value="Blocked">Blocked</option>
+                    <label class="form-label">User Type (buyer/seller — only applies to "User" role)</label>
+                    <select id="user-usertype" class="form-control">
+                        <option value="">None</option>
+                        <option value="buyer">Buyer</option>
+                        <option value="seller">Seller</option>
                     </select>
                 </div>
+                <div id="user-form-error" style="color:#ef4444;font-size:0.8125rem;display:none;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-secondary" id="cancel-user-btn">Cancel</button>
-                <button type="submit" class="btn-primary">Save User</button>
+                <button type="submit" class="btn-primary" id="user-form-submit">Save User</button>
             </div>
         </form>
     </div>
@@ -308,46 +479,731 @@
 <div class="modal-overlay" id="prop-modal">
     <div class="modal-container">
         <div class="modal-header">
-            <div class="modal-title" id="prop-modal-title">Add Property</div>
+            <div class="modal-title" id="prop-modal-title">Edit Property</div>
         </div>
         <form id="prop-form" novalidate>
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label">Property Title</label>
-                    <input type="text" id="prop-title" class="form-control" required>
+                    <input type="text" id="prop-title" class="form-control" required minlength="10" maxlength="150">
                     <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Location</label>
-                    <input type="text" id="prop-location" class="form-control" required>
+                    <label class="form-label">Description</label>
+                    <textarea id="prop-description" class="form-control" rows="3" required minlength="20" placeholder="At least 20 characters"></textarea>
                     <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Price</label>
-                    <input type="text" id="prop-price" class="form-control" placeholder="e.g. Rs 50,00,000" required>
-                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Listing Status</label>
-                    <select id="prop-status" class="form-control">
-                        <option value="Listed">Listed</option>
-                        <option value="Draft">Draft</option>
-                        <option value="Archived">Archived</option>
+                    <label class="form-label">Type</label>
+                    <select id="prop-type" class="form-control">
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="plot">Plot</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="penthouse">Penthouse</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Listing Type</label>
+                    <select id="prop-listingType" class="form-control">
+                        <option value="sale">Sale</option>
+                        <option value="rent">Rent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price (₹)</label>
+                    <input type="number" id="prop-price" class="form-control" min="1" required>
+                    <div class="error-text" style="color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Area (sqft)</label>
+                    <input type="number" id="prop-areaSqft" class="form-control" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bedrooms</label>
+                    <input type="number" id="prop-bedrooms" class="form-control" min="0" max="20" value="2" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bathrooms</label>
+                    <input type="number" id="prop-bathrooms" class="form-control" min="1" max="20" value="2" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" id="prop-address" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" id="prop-city" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">State</label>
+                    <input type="text" id="prop-state" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="prop-status" class="form-control">
+                        <option value="available">Available</option>
+                        <option value="under_offer">Under Offer</option>
+                        <option value="sold">Sold</option>
+                        <option value="rented">Rented</option>
+                    </select>
+                </div>
+                <div id="prop-form-error" style="color:#ef4444;font-size:0.8125rem;display:none;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-secondary" id="cancel-prop-btn">Cancel</button>
-                <button type="submit" class="btn-primary">Save Property</button>
+                <button type="submit" class="btn-primary" id="prop-form-submit">Save Property</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Link to external JS, averting inline javascript -->
-<script src="superuser-dashboard.js"></script>
+
 <script src="form-validation.js"></script>
-    <script src="api.js"></script>
-    <script src="evaluation4-integration.js"></script>
+
+<!-- ============ Real backend integration (auth guard above already loaded app.js) ============ -->
+<script>
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str == null ? '' : String(str);
+        return div.innerHTML;
+    }
+
+    // ---------------- Navigation ----------------
+    function switchSuperuserPage(nav) {
+        document.querySelectorAll('.section').forEach((s) => s.classList.remove('active'));
+        const target = document.getElementById('section-' + nav);
+        if (target) target.classList.add('active');
+
+        document.querySelectorAll('.nav-item[data-nav]').forEach((item) => {
+            item.classList.toggle('active', item.getAttribute('data-nav') === nav);
+        });
+    }
+
+    document.querySelectorAll('.nav-item[data-nav]').forEach((item) => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const nav = item.getAttribute('data-nav');
+            switchSuperuserPage(nav);
+            // Logs are fetched on demand rather than at page load — the files grow
+            // with every request, so there's no point pulling them until they're shown.
+            if (nav === 'logs') refreshLogs();
+            if (nav === 'revenue') loadRevenue();
+        });
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', () => TruEstate.logout('superuser'));
+
+    // ---------------- Dashboard overview ----------------
+    async function loadSuperuserStats() {
+        try {
+            const [usersRes, propsRes] = await Promise.all([
+                TruEstate.api('/users'),
+                TruEstate.api('/properties?limit=1'),
+            ]);
+            document.getElementById('stat-total-users').textContent = usersRes.data.length;
+            document.getElementById('stat-active-users').textContent = usersRes.data.length;
+            document.getElementById('stat-total-props').textContent = propsRes.data.total;
+        } catch (err) {
+            console.error('Failed to load dashboard stats:', err.message);
+        }
+    }
+
+    // ---------------- User Management ----------------
+    let cachedUsers = [];
+
+    async function loadSuperuserUsers() {
+        const tbody = document.getElementById('users-tbody');
+        tbody.innerHTML = '<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">Loading…</td></tr>';
+        try {
+            const result = await TruEstate.api('/users');
+            cachedUsers = result.data;
+            renderUsersTable(cachedUsers);
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:#ef4444;">${escapeHtml(err.message || 'Failed to load users')}</td></tr>`;
+        }
+    }
+
+    function renderUsersTable(users) {
+        const tbody = document.getElementById('users-tbody');
+        if (!users.length) {
+            tbody.innerHTML = '<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">No users found.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = users.map((u) => {
+            const isBlocked = !!u.isBlocked;
+            return `
+            <tr>
+                <td>${escapeHtml(u.id.slice(-8))}</td>
+                <td>${escapeHtml(u.name)}</td>
+                <td>${escapeHtml(u.email)}</td>
+                <td><span class="badge default">${escapeHtml(u.userType || u.role)}</span></td>
+                <td>${isBlocked ? '<span class="badge" style="background:rgba(239,68,68,0.12);color:#ef4444;">Blocked</span>' : '<span class="badge primary">Active</span>'}</td>
+                <td style="display:flex;gap:0.5rem;">
+                    <button class="btn-icon" onclick='openUserModal(${JSON.stringify(u.id)})' title="Edit">✎</button>
+                    <button class="btn-icon" onclick='toggleSuperuserBlock(${JSON.stringify(u.id)}, ${isBlocked})' title="${isBlocked ? 'Unblock' : 'Block'}">${isBlocked ? '🔓' : '🔒'}</button>
+                    <button class="btn-icon" onclick='deleteSuperuserUser(${JSON.stringify(u.id)}, ${JSON.stringify(u.email)})' title="Delete">🗑</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function filterUsersTable() {
+        const query = document.getElementById('userSearchInput').value.trim().toLowerCase();
+        const role = document.getElementById('userRoleFilter').value;
+        const filtered = cachedUsers.filter((u) => {
+            const matchesSearch = !query || u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query) || u.id.includes(query);
+            const matchesRole = role === 'all' || u.role === role;
+            return matchesSearch && matchesRole;
+        });
+        renderUsersTable(filtered);
+    }
+    document.getElementById('userSearchInput').addEventListener('input', filterUsersTable);
+    document.getElementById('userRoleFilter').addEventListener('change', filterUsersTable);
+
+    let editingUserId = null;
+
+    function openUserModal(id) {
+        editingUserId = id || null;
+        const form = document.getElementById('user-form');
+        form.reset();
+        document.getElementById('user-form-error').style.display = 'none';
+        document.getElementById('user-modal-title').textContent = id ? 'Edit User' : 'Add New User';
+        document.getElementById('user-password-group').style.display = id ? 'none' : 'block';
+
+        if (id) {
+            const existing = cachedUsers.find((u) => u.id === id);
+            if (existing) {
+                document.getElementById('user-name').value = existing.name;
+                document.getElementById('user-email').value = existing.email;
+                document.getElementById('user-role').value = existing.role;
+                document.getElementById('user-usertype').value = existing.userType || '';
+                document.getElementById('user-city').value = existing.city || '';
+            }
+        }
+        toggleAdminCityField();
+        document.getElementById('user-modal').classList.add('active');
+    }
+
+    // The city desk only means anything for an admin, so the field follows
+    // the role select rather than sitting there confusingly for buyers.
+    function toggleAdminCityField() {
+        const isAdmin = document.getElementById('user-role').value === 'admin';
+        document.getElementById('user-city-group').style.display = isAdmin ? 'block' : 'none';
+    }
+    window.toggleAdminCityField = toggleAdminCityField;
+
+    function closeUserModal() {
+        document.getElementById('user-modal').classList.remove('active');
+    }
+    document.getElementById('cancel-user-btn').addEventListener('click', closeUserModal);
+    document.getElementById('btn-add-user').addEventListener('click', () => openUserModal());
+
+    document.getElementById('user-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const errorBox = document.getElementById('user-form-error');
+        errorBox.style.display = 'none';
+        const submitBtn = document.getElementById('user-form-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving…';
+
+        const userType = document.getElementById('user-usertype').value || undefined;
+        const role = document.getElementById('user-role').value;
+        // Only sent for admins — for anyone else `city` is informational and
+        // the form doesn't collect it.
+        const city = role === 'admin' ? document.getElementById('user-city').value || undefined : undefined;
+        if (role === 'admin' && !city) {
+            errorBox.style.display = 'block';
+            errorBox.textContent = 'Pick the city this admin will run.';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save User';
+            return;
+        }
+        try {
+            if (editingUserId) {
+                await TruEstate.api('/users/' + editingUserId, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        name: document.getElementById('user-name').value.trim(),
+                        email: document.getElementById('user-email').value.trim(),
+                        role,
+                        userType,
+                        city,
+                    }),
+                });
+                showToast('User updated successfully');
+            } else {
+                await TruEstate.api('/users', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: document.getElementById('user-name').value.trim(),
+                        email: document.getElementById('user-email').value.trim(),
+                        password: document.getElementById('user-password').value,
+                        role,
+                        userType,
+                        city,
+                    }),
+                });
+                showToast('User created successfully');
+            }
+            closeUserModal();
+            loadSuperuserUsers();
+            loadSuperuserStats();
+        } catch (err) {
+            errorBox.style.display = 'block';
+            errorBox.textContent = (err.errors && err.errors.join('; ')) || err.message || 'Failed to save user';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save User';
+        }
+    });
+
+    async function deleteSuperuserUser(id, email) {
+        if (!confirm(`Delete user "${email}"? This cannot be undone.`)) return;
+        try {
+            await TruEstate.api('/users/' + id, { method: 'DELETE' });
+            showToast('User deleted');
+            loadSuperuserUsers();
+            loadSuperuserStats();
+        } catch (err) {
+            showToast(err.message || 'Failed to delete user', 'error');
+        }
+    }
+
+    // A superuser can block/unblock any account, including admins and other
+    // superusers — blocked accounts are rejected at login and any
+    // already-issued session token is invalidated immediately.
+    async function toggleSuperuserBlock(id, currentlyBlocked) {
+        try {
+            await TruEstate.api('/users/' + id, { method: 'PATCH', body: JSON.stringify({ isBlocked: !currentlyBlocked }) });
+            showToast(currentlyBlocked ? 'User unblocked' : 'User blocked');
+            loadSuperuserUsers();
+        } catch (err) {
+            showToast(err.message || 'Failed to update user', 'error');
+        }
+    }
+
+    // ---------------- Property Operations ----------------
+    let cachedProperties = [];
+
+    async function loadSuperuserProperties() {
+        const tbody = document.getElementById('props-tbody');
+        tbody.innerHTML = '<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">Loading…</td></tr>';
+        try {
+            const statusFilter = document.getElementById('propStatusFilter').value;
+            const params = new URLSearchParams({ limit: '50' });
+            if (statusFilter !== 'all') params.set('status', statusFilter);
+            const result = await TruEstate.api('/properties?' + params.toString());
+            cachedProperties = result.data.items;
+            renderPropertiesTable(cachedProperties);
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:#ef4444;">${escapeHtml(err.message || 'Failed to load properties')}</td></tr>`;
+        }
+    }
+
+    function renderPropertiesTable(properties) {
+        const tbody = document.getElementById('props-tbody');
+        if (!properties.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">No properties found.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = properties.map((p) => `
+            <tr>
+                <td>${escapeHtml(p.id.slice(-8))}</td>
+                <td><strong>${escapeHtml(p.title)}</strong><br><span style="color:var(--text-secondary);font-size:0.8125rem;">${escapeHtml(p.city)}, ${escapeHtml(p.state)}</span></td>
+                <td>₹${Number(p.price).toLocaleString('en-IN')}</td>
+                <td><span class="badge default">${escapeHtml(p.status)}</span></td>
+                <td style="display:flex;gap:0.5rem;">
+                    <button class="btn-icon" onclick='openPropModal(${JSON.stringify(p.id)})' title="Edit">✎</button>
+                    <button class="btn-icon" onclick='deleteSuperuserProperty(${JSON.stringify(p.id)})' title="Delete">🗑</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    function filterPropertiesTable() {
+        const query = document.getElementById('propSearchInput').value.trim().toLowerCase();
+        const filtered = cachedProperties.filter((p) =>
+            !query || p.title.toLowerCase().includes(query) || p.city.toLowerCase().includes(query) || p.address.toLowerCase().includes(query)
+        );
+        renderPropertiesTable(filtered);
+    }
+    document.getElementById('propSearchInput').addEventListener('input', filterPropertiesTable);
+    document.getElementById('propStatusFilter').addEventListener('change', loadSuperuserProperties);
+
+    let editingPropId = null;
+
+    // Edit-only — the API rejects POST /properties from anyone but a seller.
+    function openPropModal(id) {
+        if (!id) {
+            showToast('Only a seller can list a property. You can edit and delete listings.', 'error');
+            return;
+        }
+        editingPropId = id;
+        const form = document.getElementById('prop-form');
+        form.reset();
+        document.getElementById('prop-form-error').style.display = 'none';
+        document.getElementById('prop-modal-title').textContent = 'Edit Property';
+
+        if (id) {
+            const p = cachedProperties.find((x) => x.id === id);
+            if (p) {
+                document.getElementById('prop-title').value = p.title;
+                document.getElementById('prop-description').value = p.description;
+                document.getElementById('prop-type').value = p.type;
+                document.getElementById('prop-listingType').value = p.listingType;
+                document.getElementById('prop-price').value = p.price;
+                document.getElementById('prop-areaSqft').value = p.areaSqft;
+                document.getElementById('prop-bedrooms').value = p.bedrooms;
+                document.getElementById('prop-bathrooms').value = p.bathrooms;
+                document.getElementById('prop-address').value = p.address;
+                document.getElementById('prop-city').value = p.city;
+                document.getElementById('prop-state').value = p.state;
+                document.getElementById('prop-status').value = p.status;
+            }
+        }
+        document.getElementById('prop-modal').classList.add('active');
+    }
+
+    function closePropModal() {
+        document.getElementById('prop-modal').classList.remove('active');
+    }
+    document.getElementById('cancel-prop-btn').addEventListener('click', closePropModal);
+
+    document.getElementById('prop-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const errorBox = document.getElementById('prop-form-error');
+        errorBox.style.display = 'none';
+        const submitBtn = document.getElementById('prop-form-submit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving…';
+
+        const payload = {
+            title: document.getElementById('prop-title').value.trim(),
+            description: document.getElementById('prop-description').value.trim(),
+            type: document.getElementById('prop-type').value,
+            listingType: document.getElementById('prop-listingType').value,
+            price: Number(document.getElementById('prop-price').value),
+            areaSqft: Number(document.getElementById('prop-areaSqft').value),
+            bedrooms: Number(document.getElementById('prop-bedrooms').value),
+            bathrooms: Number(document.getElementById('prop-bathrooms').value),
+            address: document.getElementById('prop-address').value.trim(),
+            city: document.getElementById('prop-city').value.trim(),
+            state: document.getElementById('prop-state').value.trim(),
+            status: document.getElementById('prop-status').value,
+        };
+
+        try {
+            await TruEstate.api('/properties/' + editingPropId, { method: 'PATCH', body: JSON.stringify(payload) });
+            showToast('Property updated successfully');
+            closePropModal();
+            loadSuperuserProperties();
+            loadSuperuserStats();
+        } catch (err) {
+            errorBox.style.display = 'block';
+            errorBox.textContent = (err.errors && err.errors.join('; ')) || err.message || 'Failed to save property';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Property';
+        }
+    });
+
+    async function deleteSuperuserProperty(id) {
+        if (!confirm('Delete this property? This cannot be undone.')) return;
+        try {
+            await TruEstate.api('/properties/' + id, { method: 'DELETE' });
+            showToast('Property deleted');
+            loadSuperuserProperties();
+            loadSuperuserStats();
+        } catch (err) {
+            showToast(err.message || 'Failed to delete property', 'error');
+        }
+    }
+
+    // ---------------- System Logs ----------------
+    // Reads GET /logs and GET /logs/:channel — the same files the logging
+    // middleware writes to disk under logs/{http,error,app,audit}/.
+    let logsAutoRefreshTimer = null;
+
+    const LOG_LEVEL_COLOURS = {
+        fatal: '#ef4444',
+        error: '#ef4444',
+        warn: '#f59e0b',
+        info: 'var(--text-secondary)',
+        debug: 'var(--text-secondary)',
+    };
+
+    // Log timestamps are written in IST (+05:30); render them in IST too, so the
+    // table matches the raw files even if the viewer's machine is on another clock.
+    function formatLogTime(timestamp) {
+        const date = new Date(timestamp);
+        if (Number.isNaN(date.getTime())) return timestamp || '';
+        return date.toLocaleString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+        }) + ' IST';
+    }
+
+    function formatBytes(bytes) {
+        if (!bytes) return '0 B';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+        return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+    }
+
+    // The interesting fields differ per channel, so pick out a few rather than
+    // dumping the whole JSON object into the table.
+    function summariseLogEntry(entry) {
+        const parts = [];
+        if (entry.statusCode) parts.push(entry.statusCode);
+        if (entry.durationMs != null) parts.push(`${entry.durationMs}ms`);
+        if (entry.event) parts.push(entry.event);
+        if (entry.ip) parts.push(entry.ip);
+        return parts.join(' · ');
+    }
+
+    async function loadLogChannelCards() {
+        const wrap = document.getElementById('logs-channel-cards');
+        try {
+            const result = await TruEstate.api('/logs');
+            wrap.innerHTML = result.data
+                .map((channel) => `
+                    <div class="stat-card">
+                        <div class="stat-value" style="font-size:1.25rem;">${escapeHtml(channel.currentFile)}</div>
+                        <div class="stat-label">${escapeHtml(channel.channel)} — ${channel.fileCount} file(s), ${formatBytes(channel.totalSizeBytes)}</div>
+                    </div>`)
+                .join('');
+        } catch (err) {
+            wrap.innerHTML = `<p style="color:#ef4444;font-size:0.8125rem;">${escapeHtml(err.message || 'Failed to load log files')}</p>`;
+        }
+    }
+
+    async function loadLogEntries() {
+        const tbody = document.getElementById('logs-tbody');
+        const channel = document.getElementById('logs-channel').value;
+        const level = document.getElementById('logs-level').value;
+        const lines = document.getElementById('logs-lines').value;
+
+        const query = new URLSearchParams({ lines });
+        if (level) query.set('level', level);
+
+        try {
+            const result = await TruEstate.api(`/logs/${channel}?${query}`);
+            const { file, entries } = result.data;
+            document.getElementById('logs-file-label').textContent =
+                `Reading ${file} — ${entries.length} entries (newest last)`;
+
+            if (!entries.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">Nothing logged to this channel yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = entries
+                .slice()
+                .reverse()
+                .map((entry) => `
+                    <tr>
+                        <td style="white-space:nowrap;font-size:0.75rem;">${escapeHtml(formatLogTime(entry.timestamp))}</td>
+                        <td style="color:${LOG_LEVEL_COLOURS[entry.level] || 'var(--text-secondary)'};font-weight:600;font-size:0.75rem;">${escapeHtml((entry.level || '').toUpperCase())}</td>
+                        <td style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.75rem;">${escapeHtml(entry.message)}</td>
+                        <td style="font-size:0.75rem;color:var(--text-secondary);">${escapeHtml(summariseLogEntry(entry))}</td>
+                    </tr>`)
+                .join('');
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="4" style="padding:1.5rem;text-align:center;color:#ef4444;">${escapeHtml(err.message || 'Failed to load log entries')}</td></tr>`;
+        }
+    }
+
+    function refreshLogs() {
+        loadLogChannelCards();
+        loadLogEntries();
+    }
+
+    ['logs-channel', 'logs-level', 'logs-lines'].forEach((id) => {
+        document.getElementById(id).addEventListener('change', loadLogEntries);
+    });
+    document.getElementById('btn-refresh-logs').addEventListener('click', refreshLogs);
+    document.getElementById('logs-autorefresh').addEventListener('change', (e) => {
+        clearInterval(logsAutoRefreshTimer);
+        logsAutoRefreshTimer = e.target.checked ? setInterval(refreshLogs, 5000) : null;
+    });
+
+    // ---------------- System Settings (local demo only — no backend concept) ----------------
+    document.getElementById('btn-save-settings').addEventListener('click', () => {
+        showToast('Settings saved (demo only — not persisted to the backend)');
+    });
+    document.getElementById('settings-form').addEventListener('submit', (e) => e.preventDefault());
+
+    // ---------------- Revenue ----------------
+    //
+    // Reads GET /billing/revenue, which is superuser-only: this is the money
+    // trail for the whole platform, so city admins never see it.
+    //
+    // The one distinction worth keeping straight on this page is *collected*
+    // vs *receivable*. Collected counts only payments with a verified gateway
+    // signature — money actually in the bank. Receivable is commission the
+    // platform has earned on deals that closed but has not been paid yet.
+    // Adding them together would flatter the numbers, so they stay apart.
+    const revMoney = (n) => TruEstate.formatINR(n);
+
+    const STREAM_LABELS = {
+        subscription: 'Seller plans',
+        featured_listing: 'Featured listings',
+        commission: 'Deal commission',
+    };
+
+    async function loadRevenue() {
+        try {
+            const report = (await TruEstate.api('/billing/revenue')).data;
+            renderRevenue(report);
+        } catch (err) {
+            showToast(err.message || 'Failed to load the revenue report', 'error');
+        }
+    }
+
+    function renderRevenue(r) {
+        document.getElementById('rev-collected').textContent = revMoney(r.totalCollected);
+        document.getElementById('rev-receivable').textContent = revMoney(r.receivable);
+        document.getElementById('rev-mrr').textContent = revMoney(r.mrr);
+        document.getElementById('rev-waived').textContent = revMoney(r.waived);
+
+        renderRevChart(r.monthly);
+        renderRevStreams(r.byStream, r.totalCollected);
+        renderRevFunnel(r.checkoutFunnel);
+        renderRevCities(r.byCity);
+        renderRevPlans(r.subscriptions);
+        renderRevPayments(r.recentPayments);
+    }
+
+    function renderRevChart(monthly) {
+        const box = document.getElementById('rev-chart');
+        const rows = monthly || [];
+        // Scale to the tallest month; with no revenue at all every bar is
+        // drawn flat and grey rather than dividing by zero.
+        const peak = Math.max.apply(null, rows.map(m => m.amount).concat([0]));
+        box.innerHTML = rows.map(m => {
+            const pct = peak > 0 ? Math.max(2, Math.round((m.amount / peak) * 100)) : 0;
+            const label = new Date(m.month + '-01').toLocaleDateString('en-IN', { month: 'short' });
+            return '<div class="rev-bar-col">' +
+                '<div class="rev-bar-track">' +
+                    '<div class="rev-bar' + (m.amount ? '' : ' empty') + '" style="height:' + (m.amount ? pct : 2) + '%;">' +
+                        (m.amount ? '<span class="rev-bar-value">' + revMoney(m.amount) + '</span>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<div class="rev-bar-label">' + label + '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    function renderRevStreams(byStream, total) {
+        const box = document.getElementById('rev-streams');
+        const keys = Object.keys(byStream || {});
+        if (!keys.length) {
+            box.innerHTML = '<div class="rev-empty">No revenue collected yet.</div>';
+            return;
+        }
+        box.innerHTML = keys
+            .sort((a, b) => byStream[b].amount - byStream[a].amount)
+            .map(key => {
+                const s = byStream[key];
+                const pct = total > 0 ? Math.round((s.amount / total) * 100) : 0;
+                return '<div class="rev-row">' +
+                    '<div class="rev-row-head">' +
+                        '<span class="rev-row-name">' + (STREAM_LABELS[key] || key) +
+                            ' <span class="rev-row-meta">· ' + s.count + ' txn</span></span>' +
+                        '<span class="rev-row-value">' + revMoney(s.amount) + '</span>' +
+                    '</div>' +
+                    '<div class="rev-track"><div class="rev-track-fill ' + key + '" style="width:' + pct + '%;"></div></div>' +
+                '</div>';
+            }).join('');
+    }
+
+    function renderRevFunnel(funnel) {
+        const f = funnel || { created: 0, paid: 0, failed: 0 };
+        const opened = f.created + f.paid + f.failed;
+        const rate = opened > 0 ? Math.round((f.paid / opened) * 100) : 0;
+        document.getElementById('rev-funnel').innerHTML =
+            '<div class="rev-row">' +
+                '<div class="rev-row-head">' +
+                    '<span class="rev-row-name">Completed <span class="rev-row-meta">· ' + f.paid + ' of ' + opened + ' orders</span></span>' +
+                    '<span class="rev-row-value">' + rate + '%</span>' +
+                '</div>' +
+                '<div class="rev-track"><div class="rev-track-fill subscription" style="width:' + rate + '%;"></div></div>' +
+            '</div>' +
+            '<div class="rev-row-meta">' + f.created + ' abandoned at checkout · ' + f.failed + ' failed</div>';
+    }
+
+    function renderRevCities(cities) {
+        const box = document.getElementById('rev-cities');
+        const rows = cities || [];
+        if (!rows.length) {
+            box.innerHTML = '<div class="rev-empty">No deals have closed yet.</div>';
+            return;
+        }
+        const peak = Math.max.apply(null, rows.map(c => c.amount));
+        box.innerHTML = rows.map(c =>
+            '<div class="rev-row">' +
+                '<div class="rev-row-head">' +
+                    '<span class="rev-row-name">' + escapeHtml(c.city) +
+                        ' <span class="rev-row-meta">· ' + c.deals + ' deal' + (c.deals === 1 ? '' : 's') + '</span></span>' +
+                    '<span class="rev-row-value">' + revMoney(c.amount) + '</span>' +
+                '</div>' +
+                '<div class="rev-track"><div class="rev-track-fill commission" style="width:' +
+                    (peak > 0 ? Math.round((c.amount / peak) * 100) : 0) + '%;"></div></div>' +
+            '</div>'
+        ).join('');
+    }
+
+    function renderRevPlans(subscriptions) {
+        const box = document.getElementById('rev-plans');
+        const entries = Object.entries(subscriptions || {});
+        if (!entries.length) {
+            box.innerHTML = '<div class="rev-empty">No sellers on a paid plan yet.</div>';
+            return;
+        }
+        const peak = Math.max.apply(null, entries.map(e => e[1]));
+        box.innerHTML = entries.map(([tier, count]) =>
+            '<div class="rev-row">' +
+                '<div class="rev-row-head">' +
+                    '<span class="rev-row-name" style="text-transform:capitalize;">' + escapeHtml(tier) + '</span>' +
+                    '<span class="rev-row-value">' + count + ' seller' + (count === 1 ? '' : 's') + '</span>' +
+                '</div>' +
+                '<div class="rev-track"><div class="rev-track-fill subscription" style="width:' +
+                    Math.round((count / peak) * 100) + '%;"></div></div>' +
+            '</div>'
+        ).join('');
+    }
+
+    function renderRevPayments(payments) {
+        const tbody = document.getElementById('rev-payments-tbody');
+        const rows = payments || [];
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="6" style="padding:1.5rem;text-align:center;color:var(--text-secondary);">No payments recorded yet.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = rows.map(p => {
+            const colour = p.status === 'paid' ? 'var(--brand-primary)'
+                         : (p.status === 'failed' ? 'var(--danger)' : 'var(--warning)');
+            return '<tr>' +
+                '<td style="font-family:monospace;font-size:0.8125rem;color:var(--text-secondary);">' + escapeHtml(p.receipt) + '</td>' +
+                '<td>' + escapeHtml(p.payerName || '—') + '</td>' +
+                '<td>' + escapeHtml(p.description) + '</td>' +
+                '<td style="font-weight:600;">' + revMoney(p.amount) + '</td>' +
+                '<td><span style="color:' + colour + ';font-weight:600;text-transform:capitalize;">' + escapeHtml(p.status) + '</span></td>' +
+                '<td style="color:var(--text-secondary);font-size:0.8125rem;">' +
+                    new Date(p.paidAt || p.createdAt).toLocaleDateString('en-IN',
+                        { day: '2-digit', month: 'short', year: 'numeric' }) + '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    document.getElementById('btn-refresh-revenue').addEventListener('click', loadRevenue);
+
+    // ---------------- Initial load ----------------
+    loadSuperuserStats();
+    loadSuperuserUsers();
+    loadSuperuserProperties();
+</script>
 </body>
 </html>

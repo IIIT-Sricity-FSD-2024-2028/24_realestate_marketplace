@@ -63,8 +63,6 @@
                     </svg>
                 </button>
                 <div id="buyerMgmt" class="dropdown-content open">
-                    <a href="#" data-page="scheduled-visits" class="dropdown-item"
-                        onclick="switchPage(event, 'scheduled-visits')"><span>Site Visits</span></a>
                     <a href="#" data-page="negotiate" class="dropdown-item"
                         onclick="switchPage(event, 'negotiate')"><span>Negotiate</span></a>
                     <a href="#" data-page="track-payment" class="dropdown-item"
@@ -89,6 +87,13 @@
                         onclick="switchPage(event, 'rent-given')"><span>Rent Given Properties</span></a>
                 </div>
 
+                <a href="#" data-page="billing" class="nav-item" onclick="switchPage(event, 'billing')">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="1" y="4" width="22" height="16" rx="2" />
+                        <line x1="1" y1="10" x2="23" y2="10" />
+                    </svg>
+                    <span>Billing &amp; Plans</span>
+                </a>
                 <a href="#" data-page="notifications" class="nav-item" onclick="switchPage(event, 'notifications')">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -108,11 +113,11 @@
                 <div class="user-profile">
                     <div class="user-avatar">SJ</div>
                     <div class="user-info">
-                        <div class="user-name">Sarah Johnson</div>
+                        <div class="user-name" id="sidebar-user-name">Sarah Johnson</div>
                         <div class="user-type">Seller Account</div>
                     </div>
                 </div>
-                <button class="logout-btn" onclick="window.location.href='index.html'">
+                <button class="logout-btn" onclick="TruEstate.logout('seller')">
                     <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -130,7 +135,7 @@
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Seller Dashboard</h1>
-                        <p class="page-subtitle">Welcome back, Sarah Johnson! Here's your overview</p>
+                        <p class="page-subtitle">Welcome back, <span id="dash-welcome-name">Sarah Johnson</span>! Here's your overview</p>
                     </div>
                     <div class="user-avatar" style="width:2.5rem;height:2.5rem;">SJ</div>
                 </div>
@@ -186,31 +191,8 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="color:#fff;">Luxury 3BHK Apartment</td>
-                                    <td style="color:#9ca3af;">Mumbai</td>
-                                    <td style="color:#fff;">₹1,25,00,000</td>
-                                    <td><span class="status-badge badge-green">● Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="color:#fff;">Modern Downtown Apt</td>
-                                    <td style="color:#9ca3af;">Banjara Hills</td>
-                                    <td style="color:#fff;">₹1,78,00,000</td>
-                                    <td><span class="status-badge badge-green">● Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="color:#fff;">Skyline Penthouse</td>
-                                    <td style="color:#9ca3af;">Gachibowli</td>
-                                    <td style="color:#fff;">₹7,20,00,000</td>
-                                    <td><span class="status-badge badge-orange">● Pending</span></td>
-                                </tr>
-                                <tr>
-                                    <td style="color:#fff;">Cozy Studio</td>
-                                    <td style="color:#9ca3af;">HITEC City</td>
-                                    <td style="color:#fff;">₹92,00,000</td>
-                                    <td><span class="status-badge badge-green">● Approved</span></td>
-                                </tr>
+                            <tbody id="recent-listings-table">
+                                <tr><td colspan="4" style="text-align:center;color:#9ca3af;padding:1.5rem;">Loading…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -223,6 +205,7 @@
                     <div>
                         <h1 class="page-title">My Listings</h1>
                         <p class="page-subtitle">Create and manage your property listings</p>
+                        <div id="quota-notice-listings" class="quota-notice" style="display:none;margin-top:1rem;"></div>
                     </div>
                 </div>
                 <div class="content-section">
@@ -244,14 +227,14 @@
                     </div>
                     <!-- Filter pills -->
                     <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                        <button class="pill pill-active" onclick="filterListings(this, 'all')">All <span class="count"
-                                id="pill-count-all">4</span></button>
-                        <button class="pill pill-inactive" onclick="filterListings(this, 'approved')">Approved <span
-                                class="count" id="pill-count-approved">2</span></button>
-                        <button class="pill pill-inactive" onclick="filterListings(this, 'pending')">Pending <span
-                                class="count" id="pill-count-pending">1</span></button>
-                        <button class="pill pill-inactive" onclick="filterListings(this, 'rejected')">Rejected <span
-                                class="count" id="pill-count-rejected">1</span></button>
+                        <button class="pill pill-active" data-status="all" onclick="filterListings(this, 'all')">All <span class="count"
+                                id="pill-count-all">0</span></button>
+                        <button class="pill pill-inactive" data-status="approved" onclick="filterListings(this, 'approved')">Approved <span
+                                class="count" id="pill-count-approved">0</span></button>
+                        <button class="pill pill-inactive" data-status="pending" onclick="filterListings(this, 'pending')">Pending <span
+                                class="count" id="pill-count-pending">0</span></button>
+                        <button class="pill pill-inactive" data-status="rejected" onclick="filterListings(this, 'rejected')">Rejected <span
+                                class="count" id="pill-count-rejected">0</span></button>
                     </div>
                     <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">All Properties</h2>
                     <div class="card" style="padding: 0; overflow: hidden;">
@@ -267,66 +250,7 @@
                                 </tr>
                             </thead>
                             <tbody id="listings-table">
-                                <tr data-status="approved">
-                                    <td style="color:#fff;">Luxury 3BHK Apartment</td>
-                                    <td style="color:#9ca3af;">Apartment</td>
-                                    <td style="color:#9ca3af;">Mumbai</td>
-                                    <td style="color:#fff;">₹1.25 Cr</td>
-                                    <td><span class="status-badge badge-green">● Approved</span></td>
-                                    <td>
-                                        <button onclick="alert('Cannot edit demo property')"
-                                            style="background:none;border:none;color:#3b82f6;cursor:pointer;margin-right:0.5rem;"
-                                            title="Edit">✎</button>
-                                        <button onclick="alert('Cannot delete demo property')"
-                                            style="background:none;border:none;color:#ef4444;cursor:pointer;"
-                                            title="Delete">🗑</button>
-                                    </td>
-                                </tr>
-                                <tr data-status="approved">
-                                    <td style="color:#fff;">Modern Downtown Apt</td>
-                                    <td style="color:#9ca3af;">Apartment</td>
-                                    <td style="color:#9ca3af;">Banjara Hills</td>
-                                    <td style="color:#fff;">₹1.78 Cr</td>
-                                    <td><span class="status-badge badge-green">● Approved</span></td>
-                                    <td>
-                                        <button onclick="alert('Cannot edit demo property')"
-                                            style="background:none;border:none;color:#3b82f6;cursor:pointer;margin-right:0.5rem;"
-                                            title="Edit">✎</button>
-                                        <button onclick="alert('Cannot delete demo property')"
-                                            style="background:none;border:none;color:#ef4444;cursor:pointer;"
-                                            title="Delete">🗑</button>
-                                    </td>
-                                </tr>
-                                <tr data-status="pending">
-                                    <td style="color:#fff;">Skyline Penthouse</td>
-                                    <td style="color:#9ca3af;">Penthouse</td>
-                                    <td style="color:#9ca3af;">Gachibowli</td>
-                                    <td style="color:#fff;">₹7.2 Cr</td>
-                                    <td><span class="status-badge badge-orange">● Pending</span></td>
-                                    <td>
-                                        <button onclick="alert('Cannot edit demo property')"
-                                            style="background:none;border:none;color:#3b82f6;cursor:pointer;margin-right:0.5rem;"
-                                            title="Edit">✎</button>
-                                        <button onclick="alert('Cannot delete demo property')"
-                                            style="background:none;border:none;color:#ef4444;cursor:pointer;"
-                                            title="Delete">🗑</button>
-                                    </td>
-                                </tr>
-                                <tr data-status="rejected">
-                                    <td style="color:#fff;">Old Heritage House</td>
-                                    <td style="color:#9ca3af;">Villa</td>
-                                    <td style="color:#9ca3af;">Secunderabad</td>
-                                    <td style="color:#fff;">₹3.5 Cr</td>
-                                    <td><span class="status-badge badge-red">● Rejected</span></td>
-                                    <td>
-                                        <button onclick="alert('Cannot edit demo property')"
-                                            style="background:none;border:none;color:#3b82f6;cursor:pointer;margin-right:0.5rem;"
-                                            title="Edit">✎</button>
-                                        <button onclick="alert('Cannot delete demo property')"
-                                            style="background:none;border:none;color:#ef4444;cursor:pointer;"
-                                            title="Delete">🗑</button>
-                                    </td>
-                                </tr>
+                                <tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">Loading…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -343,6 +267,10 @@
                     </div>
                     <p class="page-subtitle" style="margin-bottom:2rem;margin-left:2.75rem;">Fill in the details to
                         create a new listing</p>
+                    <!-- Plan quota, shown before the form rather than only on rejection.
+                         Hitting the limit at submit time — after filling in a long form — is
+                         the worst moment to learn about it. -->
+                    <div id="quota-notice" class="quota-notice" style="display:none;"></div>
                     <form id="addPropertyForm" onsubmit="submitNewProperty(event)">
                         <!-- Basic Information -->
                         <div class="card" style="margin-bottom:1.5rem;">
@@ -369,14 +297,14 @@
                                     </select></div>
                                 <div><label
                                         style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Transaction
-                                        Type *</label><select required
+                                        Type *</label><select id="new-prop-transaction" required
                                         style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;appearance:auto;">
-                                        <option>Sell</option>
-                                        <option>Rent</option>
+                                        <option value="sale">Sell</option>
+                                        <option value="rent">Rent</option>
                                     </select></div>
                                 <div><label
                                         style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Status
-                                        *</label><select required
+                                        *</label><select id="new-prop-readiness" required
                                         style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;appearance:auto;">
                                         <option>Ready to Move</option>
                                         <option>Under Construction</option>
@@ -389,15 +317,36 @@
                                 style="font-size:1.125rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">
                                 <span style="color:#1DB954;">📍</span> Location Details
                             </h2>
-                            <div style="margin-bottom:1.25rem;"><label
-                                    style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">City /
-                                    Location *</label><input id="new-prop-location" type="text"
-                                    placeholder="e.g., Mumbai, Bangalore, Delhi" required
-                                    style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;">
+                            <!-- truEstate has launched in four cities only, each run by its own
+                                 admin, so the city is a fixed choice rather than free text — a
+                                 listing anywhere else would have nobody to verify it. The state
+                                 follows from the city and is shown read-only. -->
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+                                <div><label
+                                        style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">City
+                                        *</label><select id="new-prop-location" required
+                                        onchange="syncPropertyState()"
+                                        style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;">
+                                        <option value="">Select a city</option>
+                                        <option value="Hyderabad">Hyderabad</option>
+                                        <option value="Chennai">Chennai</option>
+                                        <option value="Bangalore">Bangalore</option>
+                                        <option value="Kochi">Kochi</option>
+                                    </select>
+                                    <span
+                                        style="display:block;font-size:0.75rem;color:#6b7280;margin-top:0.4rem;">We
+                                        currently operate in these four cities only.</span>
+                                </div>
+                                <div><label
+                                        style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">State</label><input
+                                        id="new-prop-state" type="text" readonly
+                                        placeholder="Set by the city you pick"
+                                        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#9ca3af;font-size:0.875rem;cursor:not-allowed;">
+                                </div>
                             </div>
                             <div><label
                                     style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Full
-                                    Address *</label><input type="text"
+                                    Address *</label><input id="new-prop-address" type="text"
                                     placeholder="e.g., 123 Main Street, Sector 5, Banjara Hills" required
                                     style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;">
                             </div>
@@ -454,74 +403,40 @@
                             </h2>
                             <div><label
                                     style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Description</label><textarea
-                                    rows="5"
-                                    placeholder="Describe your property, its features, amenities, and any additional information..."
+                                    id="new-prop-description" rows="5" required minlength="20"
+                                    placeholder="Describe your property, its features, amenities, and any additional information (min 20 characters)..."
                                     style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;resize:vertical;"></textarea>
                             </div>
                         </div>
                         <!-- Property Images -->
                         <div class="card" style="margin-bottom:1.5rem;border-style:dashed;">
                             <h2
-                                style="font-size:1.125rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;">
-                                <span style="color:#1DB954;">🖼️</span> Property Images
+                                style="font-size:1.125rem;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;">
+                                <span style="color:#1DB954;">🖼️</span> Property Photos
                             </h2>
-                            <div
-                                style="text-align:center;padding:2rem;border:2px dashed rgba(255,255,255,0.1);border-radius:0.75rem;">
-                                <svg style="width:3rem;height:3rem;color:#9ca3af;margin-bottom:1rem;" fill="none"
-                                    stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="17 8 12 3 7 8" />
-                                    <line x1="12" y1="3" x2="12" y2="15" />
-                                </svg>
-                                <p style="color:#9ca3af;margin-bottom:0.25rem;">Click to upload or drag and drop</p>
-                                <p style="color:#666;font-size:0.75rem;margin-bottom:1rem;">PNG, JPG up to 10MB (Max 10
-                                    images)</p>
-                                <button type="button" class="btn-primary" onclick="showToast('File picker opened')"
-                                    style="padding:0.5rem 1.5rem;">Choose Files</button>
-                            </div>
+                            <p style="color:#9ca3af;font-size:0.8125rem;margin-bottom:1rem;">Photos buyers will see on the listing. JPG, PNG, or WEBP — up to 10MB each.</p>
+                            <input type="file" id="new-prop-images" multiple accept=".jpg,.jpeg,.png,.webp"
+                                style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;">
+                            <p style="color:#666;font-size:0.75rem;margin-top:0.5rem;">Uploaded automatically once the listing is created below. Public — shown to buyers.</p>
+                        </div>
+                        <!-- Verification Documents -->
+                        <div class="card" style="margin-bottom:1.5rem;border-style:dashed;">
+                            <h2
+                                style="font-size:1.125rem;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;">
+                                <span style="color:#1DB954;">📄</span> Verification Documents
+                            </h2>
+                            <p style="color:#9ca3af;font-size:0.8125rem;margin-bottom:1rem;">Upload proof of ownership (deed, tax receipt, ID) so an admin can verify this listing. PDF, JPG, or PNG — up to 10MB each.</p>
+                            <input type="file" id="new-prop-documents" multiple accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                style="width:100%;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;font-size:0.875rem;">
+                            <p style="color:#666;font-size:0.75rem;margin-top:0.5rem;">Uploaded automatically once the listing is created below. Private — only visible to admins (never shown to buyers).</p>
                         </div>
                         <!-- Action Buttons -->
                         <div style="display:flex;gap:1rem;">
                             <button type="button" class="btn-outline"
                                 onclick="switchPage(event,'my-listings')">Cancel</button>
-                            <button type="submit" class="btn-primary">Submit for Review</button>
+                            <button type="submit" class="btn-primary" id="submit-new-property-btn">Submit for Review</button>
                         </div>
                     </form>
-                </div>
-            </div>
-
-            <!-- Site Visits -->
-            <div id="page-scheduled-visits" class="page-content">
-                <!-- Header -->
-                <div
-                    style="padding:2rem 2.5rem 1rem 2.5rem; display:flex; justify-content:space-between; align-items:center;">
-                    <h1 style="font-size:2rem; font-weight:700; color:#fff; margin:0;">Scheduled Visits</h1>
-                    <div class="user-avatar"
-                        style="width:2.5rem; height:2.5rem; border-radius:50%; background:#1DB954; color:#000; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1rem;">
-                        JD</div>
-                </div>
-
-                <!-- Tabs -->
-                <div style="padding:0 2.5rem; display:flex; gap:0.5rem; margin-bottom:1.5rem;">
-                    <button id="vtab-upcoming" class="visit-subtab" onclick="switchSellerVisitTab('upcoming')"
-                        style="background:#1DB954; color:#000; padding:0.5rem 1.25rem; border-radius:0.5rem; font-weight:600; font-size:0.875rem; border:none; cursor:pointer; transition:all 0.2s;">Upcoming</button>
-                    <button id="vtab-completed" class="visit-subtab" onclick="switchSellerVisitTab('completed')"
-                        style="background:transparent; color:#9ca3af; padding:0.5rem 1.25rem; border-radius:0.5rem; font-weight:600; font-size:0.875rem; border:none; cursor:pointer; transition:all 0.2s;">Completed</button>
-                    <button id="vtab-failed" class="visit-subtab" onclick="switchSellerVisitTab('failed')"
-                        style="background:transparent; color:#9ca3af; padding:0.5rem 1.25rem; border-radius:0.5rem; font-weight:600; font-size:0.875rem; border:none; cursor:pointer; transition:all 0.2s;">Failed</button>
-                </div>
-
-                <!-- Card Container -->
-                <div style="padding:0 2.5rem 2.5rem 2.5rem; flex:1;">
-                    <div
-                        style="background:#1a1a1a; border:1px solid rgba(255,255,255,0.05); border-radius:0.75rem; overflow:hidden; min-height: 400px;">
-                        <div style="padding:1.5rem 2rem; border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <h2 style="font-size:1.25rem; font-weight:700; color:#fff; margin:0;">Visits</h2>
-                        </div>
-                        <div id="seller-visits-container">
-                            <!-- Dynamically populated by seller-crud.js -->
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -543,278 +458,15 @@
                 </div>
                 <div class="content-section">
                     <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:1rem;">All Negotiations</h2>
-                    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-                        <button class="pill pill-active" onclick="filterNeg(this,'all')">All <span
-                                class="count">6</span></button>
-                        <button class="pill pill-inactive" onclick="filterNeg(this,'ongoing')">Ongoing <span
-                                class="count">3</span></button>
-                        <button class="pill pill-inactive" onclick="filterNeg(this,'completed')">Completed <span
-                                class="count">1</span></button>
-                        <button class="pill pill-inactive" onclick="filterNeg(this,'rejected')">Rejected <span
-                                class="count">2</span></button>
+                    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;" id="neg-filters">
+                        <button class="pill pill-active" onclick="filterNeg(this,'all')">All</button>
+                        <button class="pill pill-inactive" onclick="filterNeg(this,'ongoing')">Ongoing</button>
+                        <button class="pill pill-inactive" onclick="filterNeg(this,'completed')">Completed</button>
+                        <button class="pill pill-inactive" onclick="filterNeg(this,'rejected')">Rejected</button>
                     </div>
-                    <!-- Negotiation Card 1 -->
-                    <div class="card neg-card" data-neg="ongoing">
-                        <div
-                            style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                            <div style="display:flex;align-items:center;gap:1rem;">
-                                <div
-                                    style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
-                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                        <polyline points="9 22 9 12 15 12 15 22" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 style="font-weight:600;font-size:1rem;">Luxury 3BHK Apartment</h3>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">📍 Banjara Hills, Hyderabad</p>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span
-                                            style="color:#fff;font-weight:500;">Akshay Jain</span></p>
-                                </div>
-                            </div>
-                            <span class="status-badge badge-green" style="border:1px solid rgba(29,185,84,0.3);">💬
-                                Ongoing</span>
-                        </div>
-                        <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
-                            <div
-                                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-                                <div>
-                                    <div class="info-label">Listing Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;">Rs 45,00,000</div>
-                                </div>
-                                <div style="text-align:center;">
-                                    <div style="color:#9ca3af;font-size:0.75rem;">💬 In Negotiation</div>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Buyer's Offer</div>
-                                    <div style="font-size:1.25rem;font-weight:700;color:#1DB954;">Rs 42,00,000</div>
-                                </div>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <div class="info-label">Your Counter Offer</div>
-                                    <div style="font-size:1.125rem;font-weight:700;color:#1DB954;">Rs 43,50,000</div>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Last Updated</div>
-                                    <div style="font-weight:500;">2 hours ago</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-                            <button onclick="openCounterOffer(this)"
-                                style="padding:0.625rem 1.25rem;border-radius:0.5rem;border:2px solid #1DB954;background:transparent;color:#1DB954;font-weight:600;cursor:pointer;font-size:0.8125rem;">Make
-                                Counter Offer</button>
-                            <button class="btn-primary" onclick="acceptNeg(this)">Accept Offer</button>
-                            <button class="btn-outline" onclick="showToast('Viewing negotiation details...')">View
-                                Details</button>
-                            <button class="btn-danger" style="margin-left:auto;" onclick="rejectNeg(this)">Reject
-                                Offer</button>
-                        </div>
-                    </div>
-                    <!-- Negotiation Card 2 -->
-                    <div class="card neg-card" data-neg="ongoing">
-                        <div
-                            style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                            <div style="display:flex;align-items:center;gap:1rem;">
-                                <div
-                                    style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
-                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                        <polyline points="9 22 9 12 15 12 15 22" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 style="font-weight:600;">Beach House Villa</h3>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">📍 Jubilee Hills, Hyderabad</p>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span
-                                            style="color:#fff;font-weight:500;">Priya Sharma</span></p>
-                                </div>
-                            </div>
-                            <span class="status-badge badge-green" style="border:1px solid rgba(29,185,84,0.3);">💬
-                                Ongoing</span>
-                        </div>
-                        <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <div class="info-label">Listing Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;">Rs 9,55,00,000</div>
-                                </div>
-                                <div style="text-align:center;color:#9ca3af;font-size:0.75rem;">💬 In Negotiation</div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Buyer's Offer</div>
-                                    <div style="font-size:1.25rem;font-weight:700;color:#1DB954;">Rs 8,75,00,000</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;"><button onclick="openCounterOffer(this)"
-                                style="padding:0.625rem 1.25rem;border-radius:0.5rem;border:2px solid #1DB954;background:transparent;color:#1DB954;font-weight:600;cursor:pointer;font-size:0.8125rem;">Make
-                                Counter Offer</button><button class="btn-primary" onclick="acceptNeg(this)">Accept
-                                Offer</button><button class="btn-outline"
-                                onclick="showToast('Viewing negotiation details...')">View Details</button><button
-                                class="btn-danger" style="margin-left:auto;" onclick="rejectNeg(this)">Reject
-                                Offer</button></div>
-                    </div>
-                    <!-- Negotiation Card 3 - Ongoing -->
-                    <div class="card neg-card" data-neg="ongoing">
-                        <div
-                            style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                            <div style="display:flex;align-items:center;gap:1rem;">
-                                <div
-                                    style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
-                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                        <polyline points="9 22 9 12 15 12 15 22" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 style="font-weight:600;">Modern Downtown Apt</h3>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">📍 Gachibowli, Hyderabad</p>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span
-                                            style="color:#fff;font-weight:500;">Rahul Kumar</span></p>
-                                </div>
-                            </div>
-                            <span class="status-badge badge-green" style="border:1px solid rgba(29,185,84,0.3);">💬
-                                Ongoing</span>
-                        </div>
-                        <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <div class="info-label">Listing Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;">Rs 1,78,00,000</div>
-                                </div>
-                                <div style="text-align:center;color:#9ca3af;font-size:0.75rem;">💬 In Negotiation</div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Buyer's Offer</div>
-                                    <div style="font-size:1.25rem;font-weight:700;color:#1DB954;">Rs 1,65,00,000</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;"><button onclick="openCounterOffer(this)"
-                                style="padding:0.625rem 1.25rem;border-radius:0.5rem;border:2px solid #1DB954;background:transparent;color:#1DB954;font-weight:600;cursor:pointer;font-size:0.8125rem;">Make
-                                Counter Offer</button><button class="btn-primary" onclick="acceptNeg(this)">Accept
-                                Offer</button><button class="btn-outline"
-                                onclick="showToast('Viewing negotiation details...')">View Details</button><button
-                                class="btn-danger" style="margin-left:auto;" onclick="rejectNeg(this)">Reject
-                                Offer</button></div>
-                    </div>
-                    <!-- Negotiation Card 4 - Completed -->
-                    <div class="card neg-card" data-neg="completed">
-                        <div
-                            style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                            <div style="display:flex;align-items:center;gap:1rem;">
-                                <div
-                                    style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
-                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                        <polyline points="9 22 9 12 15 12 15 22" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 style="font-weight:600;">Skyline Penthouse</h3>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">📍 HITEC City, Hyderabad</p>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span
-                                            style="color:#fff;font-weight:500;">Amit Patel</span></p>
-                                </div>
-                            </div>
-                            <span class="status-badge badge-green" style="border:1px solid rgba(29,185,84,0.3);">✓
-                                Completed</span>
-                        </div>
-                        <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <div class="info-label">Listing Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;">Rs 7,20,00,000</div>
-                                </div>
-                                <div style="text-align:center;color:#1DB954;font-size:0.75rem;">✓ Deal Closed</div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Final Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;color:#1DB954;">Rs 6,95,00,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Negotiation Card 5 - Rejected -->
-                    <div class="card neg-card" data-neg="rejected">
-                        <div
-                            style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                            <div style="display:flex;align-items:center;gap:1rem;">
-                                <div
-                                    style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
-                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                        <polyline points="9 22 9 12 15 12 15 22" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 style="font-weight:600;">Cozy Studio</h3>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">📍 Madhapur, Hyderabad</p>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span
-                                            style="color:#fff;font-weight:500;">Sanjay Reddy</span></p>
-                                </div>
-                            </div>
-                            <span class="status-badge badge-red" style="border:1px solid rgba(239,68,68,0.3);">✕
-                                Rejected</span>
-                        </div>
-                        <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <div class="info-label">Listing Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;">Rs 92,00,000</div>
-                                </div>
-                                <div style="text-align:center;color:#ef4444;font-size:0.75rem;">✕ Rejected</div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Buyer's Offer</div>
-                                    <div style="font-size:1.25rem;font-weight:700;color:#ef4444;">Rs 65,00,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Negotiation Card 6 - Rejected -->
-                    <div class="card neg-card" data-neg="rejected">
-                        <div
-                            style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                            <div style="display:flex;align-items:center;gap:1rem;">
-                                <div
-                                    style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
-                                    <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af"
-                                        stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                        <polyline points="9 22 9 12 15 12 15 22" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 style="font-weight:600;">Garden Villa</h3>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">📍 Secunderabad</p>
-                                    <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span
-                                            style="color:#fff;font-weight:500;">Meera Nair</span></p>
-                                </div>
-                            </div>
-                            <span class="status-badge badge-red" style="border:1px solid rgba(239,68,68,0.3);">✕
-                                Rejected</span>
-                        </div>
-                        <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <div class="info-label">Listing Price</div>
-                                    <div style="font-size:1.25rem;font-weight:700;">Rs 3,50,00,000</div>
-                                </div>
-                                <div style="text-align:center;color:#ef4444;font-size:0.75rem;">✕ Rejected</div>
-                                <div style="text-align:right;">
-                                    <div class="info-label">Buyer's Offer</div>
-                                    <div style="font-size:1.25rem;font-weight:700;color:#ef4444;">Rs 2,80,00,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="seller-negotiations-container"><p style="color:#9ca3af;">Loading…</p></div>
                 </div>
             </div>
-
             <!-- Track Payment -->
             <div id="page-track-payment" class="page-content">
                 <div class="page-header">
@@ -862,14 +514,14 @@
                         </div>
                     </div>
                     <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-                        <button class="pill pill-active" onclick="filterPayments(this,'all')">All <span
-                                class="count">6</span></button>
-                        <button class="pill pill-inactive" onclick="filterPayments(this,'ongoing')">Ongoing <span
-                                class="count">2</span></button>
-                        <button class="pill pill-inactive" onclick="filterPayments(this,'completed')">Completed <span
-                                class="count">2</span></button>
-                        <button class="pill pill-inactive" onclick="filterPayments(this,'rejected')">Rejected <span
-                                class="count">2</span></button>
+                        <button class="pill pill-active" data-pay-filter="all" onclick="filterPayments(this,'all')">All <span
+                                class="count" id="pay-count-all">0</span></button>
+                        <button class="pill pill-inactive" data-pay-filter="ongoing" onclick="filterPayments(this,'ongoing')">Ongoing <span
+                                class="count" id="pay-count-ongoing">0</span></button>
+                        <button class="pill pill-inactive" data-pay-filter="completed" onclick="filterPayments(this,'completed')">Completed <span
+                                class="count" id="pay-count-completed">0</span></button>
+                        <button class="pill pill-inactive" data-pay-filter="rejected" onclick="filterPayments(this,'rejected')">Cancelled <span
+                                class="count" id="pay-count-rejected">0</span></button>
                     </div>
                     <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:1rem;">Payment History</h2>
                     <div class="card" style="padding:0;overflow:hidden;">
@@ -1028,94 +680,99 @@
                             <div class="stat-value">83%</div>
                         </div>
                     </div>
-                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
-                        <div class="card" style="padding:0;overflow:hidden;">
-                            <div
-                                style="height:12rem;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                                <img src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=600&q=80"
-                                    alt="Apartment" style="width:100%;height:100%;object-fit:cover;">
-                                <span class="status-badge badge-green" style="position:absolute;top:1rem;right:1rem;">🔑
-                                    RENTED</span><span
-                                    style="position:absolute;bottom:1rem;left:1rem;background:#1DB954;color:#000;padding:0.25rem 0.75rem;border-radius:0.25rem;font-size:0.75rem;font-weight:700;">₹45,000/mo</span>
-                            </div>
-                            <div style="padding:1.25rem;">
-                                <h3 style="font-weight:600;margin-bottom:0.25rem;">Downtown Studio Apartment</h3>
-                                <p style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.75rem;">📍 Gachibowli,
-                                    Hyderabad
-                                </p>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;"><span
-                                        style="color:#9ca3af;font-size:0.875rem;">Monthly Rent:</span><span
-                                        style="color:#1DB954;font-weight:600;">₹45,000/mo</span></div>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><span
-                                        style="color:#9ca3af;font-size:0.875rem;">Payment Status:</span><span
-                                        style="color:#1DB954;font-weight:600;">On Time</span></div>
-                                <p style="color:#9ca3af;font-size:0.875rem;">👤 Tenant: <span style="color:#fff;">Emily
-                                        Rodriguez</span></p>
-                                <p style="color:#9ca3af;font-size:0.875rem;">📅 Lease: <span
-                                        style="color:#fff;">2025-12-01 - 2026-11-30</span></p>
-                                <p style="color:#9ca3af;font-size:0.875rem;">⏰ Next Due: <span
-                                        style="color:#fff;">2026-04-01</span></p>
-                            </div>
-                        </div>
-                        <div class="card" style="padding:0;overflow:hidden;">
-                            <div
-                                style="height:12rem;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80"
-                                    alt="House" style="width:100%;height:100%;object-fit:cover;">
-                                <span class="status-badge badge-green" style="position:absolute;top:1rem;right:1rem;">🔑
-                                    RENTED</span><span
-                                    style="position:absolute;bottom:1rem;left:1rem;background:#1DB954;color:#000;padding:0.25rem 0.75rem;border-radius:0.25rem;font-size:0.75rem;font-weight:700;">₹65,000/mo</span>
-                            </div>
-                            <div style="padding:1.25rem;">
-                                <h3 style="font-weight:600;margin-bottom:0.25rem;">Cozy 2BR Suburban House</h3>
-                                <p style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.75rem;">📍 Kukatpally, Hyd
-                                </p>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;"><span
-                                        style="color:#9ca3af;font-size:0.875rem;">Monthly Rent:</span><span
-                                        style="color:#1DB954;font-weight:600;">₹65,000/mo</span></div>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><span
-                                        style="color:#9ca3af;font-size:0.875rem;">Payment Status:</span><span
-                                        style="color:#1DB954;font-weight:600;">On Time</span></div>
-                                <p style="color:#9ca3af;font-size:0.875rem;">👤 Tenant: <span style="color:#fff;">Mark
-                                        Thompson</span></p>
-                                <p style="color:#9ca3af;font-size:0.875rem;">📅 Lease: <span
-                                        style="color:#fff;">2026-01-15 - 2027-01-14</span></p>
-                                <p style="color:#9ca3af;font-size:0.875rem;">⏰ Next Due: <span
-                                        style="color:#fff;">2026-04-15</span></p>
-                            </div>
-                        </div>
-                        <div class="card" style="padding:0;overflow:hidden;">
-                            <div
-                                style="height:12rem;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80"
-                                    alt="Loft" style="width:100%;height:100%;object-fit:cover;">
-                                <span class="status-badge badge-green" style="position:absolute;top:1rem;right:1rem;">🔑
-                                    RENTED</span><span
-                                    style="position:absolute;bottom:1rem;left:1rem;background:#1DB954;color:#000;padding:0.25rem 0.75rem;border-radius:0.25rem;font-size:0.75rem;font-weight:700;">₹80,000/mo</span>
-                            </div>
-                            <div style="padding:1.25rem;">
-                                <h3 style="font-weight:600;margin-bottom:0.25rem;">Modern Loft in Arts District</h3>
-                                <p style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.75rem;">📍 HITEC City, Hyd
-                                </p>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;"><span
-                                        style="color:#9ca3af;font-size:0.875rem;">Monthly Rent:</span><span
-                                        style="color:#1DB954;font-weight:600;">₹80,000/mo</span></div>
-                                <div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><span
-                                        style="color:#9ca3af;font-size:0.875rem;">Payment Status:</span><span
-                                        style="color:#ef4444;font-weight:600;">Late</span></div>
-                                <p style="color:#9ca3af;font-size:0.875rem;">👤 Tenant: <span style="color:#fff;">Sarah
-                                        Kim</span></p>
-                                <p style="color:#9ca3af;font-size:0.875rem;">📅 Lease: <span
-                                        style="color:#fff;">2025-10-01 - 2026-09-30</span></p>
-                                <p style="color:#9ca3af;font-size:0.875rem;">⏰ Next Due: <span
-                                        style="color:#fff;">2026-03-01</span></p>
-                            </div>
-                        </div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;"
+                        id="seller-rented-container">
+                        <!-- Dynamically populated completed lettings go here -->
                     </div>
                 </div>
             </div>
 
             <!-- Notifications -->
+            <!-- Billing & Plans -->
+            <div id="page-billing" class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Billing &amp; Plans</h1>
+                        <p class="page-subtitle">Your listing plan, paid promotions and platform invoices</p>
+                    </div>
+                    <div id="billing-gateway-badge" class="status-badge badge-orange">Loading…</div>
+                </div>
+
+                <div class="content-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Current plan</div>
+                            <div class="stat-value" id="bill-plan-name" style="font-size:1.75rem;">—</div>
+                            <div class="stat-label" id="bill-plan-expiry" style="margin-top:0.35rem;"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Listing quota</div>
+                            <div class="stat-value" id="bill-quota" style="font-size:1.75rem;">—</div>
+                            <div class="quota-bar"><div class="quota-fill" id="bill-quota-fill"></div></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Outstanding commission</div>
+                            <div class="stat-value" id="bill-due" style="font-size:1.75rem;">₹0</div>
+                            <div class="stat-label" id="bill-due-note" style="margin-top:0.35rem;">Nothing owed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Paid to truEstate</div>
+                            <div class="stat-value" id="bill-spend" style="font-size:1.75rem;">₹0</div>
+                            <div class="stat-label" style="margin-top:0.35rem;">Lifetime</div>
+                        </div>
+                    </div>
+
+                    <!-- Plans -->
+                    <div class="billing-section-head">
+                        <h2 class="billing-h2">Listing plans</h2>
+                        <div class="cycle-toggle" id="bill-cycle-toggle"></div>
+                    </div>
+                    <div class="plan-grid" id="bill-plan-grid"></div>
+
+                    <!-- Promotions -->
+                    <h2 class="billing-h2" style="margin-top:2.5rem;">Promote a listing</h2>
+                    <p class="billing-sub">Paid promotion puts a listing at the very top of buyer search results.</p>
+                    <div class="card">
+                        <div class="promote-row">
+                            <div class="promote-field">
+                                <label class="form-label">Listing</label>
+                                <select id="bill-promote-property" class="form-control"></select>
+                            </div>
+                            <div class="promote-packs" id="bill-pack-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Commission invoices -->
+                    <h2 class="billing-h2" style="margin-top:2.5rem;">Commission invoices</h2>
+                    <p class="billing-sub">Charged only when a deal actually closes — never on an offer that falls through.</p>
+                    <div class="card" style="padding:0;overflow:hidden;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Property</th><th>Deal value</th><th>Rate</th><th>Amount</th><th>Status</th><th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="bill-commissions-table">
+                                <tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">Loading…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Payment history -->
+                    <h2 class="billing-h2" style="margin-top:2.5rem;">Payment history</h2>
+                    <div class="card" style="padding:0;overflow:hidden;">
+                        <table>
+                            <thead>
+                                <tr><th>Receipt</th><th>For</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+                            </thead>
+                            <tbody id="bill-payments-table">
+                                <tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:1.5rem;">Loading…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div id="page-notifications" class="page-content">
                 <div class="page-header">
                     <div>
@@ -1224,7 +881,7 @@
                         </div>
                         <div style="flex:1;">
                             <h2 style="font-size:1.5rem;font-weight:700;" id="prof-display-name">Sarah Johnson</h2>
-                            <p style="color:#9ca3af;font-size:0.875rem;margin-top:0.2rem;">sarah.johnson@email.com ·
+                            <p style="color:#9ca3af;font-size:0.875rem;margin-top:0.2rem;" id="prof-summary-email">sarah.johnson@email.com ·
                                 Seller Account</p>
                             <p style="color:#1DB954;font-size:0.8rem;margin-top:0.2rem;font-weight:600;">Member since
                                 January 2024</p>
@@ -1367,8 +1024,28 @@
         </main>
     </div>
 
+
     <script src="app.js"></script>
     <script>
+        TruEstate.requireAuth('seller');
+    </script>
+    <script>
+        // The four cities truEstate has launched in, and the state each sits
+        // in. Mirrors ServiceCity/CITY_STATE on the server, which validates
+        // the city and derives the state itself — this copy only drives the
+        // dropdown and the read-only state box.
+        const SERVICE_CITY_STATE = {
+            'Hyderabad': 'Telangana',
+            'Chennai': 'Tamil Nadu',
+            'Bangalore': 'Karnataka',
+            'Kochi': 'Kerala',
+        };
+
+        function syncPropertyState() {
+            const city = document.getElementById('new-prop-location').value;
+            document.getElementById('new-prop-state').value = SERVICE_CITY_STATE[city] || '';
+        }
+
         function switchPage(event, pageName) {
             event.preventDefault();
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
@@ -1397,28 +1074,6 @@
             }
         }
 
-        function acceptNeg(btn) {
-            const card = btn.closest('.neg-card');
-            if (!card) return;
-            card.dataset.neg = 'completed';
-            const badge = card.querySelector('.status-badge');
-            if (badge) { badge.className = 'status-badge badge-green'; badge.style.border = '1px solid rgba(29,185,84,0.3)'; badge.innerHTML = '✓ Completed'; }
-            const btns = card.querySelector('div[style*="display:flex;gap:0.75rem"]');
-            if (btns) btns.remove();
-            showToast('Offer accepted! Negotiation completed.');
-        }
-
-        function rejectNeg(btn) {
-            const card = btn.closest('.neg-card');
-            if (!card) return;
-            card.dataset.neg = 'rejected';
-            const badge = card.querySelector('.status-badge');
-            if (badge) { badge.className = 'status-badge badge-red'; badge.style.border = '1px solid rgba(239,68,68,0.3)'; badge.innerHTML = '✕ Rejected'; }
-            const btns = card.querySelector('div[style*="display:flex;gap:0.75rem"]');
-            if (btns) btns.remove();
-            showToast('Offer rejected.');
-        }
-
         function filterListings(btn, status) {
             document.querySelectorAll('.pill').forEach(p => { p.classList.remove('pill-active'); p.classList.add('pill-inactive'); });
             btn.classList.remove('pill-inactive'); btn.classList.add('pill-active');
@@ -1432,41 +1087,6 @@
             btn.classList.remove('tab-inactive'); btn.classList.add('tab-active');
         }
 
-        function switchVisitTab(btn, tabName) {
-            document.querySelectorAll('#page-scheduled-visits .tab').forEach(t => { t.classList.remove('tab-active'); t.classList.add('tab-inactive'); });
-            btn.classList.remove('tab-inactive'); btn.classList.add('tab-active');
-            document.querySelectorAll('.visit-tab-content').forEach(c => c.style.display = 'none');
-            const target = document.getElementById('visit-tab-' + tabName);
-            if (target) { target.style.display = 'block'; target.style.animation = 'fadeIn 0.3s ease'; }
-        }
-
-        function rejectScheduledVisit(btn) {
-            const visitCard = btn.closest('.visit-card');
-            if (!visitCard) return;
-            const nameEl = visitCard.querySelector('h4');
-            const propertyEl = visitCard.querySelectorAll('p')[0];
-            const name = nameEl ? nameEl.textContent : 'Unknown';
-            const property = propertyEl ? propertyEl.textContent : 'Property';
-            const initials = name.split(' ').map(n => n[0]).join('');
-            const failedContainer = document.getElementById('failed-visits-container');
-            const failedHTML = `<div class="visit-card" style="animation:fadeIn 0.3s ease">
-                <div style="display:flex;align-items:center;gap:1rem;"><div class="avatar" style="background-color:#ef4444;">${initials}</div><div><h4 style="font-weight:600;">${name}</h4><p style="color:#9ca3af;font-size:0.875rem;">${property}</p><p style="color:#9ca3af;font-size:0.75rem;margin-top:0.5rem;">Rejected by seller</p></div></div>
-                <div style="text-align:right;"><span class="status-badge badge-red">● Cancelled</span><p style="color:#9ca3af;font-size:0.75rem;margin-top:0.25rem;">Seller rejected</p></div>
-            </div>`;
-            failedContainer.insertAdjacentHTML('beforeend', failedHTML);
-            visitCard.style.animation = 'cardOut 0.3s ease forwards';
-            setTimeout(() => visitCard.remove(), 300);
-            showToast('Visit rejected and moved to Failed.');
-        }
-
-        function filterNeg(btn, status) {
-            document.querySelectorAll('#page-negotiate .pill').forEach(p => { p.classList.remove('pill-active'); p.classList.add('pill-inactive'); });
-            btn.classList.remove('pill-inactive'); btn.classList.add('pill-active');
-            document.querySelectorAll('.neg-card').forEach(card => {
-                card.style.display = (status === 'all' || card.dataset.neg === status) ? '' : 'none';
-            });
-        }
-
         function filterPayments(btn, status) {
             document.querySelectorAll('#page-track-payment .pill').forEach(p => { p.classList.remove('pill-active'); p.classList.add('pill-inactive'); });
             btn.classList.remove('pill-inactive'); btn.classList.add('pill-active');
@@ -1475,469 +1095,1081 @@
             });
         }
 
-        /* ====== Visit Request Actions ====== */
-        let currentRescheduleId = null;
-        let selectedDay = null;
-        let selectedSlot = null;
 
-        /* Shared helper: add a card to the Upcoming tab and switch to Scheduled Visits */
-        function _addToUpcoming(buyer, date, time) {
-            const initials = buyer.split(' ').map(n => n[0]).join('');
-            const colors = ['#1DB954', '#f97316', '#3b82f6', '#8b5cf6', '#ec4899'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const container = document.getElementById('scheduled-visits-container');
-            const visitHTML = `<div class="visit-card" style="animation:fadeIn 0.3s ease">
-                <div style="display:flex;align-items:center;gap:1rem;"><div class="avatar" style="background-color:${color};">${initials}</div><div><h4 style="font-weight:600;">${buyer}</h4><p style="color:#9ca3af;font-size:0.875rem;">Site Visit</p><p style="color:#9ca3af;font-size:0.75rem;margin-top:0.5rem;">📅 ${date} &nbsp; 🕐 ${time}</p></div></div>
-                <div style="display:flex;gap:0.5rem;align-items:center;"><span class="status-badge badge-green">● Confirmed</span><button class="btn-outline" onclick="openReschedule(null)">Reschedule</button><button class="btn-danger" onclick="rejectScheduledVisit(this)">Reject</button></div>
-            </div>`;
-            container.insertAdjacentHTML('beforeend', visitHTML);
-            // Switch Scheduled Visits page to Upcoming tab
-            document.querySelectorAll('#page-scheduled-visits .tab').forEach(t => { t.classList.remove('tab-active'); t.classList.add('tab-inactive'); });
-            document.querySelector('#page-scheduled-visits .tab')?.classList.replace('tab-inactive', 'tab-active');
-            document.querySelectorAll('.visit-tab-content').forEach(c => c.style.display = 'none');
-            document.getElementById('visit-tab-upcoming').style.display = 'block';
+        /* ====== Negotiations (real backend — /negotiations) ====== */
+        let negotiationsCache = [];
+        let myListingsForNeg = [];
+        let currentNegFilter = 'all';
+        let activeCounterNegId = null;
+
+        function fmtInrSeller(n) {
+            n = Number(n) || 0;
+            // Below a lakh the "Lac" form is actively misleading — a ₹45,000
+            // monthly rent rendered as "₹0.5 Lac", and an empty dashboard as
+            // "₹0 Lac". Small amounts are shown in full instead.
+            if (n === 0) return '₹0';
+            if (n < 100000) return '₹' + n.toLocaleString('en-IN');
+            if (n < 10000000) return '₹' + (n / 100000).toFixed(n % 100000 === 0 ? 0 : 1) + ' Lac';
+            return '₹' + (n / 10000000).toFixed(2) + ' Cr';
         }
 
-        /* Shared helper: add a card to the Failed tab */
-        function _addToFailed(buyer, reason) {
-            const initials = buyer.split(' ').map(n => n[0]).join('');
-            const failedContainer = document.getElementById('failed-visits-container');
-            const html = `<div class="visit-card" style="animation:fadeIn 0.3s ease">
-                <div style="display:flex;align-items:center;gap:1rem;"><div class="avatar" style="background-color:#ef4444;">${initials}</div><div><h4 style="font-weight:600;">${buyer}</h4><p style="color:#9ca3af;font-size:0.875rem;">Site Visit</p><p style="color:#9ca3af;font-size:0.75rem;margin-top:0.5rem;">${reason}</p></div></div>
-                <div style="text-align:right;"><span class="status-badge badge-red">● Declined</span><p style="color:#9ca3af;font-size:0.75rem;margin-top:0.25rem;">Seller declined</p></div>
-            </div>`;
-            failedContainer.insertAdjacentHTML('beforeend', html);
-        }
-
-        function confirmVisit(requestId) {
-            const card = document.getElementById(requestId);
-            if (!card) return;
-            const buyer = card.dataset.agent || card.dataset.buyer;
-            const date = card.dataset.date;
-            const time = card.dataset.time;
-
-            // Add to Upcoming tab in Scheduled Visits
-            _addToUpcoming(buyer, date, time);
-
-            // Navigate to Scheduled Visits page
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-scheduled-visits').classList.add('active');
-            document.querySelectorAll('.nav-item, .dropdown-item').forEach(item => {
-                item.classList.remove('active');
-                const ind = item.querySelector('.nav-indicator'); if (ind) ind.remove();
-            });
-            const svLink = document.querySelector('[data-page="scheduled-visits"]');
-            if (svLink) svLink.classList.add('active');
-
-            // Remove request card
-            card.style.animation = 'cardOut 0.3s ease forwards';
-            setTimeout(() => { card.remove(); checkEmptyRequests(); }, 300);
-            showToast('Visit confirmed! Added to Scheduled Visits → Upcoming.');
-            updateCounts();
-        }
-
-        function declineVisit(requestId) {
-            const card = document.getElementById(requestId);
-            if (!card) return;
-            const buyer = card.dataset.agent || card.dataset.buyer || 'Unknown Buyer';
-
-            // Add to Failed tab in Scheduled Visits
-            _addToFailed(buyer, 'Declined by seller');
-
-            // Navigate to Scheduled Visits → Failed tab
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-scheduled-visits').classList.add('active');
-            document.querySelectorAll('.nav-item, .dropdown-item').forEach(item => {
-                item.classList.remove('active');
-                const ind = item.querySelector('.nav-indicator'); if (ind) ind.remove();
-            });
-            const svLink = document.querySelector('[data-page="scheduled-visits"]');
-            if (svLink) svLink.classList.add('active');
-            // Switch to Failed tab
-            document.querySelectorAll('#page-scheduled-visits .tab').forEach(t => { t.classList.remove('tab-active'); t.classList.add('tab-inactive'); });
-            const tabs = document.querySelectorAll('#page-scheduled-visits .tab');
-            if (tabs[2]) { tabs[2].classList.remove('tab-inactive'); tabs[2].classList.add('tab-active'); }
-            document.querySelectorAll('.visit-tab-content').forEach(c => c.style.display = 'none');
-            document.getElementById('visit-tab-failed').style.display = 'block';
-
-            // Remove request card
-            card.style.animation = 'cardOut 0.3s ease forwards';
-            setTimeout(() => { card.remove(); checkEmptyRequests(); }, 300);
-            showToast('Visit declined. Added to Scheduled Visits → Failed.');
-            updateCounts();
-        }
-
-
-        function checkEmptyRequests() {
-            const remaining = document.querySelectorAll('.visit-request-card');
-            if (remaining.length === 0) {
-                document.getElementById('no-requests-msg').style.display = 'block';
+        // `silent` is passed by the live-refresh poll: repainting a "Loading…"
+        // placeholder every few seconds makes the page flicker and throws away
+        // whatever the user was reading. Only the first (or user-triggered) load
+        // shows it.
+        async function loadSellerNegotiations(silent) {
+            const container = document.getElementById('seller-negotiations-container');
+            if (!container) return;
+            if (!silent) container.innerHTML = '<p style="color:#9ca3af;">Loading…</p>';
+            try {
+                // The listings are fetched alongside the queue purely so an
+                // empty queue can say *why* it's empty: a buyer's offer only
+                // ever reaches this page if it was made on a property THIS
+                // seller submitted and an admin approved. Offers on listings
+                // the admin created directly have no seller counterparty —
+                // the admin handles those — so they will never appear here,
+                // and without this the page just said "No negotiations match".
+                const [queue, listings] = await Promise.all([
+                    TruEstate.api('/negotiations/seller-queue?limit=100'),
+                    TruEstate.api('/properties/mine').catch(() => ({ data: [] })),
+                ]);
+                negotiationsCache = queue.data.items;
+                myListingsForNeg = listings.data || [];
+                renderSellerNegotiations();
+            } catch (err) {
+                container.innerHTML = `<p style="color:#ef4444;">${escapeHtmlSeller(err.message || "Couldn't load negotiations.")}</p>`;
             }
         }
 
-        function updateCounts() {
-            setTimeout(() => {
-                const reqCount = document.querySelectorAll('.visit-request-card').length;
-                document.getElementById('active-requests-count').textContent = reqCount;
-            }, 350);
-        }
-
-        function openReschedule(requestId) {
-            currentRescheduleId = requestId;
-            selectedDay = null;
-            selectedSlot = null;
-            const now = new Date();
-            calYear = now.getFullYear();
-            calMonth = now.getMonth();
-            buildMonthCalendar();
-            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-            document.getElementById('reschedule-msg').value = '';
-            document.getElementById('reschedule-modal').classList.add('show');
-        }
-
-        function closeReschedule() {
-            document.getElementById('reschedule-modal').classList.remove('show');
-            currentRescheduleId = null;
-        }
-
-        let calYear, calMonth;
-        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        function buildMonthCalendar() {
-            const today = new Date();
-            const weekRow = document.getElementById('week-row');
-            weekRow.innerHTML = '';
-            const monthLabel = document.getElementById('month-label');
-            monthLabel.textContent = monthNames[calMonth].toUpperCase() + ' ' + calYear;
-
-            // First day of month (0=Sun,1=Mon,...6=Sat), convert to Mon-based (0=Mon,...6=Sun)
-            const firstDay = new Date(calYear, calMonth, 1).getDay();
-            const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
-            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-
-            // Empty cells for offset
-            for (let i = 0; i < startOffset; i++) {
-                const empty = document.createElement('div');
-                empty.className = 'day-cell empty';
-                weekRow.appendChild(empty);
+        /** Explains an empty negotiations list instead of leaving the seller guessing. */
+        function sellerNegEmptyMessage() {
+            const total = negotiationsCache.length;
+            if (total && currentNegFilter !== 'all') {
+                return 'No negotiations in this category. Switch to “All” to see your other offers.';
             }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const d = new Date(calYear, calMonth, day);
-                const cell = document.createElement('div');
-                cell.className = 'day-cell';
-                const isPast = d < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                if (isPast) cell.classList.add('past-day');
-                cell.innerHTML = `<div class="day-num">${day}</div>`;
-                cell.dataset.dateStr = `${monthNames[calMonth]} ${day}, ${calYear}`;
-                if (!isPast) {
-                    cell.onclick = function () {
-                        document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
-                        this.classList.add('selected');
-                        selectedDay = this.dataset.dateStr;
-                        document.getElementById('slots-date-label').textContent = 'AVAILABLE SLOTS \u2014 ' + monthNames[calMonth].substring(0, 3).toUpperCase() + ' ' + day;
-                    };
-                }
-                weekRow.appendChild(cell);
+            const listings = myListingsForNeg;
+            if (!listings.length) {
+                return 'No offers yet — because you have no listings.<br><span style="color:#6b7280;">Buyer offers only appear here for properties <strong>you</strong> submitted. Add one under <strong>My Listings</strong>; once an admin approves it, it becomes visible to buyers and any offer on it lands here to accept, counter, or reject. Offers on properties the admin listed directly are handled by the admin, not by sellers.</span>';
             }
+            const approved = listings.filter((p) => p.verificationStatus === 'verified').length;
+            if (!approved) {
+                const pending = listings.filter((p) => p.verificationStatus === 'pending').length;
+                return `No offers yet — none of your ${listings.length} listing${listings.length > 1 ? 's are' : ' is'} approved.<br><span style="color:#6b7280;">${pending ? `${pending} listing${pending > 1 ? 's are' : ' is'} still awaiting admin approval. ` : ''}A listing is invisible to buyers until an admin approves it, so no offers can arrive yet.</span>`;
+            }
+            return `No offers yet on your ${approved} approved listing${approved > 1 ? 's' : ''}.<br><span style="color:#6b7280;">When a buyer makes an offer, it appears here for you to accept, counter, or reject.</span>`;
         }
 
-        function changeCalMonth(dir) {
-            calMonth += dir;
-            if (calMonth > 11) { calMonth = 0; calYear++; }
-            if (calMonth < 0) { calMonth = 11; calYear--; }
-            buildMonthCalendar();
+        function negBucket(status) {
+            if (status === 'accepted') return 'completed';
+            if (status === 'rejected' || status === 'withdrawn') return 'rejected';
+            return 'ongoing'; // pending, countered
         }
 
-        function selectSlot(btn) {
-            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedSlot = btn.textContent.trim();
+        function filterNeg(btn, status) {
+            document.querySelectorAll('#neg-filters .pill').forEach(p => { p.classList.remove('pill-active'); p.classList.add('pill-inactive'); });
+            btn.classList.remove('pill-inactive'); btn.classList.add('pill-active');
+            currentNegFilter = status;
+            renderSellerNegotiations();
         }
 
-        function confirmReschedule() {
-            if (!selectedDay || !selectedSlot) {
-                showToast('Please select a date and time slot.');
+        function renderSellerNegotiations() {
+            const container = document.getElementById('seller-negotiations-container');
+            if (!container) return;
+            const filtered = currentNegFilter === 'all' ? negotiationsCache : negotiationsCache.filter(n => negBucket(n.status) === currentNegFilter);
+            if (!filtered.length) {
+                container.innerHTML = `<div class="card" style="text-align:center;color:#9ca3af;padding:2rem 1.5rem;line-height:1.7;">${sellerNegEmptyMessage()}</div>`;
                 return;
             }
-            if (currentRescheduleId) {
-                // Called from a Visit Request card → confirm the visit with new date
-                const card = document.getElementById(currentRescheduleId);
-                if (card) {
-                    const buyer = card.dataset.agent || card.dataset.buyer || 'Visitor';
-                    // Add to Upcoming with the new chosen date/time
-                    _addToUpcoming(buyer, selectedDay, selectedSlot);
-                    // Navigate to Scheduled Visits page
-                    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-                    document.getElementById('page-scheduled-visits').classList.add('active');
-                    document.querySelectorAll('.nav-item, .dropdown-item').forEach(item => {
-                        item.classList.remove('active');
-                        const ind = item.querySelector('.nav-indicator'); if (ind) ind.remove();
-                    });
-                    const svLink = document.querySelector('[data-page="scheduled-visits"]');
-                    if (svLink) svLink.classList.add('active');
-                    // Remove the request card
-                    card.style.animation = 'cardOut 0.3s ease forwards';
-                    setTimeout(() => { card.remove(); checkEmptyRequests(); }, 300);
-                    updateCounts();
-                }
-            } else {
-                // Called from an already-scheduled visit → just update that card's date display
-                // (no specific card to target since openReschedule(null) passes null)
-                // The toast is sufficient feedback
-            }
-            closeReschedule();
-            showToast('Visit rescheduled to ' + selectedDay + ' at ' + selectedSlot + '. Added to Scheduled Visits → Upcoming.');
+            const STATUS_META = {
+                pending: { badge: 'badge-orange', text: '⏳ Pending — awaiting your response' },
+                countered: { badge: 'badge-blue', text: '💬 You countered' },
+                accepted: { badge: 'badge-green', text: '✓ Accepted' },
+                rejected: { badge: 'badge-red', text: '✕ Rejected' },
+                withdrawn: { badge: 'badge-red', text: '↩ Withdrawn by buyer' },
+            };
+            container.innerHTML = filtered.map(n => {
+                const meta = STATUS_META[n.status] || STATUS_META.pending;
+                const location = [n.propertyCity, n.propertyState].filter(Boolean).join(', ') || 'Location pending';
+                const canRespond = n.status === 'pending' || n.status === 'countered';
+                const buttons = canRespond ? `
+                    <button onclick="openCounterOffer('${n.id}')" style="padding:0.625rem 1.25rem;border-radius:0.5rem;border:2px solid #1DB954;background:transparent;color:#1DB954;font-weight:600;cursor:pointer;font-size:0.8125rem;">Make Counter Offer</button>
+                    ${n.status === 'pending' ? `<button class="btn-primary" onclick="acceptSellerNeg('${n.id}')">Accept Offer</button>` : ''}
+                    <button class="btn-danger" style="margin-left:auto;" onclick="rejectSellerNeg('${n.id}')">Reject Offer</button>` : '';
+                return `
+                <div class="card neg-card" data-neg="${negBucket(n.status)}">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                        <div style="display:flex;align-items:center;gap:1rem;">
+                            <div style="width:2.75rem;height:2.75rem;border-radius:0.5rem;background:#282828;display:flex;align-items:center;justify-content:center;">
+                                <svg style="width:1.5rem;height:1.5rem;" fill="none" stroke="#9ca3af" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            </div>
+                            <div>
+                                <h3 style="font-weight:600;font-size:1rem;">${escapeHtmlSeller(n.propertyTitle || 'Property')}</h3>
+                                <p style="color:#9ca3af;font-size:0.875rem;">📍 ${escapeHtmlSeller(location)}</p>
+                                <p style="color:#9ca3af;font-size:0.875rem;">Buyer: <span style="color:#fff;font-weight:500;">${escapeHtmlSeller(n.buyerName || 'Unknown')}</span></p>
+                            </div>
+                        </div>
+                        <span class="status-badge ${meta.badge}">${meta.text}</span>
+                    </div>
+                    <div style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div><div class="info-label">Buyer's Offer</div><div style="font-size:1.25rem;font-weight:700;color:#1DB954;">${fmtInrSeller(n.offerAmount)}</div></div>
+                            ${n.counterAmount ? `<div style="text-align:right;"><div class="info-label">Your Counter Offer</div><div style="font-size:1.125rem;font-weight:700;color:#1DB954;">${fmtInrSeller(n.counterAmount)}</div></div>` : ''}
+                        </div>
+                        ${n.message ? `<div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);color:#9ca3af;font-size:0.8125rem;font-style:italic;">"${escapeHtmlSeller(n.message)}"</div>` : ''}
+                    </div>
+                    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">${buttons}</div>
+                </div>`;
+            }).join('');
         }
 
-
-        /* ====== Counter Offer Functions ====== */
-        let currentCounterCard = null;
-
-        function openCounterOffer(btn) {
-            const card = btn.closest('.neg-card');
-            if (!card) return;
-            currentCounterCard = card;
-            const propName = card.querySelector('h3').textContent;
-            const location = card.querySelectorAll('p[style*="color:#9ca3af"]')[0].textContent;
-            const priceEls = card.querySelectorAll('div[style*="font-size:1.25rem;font-weight:700"]');
-            const listingPrice = priceEls[0] ? priceEls[0].textContent : '';
-            const buyerOffer = priceEls[1] ? priceEls[1].textContent : '';
-            document.getElementById('counter-prop-name').textContent = propName;
-            document.getElementById('counter-prop-location').textContent = location;
-            document.getElementById('counter-listing-price').textContent = listingPrice;
-            document.getElementById('counter-buyer-offer').textContent = buyerOffer;
+        function openCounterOffer(negId) {
+            activeCounterNegId = negId;
+            const n = negotiationsCache.find(x => x.id === negId);
+            document.getElementById('counter-prop-name').textContent = (n && n.propertyTitle) || 'Property';
+            document.getElementById('counter-prop-location').textContent = n ? [n.propertyCity, n.propertyState].filter(Boolean).join(', ') : '';
+            document.getElementById('counter-buyer-offer').textContent = n ? fmtInrSeller(n.offerAmount) : '';
             document.getElementById('counter-offer-input').value = '';
             document.getElementById('counter-offer-modal').classList.add('show');
         }
 
         function closeCounterOffer() {
             document.getElementById('counter-offer-modal').classList.remove('show');
-            currentCounterCard = null;
+            activeCounterNegId = null;
         }
 
-        function submitNewProperty(event) {
+        async function acceptSellerNeg(id) {
+            try {
+                await TruEstate.api('/negotiations/' + id + '/accept', { method: 'PATCH' });
+                showToast('Offer accepted — purchase created');
+                loadSellerNegotiations();
+            } catch (err) {
+                showToast(err.message || 'Failed to accept offer', 'error');
+            }
+        }
+
+        async function rejectSellerNeg(id) {
+            const reason = prompt('Reason for rejection (optional, shown to the buyer):');
+            if (reason === null) return;
+            try {
+                await TruEstate.api('/negotiations/' + id + '/reject', { method: 'PATCH', body: JSON.stringify({ reason: reason.trim() || undefined }) });
+                showToast('Offer rejected');
+                loadSellerNegotiations();
+            } catch (err) {
+                showToast(err.message || 'Failed to reject offer', 'error');
+            }
+        }
+
+        /* ====== Track Payments (real backend — /purchases, read-only) ====== */
+        const PTRACK_STEPS_SELLER = ['Offer Accepted', 'Document Verification', 'Token Payment', 'Full Payment', 'Registration'];
+
+        async function loadSellerPurchases(silent) {
+            const tbody = document.getElementById('payments-table');
+            if (!tbody) return;
+            if (!silent) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">Loading…</td></tr>';
+            try {
+                const result = await TruEstate.api('/purchases/seller-queue?limit=100');
+                renderSellerPurchases(result.data.items);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:1.5rem;">${escapeHtmlSeller(err.message || "Couldn't load purchases.")}</td></tr>`;
+            }
+        }
+
+        function renderSellerPurchases(purchases) {
+            sellerPurchases = purchases;
+            renderSellerSummary();
+            const tbody = document.getElementById('payments-table');
+            if (!tbody) return;
+            if (!purchases.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">No purchases yet — they appear here once you accept a buyer\'s offer.</td></tr>';
+            } else {
+                tbody.innerHTML = purchases.map(p => {
+                    const bucket = p.dealStatus === 'completed' ? 'completed' : p.dealStatus === 'cancelled' ? 'rejected' : 'ongoing';
+                    const badge = p.dealStatus === 'completed' ? 'badge-green' : p.dealStatus === 'cancelled' ? 'badge-red' : 'badge-orange';
+                    const label = p.dealStatus === 'completed' ? '● Completed' : p.dealStatus === 'cancelled' ? '● Cancelled' : `● ${PTRACK_STEPS_SELLER[p.dealStep - 1] || 'In Progress'}`;
+                    // A deal parked at Registration with commission unpaid cannot
+                    // be closed by the admin, and the seller-side share is the
+                    // seller's to pay — so the invoice is offered right on the row
+                    // that is stuck, rather than only on the Billing page.
+                    const mine = (p.commissions || []).filter(c => c.side === 'seller' && c.status === 'accrued')[0];
+                    const dueRow = p.awaitingCommission ? `
+                    <tr data-pay="${bucket}" class="commission-due-row">
+                        <td colspan="6">
+                            <div class="commission-due-banner">
+                                <div class="commission-due-text">
+                                    <strong>Registration is waiting on the platform commission.</strong>
+                                    ${mine
+                                        ? 'Your seller-side share is ' + TruEstate.formatINR(mine.amount) +
+                                          ' (' + mine.ratePercent + '% of ' + TruEstate.formatINR(mine.dealValue) + ', incl. GST). ' +
+                                          'The deal completes once both sides have paid.'
+                                        : 'Your side is settled — waiting on the buyer to pay theirs.'}
+                                </div>
+                                ${mine ? `<button class="commission-due-btn" onclick="paySellerCommission('${mine.id}')">Pay ${TruEstate.formatINR(mine.amount)}</button>` : ''}
+                            </div>
+                        </td>
+                    </tr>` : '';
+
+                    return `<tr data-pay="${bucket}">
+                        <td style="color:#9ca3af;">${escapeHtmlSeller(p.id.slice(-8).toUpperCase())}</td>
+                        <td style="color:#fff;">${escapeHtmlSeller(p.propertyTitle || 'Property')}</td>
+                        <td style="color:#9ca3af;">${escapeHtmlSeller(p.buyerName || 'Unknown')}</td>
+                        <td style="color:#1DB954;font-weight:600;">${fmtInrSeller(p.agreedPrice)}</td>
+                        <td style="color:#9ca3af;">${new Date(p.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                        <td><span class="status-badge ${badge}">${label}</span></td>
+                    </tr>${dueRow}`;
+                }).join('');
+            }
+
+            // These pill counts were hard-coded demo numbers (6/2/2/2) that never
+            // moved regardless of the real data behind them.
+            const payCounts = {
+                all: purchases.length,
+                ongoing: purchases.filter(p => p.dealStatus === 'in_progress').length,
+                completed: purchases.filter(p => p.dealStatus === 'completed').length,
+                rejected: purchases.filter(p => p.dealStatus === 'cancelled').length,
+            };
+            Object.keys(payCounts).forEach(key => {
+                const el = document.getElementById('pay-count-' + key);
+                if (el) el.textContent = payCounts[key];
+            });
+            // Re-apply whichever pill is active, so a refresh doesn't reveal
+            // rows the seller had filtered out.
+            const activePayPill = document.querySelector('#page-track-payment .pill-active');
+            if (activePayPill) filterPayments(activePayPill, activePayPill.dataset.payFilter || 'all');
+
+            const completed = purchases.filter(p => p.dealStatus === 'completed');
+            const inProgress = purchases.filter(p => p.dealStatus === 'in_progress');
+            const totalReceived = completed.reduce((s, p) => s + (p.agreedPrice || 0), 0);
+            const pendingValue = inProgress.reduce((s, p) => s + (p.agreedPrice || 0), 0);
+            const totalValue = purchases.filter(p => p.dealStatus !== 'cancelled').reduce((s, p) => s + (p.agreedPrice || 0), 0);
+
+            const cards = document.querySelectorAll('#page-track-payment .stat-card');
+            const setCard = (idx, label, value) => {
+                if (!cards[idx]) return;
+                const l = cards[idx].querySelector('.stat-label');
+                const v = cards[idx].querySelector('.stat-value');
+                if (l) l.textContent = label;
+                if (v) v.textContent = value;
+            };
+            setCard(0, 'Total Received', fmtInrSeller(totalReceived));
+            setCard(1, 'Pending Payments', fmtInrSeller(pendingValue));
+            setCard(2, 'Deals In Progress', String(inProgress.length));
+            setCard(3, 'Total Deal Value', fmtInrSeller(totalValue));
+        }
+
+        async function submitNewProperty(event) {
             event.preventDefault();
             // ── Validation ──
             if (typeof tvValidateAddProperty === 'function' && !tvValidateAddProperty()) {
                 showToast('Please fill in all required property fields.', 'error');
                 return;
             }
-            const name = document.getElementById('new-prop-name').value.trim();
-            const type = document.getElementById('new-prop-type').value;
-            const location = document.getElementById('new-prop-location').value.trim();
-            const price = document.getElementById('new-prop-price').value.trim();
-            const sqft = document.getElementById('new-prop-sqft') ? document.getElementById('new-prop-sqft').value.trim() : '1200';
-            const beds = document.getElementById('new-prop-beds') ? document.getElementById('new-prop-beds').value.trim() : '2';
-            const baths = document.getElementById('new-prop-baths') ? document.getElementById('new-prop-baths').value.trim() : '2';
-            const balcony = document.getElementById('new-prop-balcony') ? document.getElementById('new-prop-balcony').value.trim() : '1';
-            const furnish = document.getElementById('new-prop-furnishing') ? document.getElementById('new-prop-furnishing').value : 'Unfurnished';
 
-            // --- NEW: Save to localStorage (The "Create" in CRUD) ---
-            const newProperty = {
-                id: Date.now().toString(), // Give it a unique ID based on time
-                name: name,
-                type: type,
-                location: location,
-                price: price,
-                status: 'pending',
-                sqft: sqft,
-                beds: beds,
-                baths: baths,
-                balcony: balcony,
-                furnish: furnish
-            };
+            const title = document.getElementById('new-prop-name').value.trim();
+            const type = document.getElementById('new-prop-type').value.toLowerCase();
+            const listingTypeRaw = document.getElementById('new-prop-transaction').value;
+            const listingType = listingTypeRaw === 'sale' || listingTypeRaw === 'rent' ? listingTypeRaw : 'sale';
+            const city = document.getElementById('new-prop-location').value.trim();
+            const address = document.getElementById('new-prop-address').value.trim();
+            const description = document.getElementById('new-prop-description').value.trim();
+            const price = Number((document.getElementById('new-prop-price').value || '').replace(/[^0-9.]/g, ''));
+            const areaSqft = Number((document.getElementById('new-prop-sqft').value || '').replace(/[^0-9.]/g, '')) || 1000;
+            const bedrooms = Number((document.getElementById('new-prop-beds').value || '').replace(/[^0-9]/g, '')) || 0;
+            const bathrooms = Number((document.getElementById('new-prop-baths').value || '').replace(/[^0-9]/g, '')) || 1;
 
-            // Get existing properties from the notebook, or start an empty list if none exist
-            let properties = JSON.parse(localStorage.getItem('properties')) || [];
-            properties.push(newProperty); // Add new property to list
-            localStorage.setItem('properties', JSON.stringify(properties)); // Save it permanently
-            // --------------------------------------------------------
+            if (!price || price <= 0) {
+                showToast('⚠️ Please enter a valid price', 'error');
+                return;
+            }
+            if (description.length < 20) {
+                showToast('⚠️ Description must be at least 20 characters', 'error');
+                return;
+            }
+            if (!SERVICE_CITY_STATE[city]) {
+                showToast('⚠️ Please select one of our four cities', 'error');
+                return;
+            }
 
-            // Append new pending row to the listings table
-            const tbody = document.getElementById('listings-table');
-            const tr = document.createElement('tr');
-            tr.setAttribute('data-status', 'pending');
-            tr.style.animation = 'fadeIn 0.3s ease';
-            tr.innerHTML = `
-                <td style="color:#fff;">${name}</td>
-                <td style="color:#9ca3af;">${type}</td>
-                <td style="color:#9ca3af;">${location}</td>
-                <td style="color:#fff;">₹${price}</td>
-                <td><span class="status-badge badge-orange">● Pending</span></td>
-                <td>
-                    <button onclick="editProperty('${newProperty.id}')" style="background:none;border:none;color:#3b82f6;cursor:pointer;margin-right:0.5rem;" title="Edit">✎</button>
-                    <button onclick="deleteProperty('${newProperty.id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;" title="Delete">🗑</button>
-                </td>`;
-            tbody.appendChild(tr);
+            const submitBtn = document.getElementById('submit-new-property-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting…';
 
-            // Make sure ALL rows are visible (reset any active filter)
-            tbody.querySelectorAll('tr').forEach(r => r.style.display = '');
+            try {
+                // ── Real backend — POST /properties. Sellers' submissions start pending review. ──
+                const result = await TruEstate.api('/properties', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title, description, type, listingType, price, areaSqft, bedrooms, bathrooms, address, city,
+                    }),
+                });
+                const newProperty = result.data;
 
-            // Update pill counts
-            const allRows = tbody.querySelectorAll('tr');
-            const pendingRows = tbody.querySelectorAll('tr[data-status="pending"]');
-            document.getElementById('pill-count-all').textContent = allRows.length;
-            document.getElementById('pill-count-pending').textContent = pendingRows.length;
+                // ── Upload any selected property photos (public, buyer-facing) ──
+                const imageInput = document.getElementById('new-prop-images');
+                if (imageInput && imageInput.files && imageInput.files.length) {
+                    const imageFormData = new FormData();
+                    Array.from(imageInput.files).forEach((f) => imageFormData.append('files', f));
+                    try {
+                        await TruEstate.api('/properties/' + newProperty.id + '/images', {
+                            method: 'POST',
+                            body: imageFormData,
+                        });
+                    } catch (uploadErr) {
+                        showToast('Property submitted, but photo upload failed: ' + uploadErr.message, 'error');
+                    }
+                }
 
-            // Reset filter pills to "All"
-            document.querySelectorAll('#page-my-listings .pill').forEach(p => {
-                p.classList.remove('pill-active');
-                p.classList.add('pill-inactive');
-            });
-            const allPill = document.querySelector('#page-my-listings .pill');
-            if (allPill) { allPill.classList.remove('pill-inactive'); allPill.classList.add('pill-active'); }
+                // ── Upload any selected verification documents (private, admin-only) ──
+                const fileInput = document.getElementById('new-prop-documents');
+                if (fileInput && fileInput.files && fileInput.files.length) {
+                    const formData = new FormData();
+                    Array.from(fileInput.files).forEach((f) => formData.append('files', f));
+                    try {
+                        await TruEstate.api('/properties/' + newProperty.id + '/documents', {
+                            method: 'POST',
+                            body: formData,
+                        });
+                    } catch (uploadErr) {
+                        showToast('Property submitted, but document upload failed: ' + uploadErr.message, 'error');
+                    }
+                }
 
-            // Reset form
-            document.getElementById('addPropertyForm').reset();
+                showToast('Property submitted! It is now pending admin review.');
+                document.getElementById('addPropertyForm').reset();
 
-            // Navigate directly — don't use the submit event's currentTarget
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-my-listings').classList.add('active');
+                // Navigate to My Listings and refresh it with the real data
+                document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-my-listings').classList.add('active');
+                document.querySelectorAll('.nav-item, .dropdown-item').forEach(item => {
+                    item.classList.remove('active');
+                    const ind = item.querySelector('.nav-indicator');
+                    if (ind) ind.remove();
+                });
+                const myListingsLink = document.querySelector('[data-page="my-listings"]');
+                if (myListingsLink) myListingsLink.classList.add('active');
 
-            // Update sidebar active state
-            document.querySelectorAll('.nav-item, .dropdown-item').forEach(item => {
-                item.classList.remove('active');
-                const ind = item.querySelector('.nav-indicator');
-                if (ind) ind.remove();
-            });
-            const myListingsLink = document.querySelector('[data-page="my-listings"]');
-            if (myListingsLink) myListingsLink.classList.add('active');
-
-            showToast('Property submitted! It is now pending admin review.');
+                if (typeof loadMyListings === 'function') loadMyListings();
+            } catch (err) {
+                // 402 = the submission was fine, the plan is simply full. That
+                // deserves a prompt the seller can act on, not a toast that
+                // disappears after three seconds with the form still filled in.
+                if (err.status === 402) {
+                    showQuotaUpgradeModal(err.message);
+                } else {
+                    const detail = (err.errors && err.errors.length) ? ': ' + err.errors[0] : '';
+                    showToast('⚠️ ' + err.message + detail, 'error');
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit for Review';
+            }
         }
 
         // Logic moved to seller-crud.js
 
-        function submitCounterOffer() {
+        async function submitCounterOffer() {
             // ── Validation ──
             if (typeof tvValidateCounterOffer === 'function' && !tvValidateCounterOffer()) {
                 showToast('Please enter a valid counter offer amount.', 'error');
                 return;
             }
-            const input = document.getElementById('counter-offer-input');
-            const value = input.value.trim();
-            if (!value) { showToast('Please enter a counter offer amount.'); return; }
-            if (currentCounterCard) {
-                const priceArea = currentCounterCard.querySelector('div[style*="background:#121212"]');
-                // Check if counter offer row already exists
-                const existingCounter = priceArea.querySelectorAll('div[style*="display:flex;justify-content:space-between"]');
-                if (existingCounter.length < 2) {
-                    const counterRow = document.createElement('div');
-                    counterRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.05);';
-                    counterRow.innerHTML = `<div><div class="info-label">Your Counter Offer</div><div style="font-size:1.125rem;font-weight:700;color:#1DB954;">${value}</div></div><div style="text-align:right;"><div class="info-label">Last Updated</div><div style="font-weight:500;">Just now</div></div>`;
-                    priceArea.appendChild(counterRow);
-                } else {
-                    // Update existing counter offer
-                    const counterValueEl = existingCounter[1].querySelector('div[style*="font-size:1.125rem"]');
-                    if (counterValueEl) counterValueEl.textContent = value;
-                    const timeEl = existingCounter[1].querySelector('div[style*="font-weight:500"]');
-                    if (timeEl) timeEl.textContent = 'Just now';
-                }
+            const amount = Number(document.getElementById('counter-offer-input').value);
+            if (!amount || amount <= 0) { showToast('Please enter a valid counter offer amount.', 'error'); return; }
+            if (!activeCounterNegId) return;
+            try {
+                await TruEstate.api('/negotiations/' + activeCounterNegId + '/counter', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ counterAmount: amount }),
+                });
+                showToast('Counter offer of ' + fmtInrSeller(amount) + ' submitted successfully!');
+                closeCounterOffer();
+                loadSellerNegotiations();
+            } catch (err) {
+                showToast(err.message || 'Failed to submit counter offer', 'error');
             }
-            closeCounterOffer();
-            showToast('Counter offer of ' + value + ' submitted successfully!');
         }
 
-        // --- NEW: Read from localStorage on page load (The "Read" in CRUD) ---
-        window.addEventListener('DOMContentLoaded', () => {
-            let properties = JSON.parse(localStorage.getItem('properties')) || [];
+        // --- Real backend — GET /properties/mine (the seller's own submissions, any status) ---
+        function escapeHtmlSeller(str) {
+            const div = document.createElement('div');
+            div.textContent = str == null ? '' : String(str);
+            return div.innerHTML;
+        }
+
+        const VERIFICATION_DISPLAY = {
+            verified: { label: 'Approved', badge: 'green', dataStatus: 'approved' },
+            pending: { label: 'Pending', badge: 'orange', dataStatus: 'pending' },
+            rejected: { label: 'Rejected', badge: 'red', dataStatus: 'rejected' },
+        };
+
+        // ── Seller summary: every stat card on Dashboard / Sold / Rent Given ──
+        // These four pages used to ship hardcoded demo numbers (12 listings,
+        // 24 sold, ₹15.2 Cr, three invented tenants), so a brand-new seller
+        // signed up and was greeted by someone else's portfolio. Everything
+        // below is derived from this seller's own listings and their own
+        // completed deals, which means a new account correctly reads 0.
+        //
+        // The two sources land independently (listings from /properties/mine,
+        // deals from /purchases/seller-queue), so each loader caches its half
+        // and re-renders; whichever arrives second completes the picture.
+        var sellerListings = [];
+        var sellerPurchases = [];
+
+        // Writes into the Nth `.stat-card` of a page — the same shape
+        // renderSellerPurchases() already uses for the payments page.
+        function setSellerStat(pageId, idx, label, value) {
+            const cards = document.querySelectorAll('#' + pageId + ' .stat-card');
+            if (!cards[idx]) return;
+            const l = cards[idx].querySelector('.stat-label');
+            const v = cards[idx].querySelector('.stat-value');
+            if (l) l.textContent = label;
+            if (v) v.textContent = value;
+        }
+
+        function sellerEmptyCard(message) {
+            return `<div class="card" style="grid-column:1/-1;text-align:center;color:#9ca3af;padding:2.5rem;">${escapeHtmlSeller(message)}</div>`;
+        }
+
+        // A deal counts as done only when the admin has walked it through the
+        // final step. Anything in progress is not revenue yet.
+        function completedDeals(listingType) {
+            return sellerPurchases.filter(p => p.dealStatus === 'completed' && p.propertyListingType === listingType);
+        }
+
+        function dealCard(deal, rentMode) {
+            const img = deal.propertyImage
+                ? `<img src="${deal.propertyImage}" alt="${escapeHtmlSeller(deal.propertyTitle || 'Property')}" style="width:100%;height:100%;object-fit:cover;">`
+                : '<div style="width:100%;height:100%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#4b5563;font-size:2.5rem;">🏠</div>';
+            const price = rentMode ? fmtInrSeller(deal.agreedPrice) + '/mo' : fmtInrSeller(deal.agreedPrice);
+            const closedOn = new Date(deal.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            const place = [deal.propertyCity, deal.propertyState].filter(Boolean).join(', ');
+            return `
+            <div class="card" style="padding:0;overflow:hidden;">
+                <div style="height:12rem;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                    ${img}
+                    <span class="status-badge badge-green" style="position:absolute;top:1rem;right:1rem;">${rentMode ? '🔑 RENTED' : '✓ SOLD'}</span>
+                    <span style="position:absolute;bottom:1rem;left:1rem;background:#1DB954;color:#000;padding:0.25rem 0.75rem;border-radius:0.25rem;font-size:0.75rem;font-weight:700;">${price}</span>
+                </div>
+                <div style="padding:1.25rem;">
+                    <h3 style="font-weight:600;margin-bottom:0.25rem;">${escapeHtmlSeller(deal.propertyTitle || 'Property')}</h3>
+                    <p style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.75rem;">📍 ${escapeHtmlSeller(place || '—')}</p>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem;"><span style="color:#9ca3af;font-size:0.875rem;">${rentMode ? 'Monthly Rent:' : 'Sale Price:'}</span><span style="color:#1DB954;font-weight:600;">${price}</span></div>
+                    <p style="color:#9ca3af;font-size:0.875rem;">👤 ${rentMode ? 'Tenant' : 'Buyer'}: <span style="color:#fff;">${escapeHtmlSeller(deal.buyerName || 'Unknown')}</span></p>
+                    <p style="color:#9ca3af;font-size:0.875rem;">📅 Closed: <span style="color:#fff;">${closedOn}</span></p>
+                </div>
+            </div>`;
+        }
+
+        function renderSellerSummary() {
+            const sold = completedDeals('sale');
+            const rented = completedDeals('rent');
+            const soldPropertyIds = new Set(sold.concat(rented).map(d => String(d.propertyId)));
+
+            // ── Dashboard ────────────────────────────────────────────────
+            const pending = sellerListings.filter(p => p.verificationStatus === 'pending');
+            // "Active" = approved and still on the market. A listing whose deal
+            // has closed is no longer active even though it is still approved.
+            const active = sellerListings.filter(p => p.verificationStatus === 'verified' && !soldPropertyIds.has(String(p.id)));
+            const saleRevenue = sold.reduce((sum, d) => sum + (d.agreedPrice || 0), 0);
+
+            setSellerStat('page-dashboard', 0, 'Total Listings', String(sellerListings.length));
+            setSellerStat('page-dashboard', 1, 'Active Listings', String(active.length));
+            setSellerStat('page-dashboard', 2, 'Pending Review', String(pending.length));
+            setSellerStat('page-dashboard', 3, 'Total Revenue', fmtInrSeller(saleRevenue));
+
+            const recentTbody = document.getElementById('recent-listings-table');
+            if (recentTbody) {
+                if (!sellerListings.length) {
+                    recentTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#9ca3af;padding:1.5rem;">No listings yet — add your first property to see it here.</td></tr>';
+                } else {
+                    recentTbody.innerHTML = sellerListings.slice(0, 4).map(prop => {
+                        const st = VERIFICATION_DISPLAY[prop.verificationStatus] || VERIFICATION_DISPLAY.pending;
+                        return `<tr>
+                            <td style="color:#fff;">${escapeHtmlSeller(prop.title)}</td>
+                            <td style="color:#9ca3af;">${escapeHtmlSeller(prop.city)}</td>
+                            <td style="color:#fff;">₹${Number(prop.price).toLocaleString('en-IN')}</td>
+                            <td><span class="status-badge badge-${st.badge}">● ${st.label}</span></td>
+                        </tr>`;
+                    }).join('');
+                }
+            }
+
+            // ── Sold Properties ──────────────────────────────────────────
+            const thisYear = new Date().getFullYear();
+            const soldThisYear = sold.filter(d => new Date(d.updatedAt).getFullYear() === thisYear);
+            setSellerStat('page-sold', 0, 'Total Properties Sold', String(sold.length));
+            setSellerStat('page-sold', 1, 'Total Revenue', fmtInrSeller(saleRevenue));
+            setSellerStat('page-sold', 2, 'Avg Sale Price', fmtInrSeller(sold.length ? saleRevenue / sold.length : 0));
+            setSellerStat('page-sold', 3, 'This Year', String(soldThisYear.length));
+
+            const soldContainer = document.getElementById('seller-sold-container');
+            if (soldContainer) {
+                soldContainer.innerHTML = sold.length
+                    ? sold.map(d => dealCard(d, false)).join('')
+                    : sellerEmptyCard("No sales closed yet. A property lands here once you accept a buyer's offer and the admin completes every step of the deal.");
+            }
+
+            // ── Rent Given Properties ────────────────────────────────────
+            const monthlyRevenue = rented.reduce((sum, d) => sum + (d.agreedPrice || 0), 0);
+            const rentedThisYear = rented.filter(d => new Date(d.updatedAt).getFullYear() === thisYear);
+            setSellerStat('page-rent-given', 0, 'Total Rented Properties', String(rented.length));
+            setSellerStat('page-rent-given', 1, 'Monthly Revenue', fmtInrSeller(monthlyRevenue));
+            setSellerStat('page-rent-given', 2, 'Avg Rent', fmtInrSeller(rented.length ? monthlyRevenue / rented.length : 0));
+            // Was "On-Time Payments 83%" — invented, and nothing in the system
+            // tracks rent payments, so it could never become a real number.
+            setSellerStat('page-rent-given', 3, 'Leased This Year', String(rentedThisYear.length));
+
+            const rentedContainer = document.getElementById('seller-rented-container');
+            if (rentedContainer) {
+                rentedContainer.innerHTML = rented.length
+                    ? rented.map(d => dealCard(d, true)).join('')
+                    : sellerEmptyCard('No properties rented out yet. A rental listing appears here once its deal is completed.');
+            }
+        }
+
+        async function loadMyListings(silent) {
             const tbody = document.getElementById('listings-table');
-            if (tbody) tbody.innerHTML = '';
+            if (!tbody) return;
+            if (!silent) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">Loading…</td></tr>';
+            try {
+                const result = await TruEstate.api('/properties/mine');
+                renderMyListings(result.data);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:1.5rem;">${escapeHtmlSeller(err.message || 'Failed to load your listings')}</td></tr>`;
+            }
+        }
 
-            // Loop through our saved notebook properties and add them to the screen
-            properties.forEach(prop => {
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-status', prop.status);
+        function renderMyListings(properties) {
+            sellerListings = properties;
+            renderSellerSummary();
+            // The quota banner reads from this list, so it follows the same refresh.
+            if (typeof renderQuotaNotice === 'function') renderQuotaNotice();
+            const tbody = document.getElementById('listings-table');
+            if (!properties.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">You haven\'t submitted any properties yet. Click "+ Add New Property" to get started.</td></tr>';
+            } else {
+                tbody.innerHTML = properties.map((prop) => {
+                    const st = VERIFICATION_DISPLAY[prop.verificationStatus] || VERIFICATION_DISPLAY.pending;
+                    const reasonHtml = prop.verificationStatus === 'rejected' && prop.rejectionReason
+                        ? `<div style="color:#ef4444;font-size:0.75rem;margin-top:0.25rem;">${escapeHtmlSeller(prop.rejectionReason)}</div>` : '';
+                    const docsHtml = prop.documents && prop.documents.length
+                        ? `<div style="color:#666;font-size:0.75rem;margin-top:0.25rem;">📎 ${prop.documents.length} document${prop.documents.length > 1 ? 's' : ''}</div>` : '';
+                    // Show every uploaded photo, not just a count — a seller who
+                    // uploads two needs to see that both actually landed.
+                    // A live promotion is the one thing on this row the seller
+                    // paid extra for, so it is called out rather than implied.
+                    const featuredHtml = prop.isFeatured
+                        ? `<span class="featured-flag" style="margin-left:0.5rem;">★ ${String(prop.featuredTier || '').toUpperCase()}</span>` : '';
+                    const imagesHtml = prop.images && prop.images.length
+                        ? `<div style="display:flex;gap:0.25rem;flex-wrap:wrap;margin-top:0.375rem;">${prop.images.map((url, i) => `<a href="${url}" target="_blank" rel="noopener" title="Photo ${i + 1}"><img src="${url}" alt="Photo ${i + 1}" style="width:3rem;height:2.25rem;object-fit:cover;border-radius:0.25rem;border:1px solid rgba(255,255,255,0.12);"></a>`).join('')}</div>` : '';
+                    return `
+                    <tr data-status="${st.dataStatus}">
+                        <td style="color:#fff;">${escapeHtmlSeller(prop.title)}${featuredHtml}${imagesHtml}${docsHtml}</td>
+                        <td style="color:#9ca3af;text-transform:capitalize;">${escapeHtmlSeller(prop.type)}</td>
+                        <td style="color:#9ca3af;">${escapeHtmlSeller(prop.city)}</td>
+                        <td style="color:#fff;">₹${Number(prop.price).toLocaleString('en-IN')}</td>
+                        <td><span class="status-badge badge-${st.badge}">● ${st.label}</span>${reasonHtml}</td>
+                        <td>
+                            <button onclick="deleteMyListing('${prop.id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;" title="Delete">🗑</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
 
-                // Determine the correct badge color
-                const badgeColor = prop.status === 'pending' ? 'orange' : 'green';
-                const statusCaps = prop.status.charAt(0).toUpperCase() + prop.status.slice(1);
-
-                tr.innerHTML = `
-                    <td style="color:#fff;">${prop.name}</td>
-                    <td style="color:#9ca3af;">${prop.type}</td>
-                    <td style="color:#9ca3af;">${prop.location}</td>
-                    <td style="color:#fff;">₹${prop.price}</td>
-                    <td><span class="status-badge badge-${badgeColor}">● ${statusCaps}</span></td>
-                    <td>
-                        <button onclick="editProperty('${prop.id}')" style="background:none;border:none;color:#3b82f6;cursor:pointer;margin-right:0.5rem;" title="Edit">✎</button>
-                        <button onclick="deleteProperty('${prop.id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;" title="Delete">🗑</button>
-                    </td>`;
-                tbody.appendChild(tr);
+            const counts = { all: properties.length, approved: 0, pending: 0, rejected: 0 };
+            properties.forEach((p) => {
+                const key = VERIFICATION_DISPLAY[p.verificationStatus] ? VERIFICATION_DISPLAY[p.verificationStatus].dataStatus : 'pending';
+                if (counts[key] !== undefined) counts[key]++;
             });
+            document.getElementById('pill-count-all').textContent = counts.all;
+            document.getElementById('pill-count-approved').textContent = counts.approved;
+            document.getElementById('pill-count-pending').textContent = counts.pending;
+            document.getElementById('pill-count-rejected').textContent = counts.rejected;
 
-            // --- NEW: Update and Delete CRUD functions ---
-            window.editProperty = function (id) {
-                let properties = JSON.parse(localStorage.getItem('properties')) || [];
-                let index = properties.findIndex(p => p.id === id);
-                if (index !== -1) {
-                    let newPrice = prompt("Enter new price updating property:", properties[index].price);
-                    if (newPrice !== null && newPrice.trim() !== "") {
-                        properties[index].price = newPrice.trim();
-                        localStorage.setItem('properties', JSON.stringify(properties));
-                        window.location.reload(); // Reload to reflect changes
-                    }
+            // Re-apply whichever filter pill is currently active
+            const activePill = document.querySelector('#page-my-listings .pill-active');
+            if (activePill) filterListings(activePill, activePill.dataset.status || 'all');
+        }
+
+        async function deleteMyListing(id) {
+            if (!confirm('Delete this property listing? This cannot be undone.')) return;
+            try {
+                await TruEstate.api('/properties/' + id, { method: 'DELETE' });
+                showToast('Property deleted');
+                loadMyListings();
+            } catch (err) {
+                showToast(err.message || 'Failed to delete property', 'error');
+            }
+        }
+
+        // Seeds the profile page + sidebar/header from the real logged-in
+        // account so a freshly created seller sees their actual name/email
+        // instead of the hardcoded "Sarah Johnson" placeholder. Fields the
+        // backend doesn't track (phone/dob/gender/location) — and any
+        // name/email the seller has explicitly edited here — are kept in
+        // localStorage and take priority once present.
+        // Real backend — PATCH /auth/change-password.
+        async function updateSellerPassword() {
+            const currentPassword = document.getElementById('seller-current-password').value;
+            const newPassword = document.getElementById('seller-new-password').value;
+            const confirmPassword = document.getElementById('seller-confirm-password').value;
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showToast('Please fill in all three password fields', 'error');
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                showToast('New password and confirmation do not match', 'error');
+                return;
+            }
+            try {
+                await TruEstate.api('/auth/change-password', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ currentPassword, newPassword }),
+                });
+                document.getElementById('seller-current-password').value = '';
+                document.getElementById('seller-new-password').value = '';
+                document.getElementById('seller-confirm-password').value = '';
+                showToast('Password updated successfully!');
+            } catch (err) {
+                const detail = (err.errors && err.errors.length) ? ': ' + err.errors[0] : '';
+                showToast((err.message || 'Failed to update password') + detail, 'error');
+            }
+        }
+
+        function loadSellerProfile() {
+            const user = TruEstate.getUser();
+            const data = localStorage.getItem('sellerProfile');
+            const profile = data ? JSON.parse(data) : {};
+            if (user) {
+                if (!profile.fname && !profile.lname && user.name) {
+                    const parts = user.name.trim().split(/\s+/);
+                    profile.fname = parts[0] || '';
+                    profile.lname = parts.slice(1).join(' ') || '';
                 }
-            };
+                if (!profile.email && user.email) profile.email = user.email;
+            }
+            if (!profile.fname && !profile.lname && !profile.email) return;
 
-            window.deleteProperty = function (id) {
-                if (confirm("Are you sure you want to delete this property?")) {
-                    let properties = JSON.parse(localStorage.getItem('properties')) || [];
-                    properties = properties.filter(p => p.id !== id);
-                    localStorage.setItem('properties', JSON.stringify(properties));
-                    window.location.reload(); // Reload to reflect changes
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+            set('prof-fname', profile.fname);
+            set('prof-lname', profile.lname);
+            set('prof-email', profile.email);
+            set('prof-phone', profile.phone);
+            set('prof-dob', profile.dob);
+            if (profile.gender) set('prof-gender', profile.gender);
+            set('prof-location', profile.location);
+
+            const fullName = [profile.fname, profile.lname].filter(Boolean).join(' ').trim() || 'Seller';
+            document.querySelectorAll('#sidebar-user-name, #dash-welcome-name, #prof-display-name').forEach(el => el.textContent = fullName);
+            const summaryEmail = document.getElementById('prof-summary-email');
+            if (summaryEmail && profile.email) summaryEmail.textContent = profile.email + ' · Seller Account';
+            if (profile.fname && profile.lname) {
+                const initials = (profile.fname.charAt(0) + profile.lname.charAt(0)).toUpperCase();
+                document.querySelectorAll('.user-avatar').forEach(av => av.textContent = initials);
+            }
+        }
+
+        function saveSellerProfile() {
+            if (typeof tvValidateBuyerProfile === 'function' && !tvValidateBuyerProfile()) {
+                showToast('⚠️ Please complete all required profile fields.', 'error');
+                return;
+            }
+            const profile = {
+                fname: document.getElementById('prof-fname').value,
+                lname: document.getElementById('prof-lname').value,
+                email: document.getElementById('prof-email').value,
+                phone: document.getElementById('prof-phone').value,
+                dob: document.getElementById('prof-dob').value,
+                gender: document.getElementById('prof-gender').value,
+                location: document.getElementById('prof-location').value,
+            };
+            localStorage.setItem('sellerProfile', JSON.stringify(profile));
+
+            const fullName = [profile.fname, profile.lname].filter(Boolean).join(' ').trim() || 'Seller';
+            document.querySelectorAll('#sidebar-user-name, #dash-welcome-name, #prof-display-name').forEach(el => el.textContent = fullName);
+            const summaryEmail = document.getElementById('prof-summary-email');
+            if (summaryEmail) summaryEmail.textContent = profile.email + ' · Seller Account';
+            if (profile.fname && profile.lname) {
+                const initials = (profile.fname.charAt(0) + profile.lname.charAt(0)).toUpperCase();
+                document.querySelectorAll('.user-avatar').forEach(av => av.textContent = initials);
+            }
+            showToast('✅ Personal info saved successfully!');
+        }
+
+        /* ====== Billing & Plans (real backend — /billing) ====== */
+        //
+        // Every price rendered here comes from GET /billing/catalog rather than
+        // being written into this file: the server prices each purchase from
+        // the same rate card at checkout, so a price on screen and the price
+        // charged cannot drift apart.
+        let billingCatalog = null;
+        let billingSummary = null;
+        let billingCycle = 'monthly';
+
+        const money = (n) => TruEstate.formatINR(n);
+
+        async function loadBilling(silent) {
+            try {
+                if (!billingCatalog) {
+                    billingCatalog = (await TruEstate.api('/billing/catalog')).data;
                 }
-            };
-            // ----------------------------------------------
+                billingSummary = (await TruEstate.api('/billing/summary')).data;
+                renderBilling();
+            } catch (err) {
+                if (!silent) showToast(err.message || 'Could not load billing', 'error');
+            }
+        }
 
+        /**
+         * The plan quota, shown up front on Add Property and My Listings.
+         *
+         * `listingsUsed` is whatever the server counted — deliberately not
+         * recomputed from the listings table here, so this banner can never
+         * disagree with what the API will actually allow.
+         *
+         * The rule is that every property counts, sold ones included: a plan
+         * caps the size of the portfolio, not how many are currently for
+         * sale. That is called out explicitly whenever the seller has a
+         * closed listing, because otherwise the number looks wrong to them.
+         */
+        function renderQuotaNotice() {
+            const plan = billingSummary && billingSummary.plan;
+            if (!plan) return;
 
-            // Update the pill counts visually so numbers match
-            const allRows = tbody.querySelectorAll('tr');
-            const pendingRows = tbody.querySelectorAll('tr[data-status="pending"]');
-            document.getElementById('pill-count-all').textContent = allRows.length;
-            document.getElementById('pill-count-pending').textContent = pendingRows.length;
+            const owned = Array.isArray(sellerListings) ? sellerListings : [];
+            const closed = owned.filter(p => p.status === 'sold' || p.status === 'rented').length;
+            const quota = plan.listingQuota;
+            const used = plan.listingsUsed;
+            const full = quota !== null && used >= quota;
+
+            const closedNote = closed
+                ? '<span class="quota-notice-sub">Includes ' + closed + ' sold/rented listing' +
+                  (closed === 1 ? '' : 's') + ' — a closed deal keeps its slot. Delete a listing to free one.</span>'
+                : '';
+
+            const html = quota === null
+                ? '<div class="quota-notice-main"><strong>' + plan.planName + ' plan</strong> · unlimited properties</div>'
+                : '<div class="quota-notice-main"><strong>' + plan.planName + ' plan</strong> · ' +
+                  used + ' of ' + quota + ' propert' + (quota === 1 ? 'y' : 'ies') + ' used' +
+                  (full ? ' — you have reached your limit' : ' · ' + (quota - used) + ' remaining') +
+                  '</div>' + closedNote +
+                  (full ? '<button class="quota-notice-btn" onclick="goToBilling()">Upgrade plan</button>' : '');
+
+            ['quota-notice', 'quota-notice-listings'].forEach(id => {
+                const box = document.getElementById(id);
+                if (!box) return;
+                box.className = 'quota-notice' + (full ? ' full' : '');
+                box.innerHTML = html;
+                box.style.display = 'block';
+            });
+        }
+
+        /** Jumps to Billing & Plans from anywhere (the nav item owns the active state). */
+        function goToBilling() {
+            const link = document.querySelector('[data-page="billing"]');
+            if (link) link.click();
+            const modal = document.getElementById('quota-upgrade-modal');
+            if (modal) modal.remove();
+        }
+
+        /**
+         * Shown when a submission is refused with 402. The form stays filled
+         * in behind it, so upgrading and submitting again costs nothing.
+         */
+        function showQuotaUpgradeModal(message) {
+            const existing = document.getElementById('quota-upgrade-modal');
+            if (existing) existing.remove();
+
+            const plan = (billingSummary && billingSummary.plan) || {};
+            const overlay = document.createElement('div');
+            overlay.id = 'quota-upgrade-modal';
+            overlay.style.cssText =
+                'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:8000;display:flex;' +
+                'align-items:center;justify-content:center;padding:1rem;';
+            overlay.innerHTML =
+                '<div style="width:100%;max-width:26rem;background:#1a1a1a;border:1px solid rgba(255,255,255,0.12);border-radius:0.875rem;padding:2rem;">' +
+                    '<div style="width:2.75rem;height:2.75rem;border-radius:0.75rem;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;font-size:1.35rem;margin-bottom:1.1rem;">🔒</div>' +
+                    '<h2 style="font-size:1.2rem;font-weight:700;color:#fff;margin:0 0 0.6rem;">You have used every slot on your plan</h2>' +
+                    '<p style="color:#9ca3af;font-size:0.875rem;line-height:1.6;margin:0 0 1.25rem;">' +
+                        escapeBilling(message) +
+                    '</p>' +
+                    '<p style="color:#6b7280;font-size:0.8rem;line-height:1.6;margin:0 0 1.5rem;">' +
+                        'Your details are still filled in — upgrade and submit again, or delete a listing ' +
+                        'you no longer need. Sold listings still count towards your limit.' +
+                    '</p>' +
+                    '<button id="quota-upgrade-go" style="width:100%;background:#1DB954;color:#000;border:none;border-radius:0.5rem;padding:0.8rem;font-weight:800;font-size:0.9rem;cursor:pointer;">' +
+                        'See plans' + (plan.planName ? ' — you are on ' + escapeBilling(plan.planName) : '') +
+                    '</button>' +
+                    '<button id="quota-upgrade-close" type="button" style="width:100%;background:none;border:none;color:#6b7280;padding:0.7rem;margin-top:0.25rem;cursor:pointer;font-size:0.8rem;">Not now</button>' +
+                '</div>';
+            document.body.appendChild(overlay);
+
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            document.getElementById('quota-upgrade-close').addEventListener('click', () => overlay.remove());
+            document.getElementById('quota-upgrade-go').addEventListener('click', goToBilling);
+        }
+
+        function renderBilling() {
+            if (!billingCatalog || !billingSummary) return;
+            renderGatewayBadge();
+            renderPlanStats();
+            renderCycleToggle();
+            renderPlanCards();
+            renderPromotePanel();
+            renderCommissions();
+            renderBillingPayments();
+            renderQuotaNotice();
+        }
+
+        function renderGatewayBadge() {
+            const badge = document.getElementById('billing-gateway-badge');
+            if (!badge) return;
+            if (billingCatalog.isLive) {
+                badge.className = 'status-badge badge-green';
+                badge.textContent = 'Live payments · ' + billingCatalog.gateway;
+            } else {
+                badge.className = 'status-badge badge-orange';
+                badge.textContent = billingCatalog.gateway === 'razorpay'
+                    ? 'Razorpay test mode'
+                    : 'Test mode · no real money';
+            }
+        }
+
+        function renderPlanStats() {
+            const plan = billingSummary.plan || {};
+            document.getElementById('bill-plan-name').textContent = plan.planName || 'Starter';
+            document.getElementById('bill-plan-expiry').textContent = plan.expiresAt
+                ? (plan.daysRemaining + ' day' + (plan.daysRemaining === 1 ? '' : 's') + ' remaining')
+                : 'Free forever';
+
+            const used = plan.listingsUsed || 0;
+            const quota = plan.listingQuota;
+            document.getElementById('bill-quota').textContent = quota === null
+                ? used + ' / ∞'
+                : used + ' / ' + quota;
+
+            const fill = document.getElementById('bill-quota-fill');
+            const pct = quota === null ? 100 : Math.min(100, Math.round((used / quota) * 100));
+            fill.style.width = pct + '%';
+            fill.className = 'quota-fill' + (quota !== null && used >= quota ? ' at-limit' : (pct >= 80 ? ' near-limit' : ''));
+
+            document.getElementById('bill-due').textContent = money(billingSummary.amountDue);
+            document.getElementById('bill-due-note').textContent = billingSummary.amountDue > 0
+                ? 'Due on closed deals'
+                : 'Nothing owed';
+            document.getElementById('bill-spend').textContent = money(billingSummary.lifetimeSpend);
+        }
+
+        function renderCycleToggle() {
+            const box = document.getElementById('bill-cycle-toggle');
+            box.innerHTML = billingCatalog.cycles.map(c =>
+                '<button class="cycle-btn' + (c.key === billingCycle ? ' active' : '') + '" ' +
+                'onclick="setBillingCycle(\'' + c.key + '\')">' + c.label +
+                (c.discountPct ? '<span class="cycle-save">−' + c.discountPct + '%</span>' : '') +
+                '</button>'
+            ).join('');
+        }
+
+        function setBillingCycle(cycle) {
+            billingCycle = cycle;
+            renderCycleToggle();
+            renderPlanCards();
+        }
+
+        function renderPlanCards() {
+            const currentTier = (billingSummary.plan && billingSummary.plan.tier) || 'free';
+            const months = (billingCatalog.cycles.find(c => c.key === billingCycle) || {}).months || 1;
+
+            document.getElementById('bill-plan-grid').innerHTML = billingCatalog.plans.map(plan => {
+                const price = plan.pricing[billingCycle];
+                const isCurrent = plan.tier === currentTier;
+                const isFree = plan.pricePerMonth === 0;
+                // Show the effective monthly rate, so a yearly plan reads as
+                // cheaper per month rather than just a bigger number.
+                const perMonth = isFree ? 0 : Math.round(price.base / months);
+
+                let button;
+                if (isCurrent && isFree) {
+                    button = '<button class="plan-btn" disabled>Current plan</button>';
+                } else if (isCurrent) {
+                    button = '<button class="plan-btn" onclick="buyPlan(\'' + plan.tier + '\')">Extend plan</button>' +
+                             '<button class="plan-btn secondary" style="margin-top:0.5rem;" onclick="cancelPlan()">Cancel plan</button>';
+                } else if (isFree) {
+                    button = '<button class="plan-btn secondary" disabled>Included</button>';
+                } else {
+                    button = '<button class="plan-btn" onclick="buyPlan(\'' + plan.tier + '\')">Choose ' + plan.name + '</button>';
+                }
+
+                return '<div class="plan-card' + (isCurrent ? ' current' : '') + (plan.tier === 'gold' ? ' recommended' : '') + '">' +
+                    (isCurrent ? '<span class="plan-flag">Your plan</span>'
+                               : (plan.tier === 'gold' ? '<span class="plan-flag muted">Best value</span>' : '')) +
+                    '<div class="plan-name">' + plan.name + '</div>' +
+                    '<div class="plan-price">' + (isFree ? 'Free' : money(perMonth)) +
+                      (isFree ? '' : '<span class="plan-price-unit">/mo</span>') + '</div>' +
+                    '<div class="plan-billed">' + (isFree ? 'No card needed'
+                      : money(price.total) + ' billed ' + billingCycle + ' (incl. GST)') + '</div>' +
+                    '<ul class="plan-features">' + plan.highlights.map(h => '<li>' + h + '</li>').join('') + '</ul>' +
+                    button +
+                '</div>';
+            }).join('');
+        }
+
+        async function buyPlan(tier) {
+            try {
+                const result = await TruEstate.pay({ purpose: 'subscription', tier, cycle: billingCycle });
+                if (!result) return; // customer closed the checkout
+                showToast(result.message);
+                await Promise.all([loadBilling(true), loadMyListings(true)]);
+            } catch (err) {
+                showToast(err.message || 'Payment failed', 'error');
+            }
+        }
+
+        async function cancelPlan() {
+            if (!confirm('Cancel your plan and drop back to the free Starter tier (2 active listings)?')) return;
+            try {
+                const res = await TruEstate.api('/billing/subscription/cancel', { method: 'PATCH' });
+                showToast(res.message);
+                await loadBilling(true);
+            } catch (err) {
+                showToast(err.message || 'Could not cancel the plan', 'error');
+            }
+        }
+
+        function renderPromotePanel() {
+            const listings = (billingSummary.listings || []).filter(l => l.verificationStatus === 'verified');
+            const select = document.getElementById('bill-promote-property');
+            const previous = select.value;
+
+            select.innerHTML = listings.length
+                ? listings.map(l =>
+                    '<option value="' + l.id + '">' + escapeBilling(l.title) +
+                    (l.isFeatured ? ' — featured until ' + shortDate(l.featuredUntil) : '') +
+                    '</option>').join('')
+                : '<option value="">No verified listings yet</option>';
+            if (previous) select.value = previous;
+
+            document.getElementById('bill-pack-grid').innerHTML = billingCatalog.featuredPacks.map(pack =>
+                '<div class="pack-card">' +
+                    '<div class="pack-name">' + pack.name + '</div>' +
+                    '<div class="pack-price">' + money(pack.total) + '</div>' +
+                    '<div class="pack-meta">' + pack.days + ' days · incl. GST<br>' + pack.highlights.join('<br>') + '</div>' +
+                    '<button class="pack-btn" onclick="buyPromotion(\'' + pack.tier + '\')"' +
+                        (listings.length ? '' : ' disabled') + '>' +
+                        (listings.length ? 'Promote listing' : 'Needs a verified listing') +
+                    '</button>' +
+                '</div>'
+            ).join('');
+        }
+
+        async function buyPromotion(pack) {
+            const propertyId = document.getElementById('bill-promote-property').value;
+            if (!propertyId) { showToast('Choose a listing to promote first', 'error'); return; }
+            try {
+                const result = await TruEstate.pay({ purpose: 'featured_listing', propertyId, pack });
+                if (!result) return;
+                showToast(result.message);
+                await Promise.all([loadBilling(true), loadMyListings(true)]);
+            } catch (err) {
+                showToast(err.message || 'Payment failed', 'error');
+            }
+        }
+
+        function renderCommissions() {
+            const rows = billingSummary.commissions || [];
+            const body = document.getElementById('bill-commissions-table');
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:1.5rem;">' +
+                    'No commission yet — it is charged only when one of your deals closes.</td></tr>';
+                return;
+            }
+            body.innerHTML = rows.map(c => {
+                const badge = c.status === 'paid' ? 'badge-green'
+                            : (c.status === 'waived' ? 'badge-blue' : 'badge-orange');
+                const action = c.status === 'accrued'
+                    ? '<button class="btn-primary" style="padding:0.4rem 0.9rem;font-size:0.8125rem;" ' +
+                      'onclick="payCommission(\'' + c.id + '\')">Pay now</button>'
+                    : '<span style="color:#6b7280;font-size:0.8125rem;">—</span>';
+                return '<tr>' +
+                    '<td>' + escapeBilling(c.propertyTitle || 'Property') + '</td>' +
+                    '<td>' + money(c.dealValue) + '</td>' +
+                    '<td>' + c.ratePercent + '%</td>' +
+                    '<td style="font-weight:600;">' + money(c.amount) + '</td>' +
+                    '<td><span class="status-badge ' + badge + '">' + c.status + '</span></td>' +
+                    '<td style="text-align:right;">' + action + '</td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        /** Settles a seller-side commission from the Track Payment page. */
+        async function paySellerCommission(commissionId) {
+            try {
+                const result = await TruEstate.pay({ purpose: 'commission', commissionId });
+                if (!result) return;
+                showToast(result.message);
+                await Promise.all([loadSellerPurchases(true), loadBilling(true)]);
+            } catch (err) {
+                showToast(err.message || 'Payment failed', 'error');
+            }
+        }
+
+        async function payCommission(commissionId) {
+            try {
+                const result = await TruEstate.pay({ purpose: 'commission', commissionId });
+                if (!result) return;
+                showToast(result.message);
+                await Promise.all([loadBilling(true), loadSellerPurchases(true)]);
+            } catch (err) {
+                showToast(err.message || 'Payment failed', 'error');
+            }
+        }
+
+        function renderBillingPayments() {
+            const rows = billingSummary.payments || [];
+            const body = document.getElementById('bill-payments-table');
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:1.5rem;">No payments yet.</td></tr>';
+                return;
+            }
+            body.innerHTML = rows.map(p => {
+                const badge = p.status === 'paid' ? 'badge-green' : (p.status === 'failed' ? 'badge-red' : 'badge-orange');
+                return '<tr>' +
+                    '<td style="font-family:monospace;font-size:0.8125rem;color:#9ca3af;">' + p.receipt + '</td>' +
+                    '<td>' + escapeBilling(p.description) + '</td>' +
+                    '<td style="font-weight:600;">' + money(p.amount) + '</td>' +
+                    '<td><span class="status-badge ' + badge + '">' + p.status + '</span></td>' +
+                    '<td style="color:#9ca3af;font-size:0.8125rem;">' + shortDate(p.paidAt || p.createdAt) + '</td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        function escapeBilling(text) {
+            return String(text == null ? '' : text).replace(/[&<>"]/g, c =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        }
+
+        function shortDate(iso) {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            if (isNaN(d)) return '—';
+            return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMyListings();
+            loadSellerProfile();
+            loadSellerNegotiations();
+            loadSellerPurchases();
+            loadBilling();
+
+            // A buyer's new offer, or an admin approving a listing / advancing a
+            // deal, lands here without the seller having to reload the page.
+            TruEstate.startLiveRefresh({
+                role: 'seller',
+                intervalMs: 15000,
+                refresh: () => Promise.all([loadMyListings(true), loadSellerNegotiations(true), loadSellerPurchases(true), loadBilling(true)]),
+            });
         });
     </script>
-
-    <!-- Reschedule Modal -->
-    <div class="modal-overlay" id="reschedule-modal" onclick="if(event.target===this)closeReschedule()">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeReschedule()">✕</button>
-            <h2 class="modal-title">Choose Visit Date & Time</h2>
-            <div class="cal-header">
-                <button class="cal-nav-btn" onclick="changeCalMonth(-1)">‹</button>
-                <div class="week-label" id="month-label" style="margin-bottom:0;">MARCH 2026</div>
-                <button class="cal-nav-btn" onclick="changeCalMonth(1)">›</button>
-            </div>
-            <div class="cal-day-headers">
-                <div class="cal-day-header">Mon</div>
-                <div class="cal-day-header">Tue</div>
-                <div class="cal-day-header">Wed</div>
-                <div class="cal-day-header">Thu</div>
-                <div class="cal-day-header">Fri</div>
-                <div class="cal-day-header">Sat</div>
-                <div class="cal-day-header">Sun</div>
-            </div>
-            <div class="week-row" id="week-row"></div>
-            <div class="slots-label" id="slots-date-label">AVAILABLE SLOTS</div>
-            <div class="slots-grid">
-                <button class="slot-btn" onclick="selectSlot(this)">9:00 AM</button>
-                <button class="slot-btn" onclick="selectSlot(this)">10:00 AM</button>
-                <button class="slot-btn" onclick="selectSlot(this)">11:30 AM</button>
-                <button class="slot-btn" onclick="selectSlot(this)">1:00 PM</button>
-                <button class="slot-btn" onclick="selectSlot(this)">2:30 PM</button>
-                <button class="slot-btn" onclick="selectSlot(this)">4:00 PM</button>
-            </div>
-            <div class="modal-msg-label">Message to Agent (Optional)</div>
-            <textarea id="reschedule-msg" class="modal-msg-input"
-                placeholder="e.g. I'm particularly interested in the kitchen size and natural light..."></textarea>
-            <div class="modal-actions">
-                <button class="btn-outline" onclick="closeReschedule()">Cancel</button>
-                <button class="btn-primary" onclick="confirmReschedule()">Confirm Reschedule</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Counter Offer Modal -->
     <div class="modal-overlay" id="counter-offer-modal" onclick="if(event.target===this)closeCounterOffer()">
@@ -1948,17 +2180,9 @@
                 style="background:#121212;border-radius:0.75rem;padding:1.25rem;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.05);">
                 <h3 id="counter-prop-name" style="font-weight:600;font-size:1rem;margin-bottom:0.25rem;"></h3>
                 <p id="counter-prop-location" style="color:#9ca3af;font-size:0.875rem;margin-bottom:1rem;"></p>
-                <div
-                    style="display:flex;justify-content:space-between;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.05);">
+                <div style="display:flex;justify-content:space-between;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.05);">
                     <div>
-                        <div
-                            style="font-size:0.75rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.25rem;">
-                            Listing Price</div>
-                        <div id="counter-listing-price" style="font-weight:700;"></div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div
-                            style="font-size:0.75rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.25rem;">
+                        <div style="font-size:0.75rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.25rem;">
                             Buyer's Offer</div>
                         <div id="counter-buyer-offer" style="font-weight:700;color:#1DB954;"></div>
                     </div>
@@ -1967,7 +2191,7 @@
             <div style="margin-bottom:1.5rem;">
                 <label style="display:block;font-size:1rem;font-weight:700;margin-bottom:0.75rem;">How much will you
                     offer?</label>
-                <input type="text" id="counter-offer-input" placeholder="Enter your counter offer (e.g., Rs 43,50,000)"
+                <input type="number" min="1" id="counter-offer-input" placeholder="e.g. 4350000"
                     style="width:100%;background:#121212;border:2px solid #1DB954;border-radius:0.5rem;padding:0.875rem 1rem;color:#fff;font-size:0.875rem;box-sizing:border-box;outline:none;">
             </div>
             <button onclick="submitCounterOffer()"
@@ -1977,11 +2201,9 @@
                 offer</p>
         </div>
     </div>
-    <script src="seller-crud.js"></script>
+
     <script src="form-validation.js"></script>
     <script src="tab-persistence.js"></script>
-    <script src="api.js"></script>
-    <script src="evaluation4-integration.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,35 @@
+import { OnModuleInit } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { NegotiationDocument } from './schemas/negotiation.schema.js';
+import { CreateNegotiationDto, CounterNegotiationDto, RejectNegotiationDto } from './dto/create-negotiation.dto.js';
+import { NegotiationResponseDto } from './dto/negotiation-response.dto.js';
+import { NegotiationFilterDto } from './dto/negotiation-filter.dto.js';
+import { PropertiesService } from '../properties/properties.service.js';
+import { PurchasesService } from '../purchases/purchases.service.js';
+import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface.js';
+import type { PaginatedResult } from '../properties/properties.service.js';
+export declare class NegotiationsService implements OnModuleInit {
+    private readonly negotiationModel;
+    private readonly propertiesService;
+    private readonly purchasesService;
+    private readonly logger;
+    constructor(negotiationModel: Model<NegotiationDocument>, propertiesService: PropertiesService, purchasesService: PurchasesService);
+    onModuleInit(): Promise<void>;
+    private toResponse;
+    private assertValidId;
+    private loadOrThrow;
+    private assertOwnsOrElevated;
+    private assertCanView;
+    private assertStillOnTheMarket;
+    private assertCanRespond;
+    create(dto: CreateNegotiationDto, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+    findByOwner(buyerId: string): Promise<NegotiationResponseDto[]>;
+    findForReview(filters: NegotiationFilterDto, actor: AuthenticatedUser): Promise<PaginatedResult<NegotiationResponseDto>>;
+    findForSeller(actor: AuthenticatedUser, filters: NegotiationFilterDto): Promise<PaginatedResult<NegotiationResponseDto>>;
+    findOne(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+    counter(id: string, dto: CounterNegotiationDto, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+    acceptOffer(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+    reject(id: string, dto: RejectNegotiationDto, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+    acceptCounterByBuyer(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+    withdraw(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto>;
+}

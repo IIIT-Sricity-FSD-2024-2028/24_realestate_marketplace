@@ -573,3 +573,52 @@ body {
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideOut { to { opacity: 0; transform: translateY(1rem); } }
+
+/* ── Revenue ─────────────────────────────────────────────────────────────── */
+.revenue-split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; }
+
+.panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+.panel-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.25rem; }
+.panel-head h3 { font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); }
+.panel-note { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Bar chart drawn with plain divs — no chart library, no CDN dependency. */
+.rev-chart { display: flex; align-items: flex-end; gap: 0.75rem; height: 11rem; padding-top: 1.5rem; }
+.rev-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 0.5rem; }
+.rev-bar-track { width: 100%; flex: 1; display: flex; align-items: flex-end; position: relative; }
+.rev-bar {
+    width: 100%;
+    background: linear-gradient(180deg, var(--brand-primary) 0%, rgba(29,185,84,0.45) 100%);
+    border-radius: 0.3rem 0.3rem 0 0;
+    min-height: 0.15rem;
+    transition: height 0.5s ease;
+    position: relative;
+}
+.rev-bar.empty { background: var(--bg-highlight); }
+.rev-bar-value { position: absolute; top: -1.35rem; left: 50%; transform: translateX(-50%); font-size: 0.6875rem; color: var(--text-secondary); white-space: nowrap; }
+.rev-bar-label { font-size: 0.6875rem; color: var(--text-muted); white-space: nowrap; }
+
+/* Stream / city / plan breakdown rows */
+.rev-row { margin-bottom: 1rem; }
+.rev-row:last-child { margin-bottom: 0; }
+.rev-row-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; }
+.rev-row-name { font-size: 0.8125rem; color: var(--text-primary); font-weight: 500; }
+.rev-row-meta { font-size: 0.75rem; color: var(--text-muted); }
+.rev-row-value { font-size: 0.875rem; color: var(--text-primary); font-weight: 700; }
+.rev-track { height: 0.375rem; background: var(--bg-highlight); border-radius: 9999px; overflow: hidden; }
+.rev-track-fill { height: 100%; border-radius: 9999px; transition: width 0.5s ease; }
+.rev-track-fill.subscription { background: var(--brand-primary); }
+.rev-track-fill.featured_listing { background: var(--warning); }
+.rev-track-fill.commission { background: var(--info); }
+.rev-track-fill.neutral { background: var(--text-muted); }
+
+.rev-empty { color: var(--text-secondary); font-size: 0.8125rem; padding: 0.5rem 0; }
+
+@media (max-width: 1100px) {
+    .revenue-split { grid-template-columns: 1fr; }
+}

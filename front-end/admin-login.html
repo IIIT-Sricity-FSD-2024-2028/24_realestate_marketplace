@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - truEstate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="margin:0;min-height:100vh;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto',sans-serif;display:flex;align-items:center;justify-content:center;padding:2rem;">
+    <main style="width:100%;max-width:28rem;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;padding:2rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:2rem;">
+            <div style="background:#1DB954;padding:0.625rem;border-radius:0.5rem;">
+                <svg style="width:1.5rem;height:1.5rem;color:#000;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+            </div>
+            <div>
+                <h1 style="font-size:1.25rem;font-weight:700;margin:0;">truEstate Admin</h1>
+                <p style="font-size:0.8125rem;color:#9ca3af;margin:0.25rem 0 0;">Admin workspace login</p>
+            </div>
+        </div>
+
+        <form id="admin-login-form" style="display:flex;flex-direction:column;gap:1rem;">
+            <div>
+                <label style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Email</label>
+                <input id="admin-email" type="email" autocomplete="username" placeholder="adminhyd@gmail.com" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #444;border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;">
+            </div>
+            <div>
+                <label style="display:block;font-size:0.875rem;color:#9ca3af;margin-bottom:0.5rem;">Password</label>
+                <input id="admin-password" type="password" autocomplete="current-password" placeholder="Enter password" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #444;border-radius:0.5rem;padding:0.75rem 1rem;color:#fff;">
+            </div>
+            <button type="button" onclick="TruEstate.openForgotPasswordModal()" style="align-self:flex-end;font-size:0.8125rem;color:#1DB954;background:none;border:none;cursor:pointer;padding:0;">Forgot password?</button>
+            <button type="submit" style="width:100%;background:#1DB954;color:#000;border:none;border-radius:0.5rem;padding:0.8rem 1rem;font-weight:700;cursor:pointer;">Login</button>
+        </form>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('admin-email');
+            const passwordInput = document.getElementById('admin-password');
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+
+            if (!email || !password) {
+                showToast('Please enter both email and password', 'error');
+                return;
+            }
+
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Logging in...'; }
+
+            try {
+                // ── Real backend auth — POST /auth/login, then verify the account is an admin ──
+                const result = await TruEstate.api('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password }),
+                });
+                const account = result.data.user;
+
+                if (account.role !== 'admin') {
+                    showToast('This account does not have admin access', 'error');
+                    return;
+                }
+
+                TruEstate.setUser({
+                    id: account.id,
+                    name: account.name,
+                    email: account.email,
+                    role: 'admin',
+                    token: result.data.accessToken,
+                });
+
+                try {
+                    const users = JSON.parse(localStorage.getItem('globalUsers')) || [];
+                    const existing = users.find((user) => user.email === account.email);
+                    if (existing) {
+                        existing.name = account.name;
+                        existing.status = 'Active';
+                    } else {
+                        users.push({ id: account.id, name: account.name, email: account.email, role: 'Admin', status: 'Active' });
+                    }
+                    localStorage.setItem('globalUsers', JSON.stringify(users));
+                } catch (_) {}
+
+                showToast('Login successful! Redirecting...');
+                setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 600);
+            } catch (err) {
+                showToast(err.message || 'Invalid admin credentials', 'error');
+                emailInput.style.borderColor = '#ef4444';
+                passwordInput.style.borderColor = '#ef4444';
+            } finally {
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Login'; }
+            }
+        });
+    </script>
+</body>
+</html>

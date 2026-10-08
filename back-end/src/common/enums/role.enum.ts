@@ -1,7 +1,6 @@
 export enum Role {
-  SUPERUSER = 'superuser',
   ADMIN = 'admin',
-  AGENT = 'agent',
-  SELLER = 'seller',
-  BUYER = 'buyer',
+  USER = 'user',
+  /** Top-level system role. Automatically satisfies any @ApiRole(...) check — see RolesGuard. */
+  SUPERUSER = 'superuser',
 }

@@ -1,0 +1,33 @@
+import { OnModuleInit } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { PurchaseDocument } from './schemas/purchase.schema.js';
+import { PurchaseResponseDto } from './dto/purchase-response.dto.js';
+import { PurchaseFilterDto } from './dto/purchase-filter.dto.js';
+import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user.interface.js';
+import type { NegotiationDocument } from '../negotiations/schemas/negotiation.schema.js';
+import { PropertiesService } from '../properties/properties.service.js';
+import { CommissionsService } from '../commissions/commissions.service.js';
+import type { PaginatedResult } from '../properties/properties.service.js';
+export declare class PurchasesService implements OnModuleInit {
+    private readonly purchaseModel;
+    private readonly propertiesService;
+    private readonly commissionsService;
+    private readonly logger;
+    constructor(purchaseModel: Model<PurchaseDocument>, propertiesService: PropertiesService, commissionsService: CommissionsService);
+    onModuleInit(): Promise<void>;
+    private toResponse;
+    private decorate;
+    private withCommissions;
+    private assertValidId;
+    private loadOrThrow;
+    private assertCanView;
+    createFromNegotiation(negotiation: NegotiationDocument, agreedPrice: number): Promise<PurchaseDocument>;
+    findByOwner(buyerId: string): Promise<PurchaseResponseDto[]>;
+    findForReview(filters: PurchaseFilterDto, actor: AuthenticatedUser): Promise<PaginatedResult<PurchaseResponseDto>>;
+    findForSeller(actor: AuthenticatedUser, filters: PurchaseFilterDto): Promise<PaginatedResult<PurchaseResponseDto>>;
+    findOne(id: string, actor: AuthenticatedUser): Promise<PurchaseResponseDto>;
+    advance(id: string, actor: AuthenticatedUser): Promise<PurchaseResponseDto>;
+    private assertCommissionSettled;
+    private accrueCommission;
+    cancel(id: string, actor: AuthenticatedUser): Promise<PurchaseResponseDto>;
+}

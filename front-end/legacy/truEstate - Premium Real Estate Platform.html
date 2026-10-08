@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://127.0.0.1:3000/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>truEstate - Premium Real Estate Platform</title>
+    <link rel="stylesheet" href="./truEstate - Premium Real Estate Platform_files/style.css">
+    <link rel="stylesheet" href="./truEstate - Premium Real Estate Platform_files/styles.css">
+<style id="tv-shake-style">
+    @keyframes tvShake {
+        0%,100%{transform:translateX(0)}
+        20%    {transform:translateX(-6px)}
+        40%    {transform:translateX(6px)}
+        60%    {transform:translateX(-4px)}
+        80%    {transform:translateX(4px)}
+    }
+    .tv-err { animation: fadeIn .2s ease; }
+    </style></head>
+
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" style="display: none;">
+        <!-- Header -->
+        <header style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); background-color: #000000;">
+            <div style="max-width: 80rem; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; padding-top: 1.5rem; padding-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="background-color: #1DB954; padding: 0.625rem; border-radius: 0.75rem;">
+                        <svg style="width: 1.5rem; height: 1.5rem; color: #000000;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 1.125rem; font-weight: 700; color: #ffffff;">truEstate</h1>
+                        <p style="font-size: 0.75rem; color: #9ca3af;">Premium Real Estate Platform</p>
+                    </div>
+                </div>
+                <button onclick="showAuth()" style="background-color: #1DB954; color: #000000; font-weight: 600; padding-left: 1.5rem; padding-right: 1.5rem; padding-top: 0.625rem; padding-bottom: 0.625rem; border-radius: 0.5rem; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer;">
+                    <span>Login / Sign Up</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section style="max-width: 80rem; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; padding-top: 4rem; padding-bottom: 4rem;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2 style="font-size: 3rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">
+                    Welcome to <span style="color: #1DB954;">truEstate</span>
+                </h2>
+                <p style="color: #9ca3af; font-size: 1.125rem; margin-bottom: 2rem;">
+                    Find your dream property from thousands of verified listings
+                </p>
+
+                <!-- Search Bar -->
+                <div style="max-width: 56rem; margin: 0 auto; background-color: #1a1a1a; border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">BUY
+                                / RENT</label>
+                            <select id="filter-buyrent" style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;" data-tv-bound="1">
+                                <option>Buy</option>
+                                <option>Rent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">LOCATION</label>
+                            <select id="filter-location" style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;" data-tv-bound="1">
+                                <option>All Locations</option>
+                                <option>Banjara Hills</option>
+                                <option>Jubilee Hills</option>
+                                <option>HITEC City</option>
+                                <option>Gachibowli</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">PROPERTY
+                                TYPE</label>
+                            <select id="filter-type" style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;" data-tv-bound="1">
+                                <option>All Types</option>
+                                <option>Apartment</option>
+                                <option>Villa</option>
+                                <option>Penthouse</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">BUDGET</label>
+                            <select id="filter-budget" style="width: 100%; background-color: #282828; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.75rem; padding-bottom: 0.75rem;" data-tv-bound="1">
+                                <option>All Prices</option>
+                                <option>50L - 1Cr</option>
+                                <option>1Cr - 2Cr</option>
+                                <option>2Cr - 5Cr</option>
+                                <option>5Cr+</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="searchProperties()" style="width: 100%; background-color: #1DB954; color: #000000; font-weight: 600; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; transition: colors 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border: none; cursor: pointer;">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Search Properties
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 48rem; margin: 0 auto 4rem;">
+                <div style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">10K+</div>
+                    <div style="color: #9ca3af;">Properties</div>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">50K+</div>
+                    <div style="color: #9ca3af;">Happy Clients</div>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">2K+</div>
+                    <div style="color: #9ca3af;">Property Experts</div>
+                </div>
+            </div>
+
+            <!-- Featured Properties -->
+            <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                    <h3 id="properties-heading" style="font-size: 1.875rem; font-weight: 700; color: #ffffff;">Featured
+                        Properties</h3>
+                    <button onclick="resetFilters()" id="reset-filters-btn" style="color: #1DB954; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; background: none; border: none; cursor: pointer; display: none;">
+                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        Show All
+                    </button>
+                </div>
+
+                <div id="property-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                <div onclick="showPropertyDetails(1)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1758448617677-2f8bebc56d9e" alt="Luxury Apartment" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.8</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Apartment</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Luxury Apartment</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Banjara Hills, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>3</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>2</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>2,100 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹2.5 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(1)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(2)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1648147870253-c45f6f430528" alt="Modern Villa" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.9</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Villa</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Modern Villa</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Jubilee Hills, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>4</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>3</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>3,500 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹5.2 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(2)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(3)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1772398539093-fc7b4a6b1bfc" alt="Sunset Villa" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">5.0</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Villa</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Sunset Villa</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Gachibowli, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>4</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>4</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>2,800 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹3.8 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(3)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(4)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1600596542815-ffad4c1539a9" alt="Sky Penthouse" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.7</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Penthouse</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Sky Penthouse</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            HITEC City, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>3</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>3</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>4,200 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹7.5 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(4)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(5)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1600585154340-be6161a56a0c" alt="Green Valley Apartment" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.5</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Apartment</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Green Valley Apartment</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Gachibowli, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>2</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>2</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>1,450 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹1.2 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(5)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(6)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1600607687939-ce8a6c25118c" alt="Royal Heritage Villa" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.9</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Villa</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Royal Heritage Villa</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Banjara Hills, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>5</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>5</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>5,000 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹8.5 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(6)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(7)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1600573472550-8090b5e0745e" alt="Tech Park Apartment" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.3</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Apartment</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Tech Park Apartment</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            HITEC City, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>2</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>1</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>1,100 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹85 L</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(7)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(8)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1600566753190-17f0baa2a6c3" alt="Jubilee Heights Penthouse" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.8</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Penthouse</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Jubilee Heights Penthouse</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Jubilee Hills, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>4</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>4</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>3,800 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹6.8 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(8)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div onclick="showPropertyDetails(9)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1600047509807-ba8f99d2cdde" alt="Gachibowli Heights" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">4.6</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">Apartment</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Gachibowli Heights</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Gachibowli, Hyderabad
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                    <span>3</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path></svg>
+                                    <span>2</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                                    <span>1,800 sqft</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">₹1.8 Cr</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(9)" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <!-- No results message -->
+                <div id="no-results" style="display: none; text-align: center; padding: 3rem 1rem;">
+                    <svg style="width: 3rem; height: 3rem; color: #9ca3af; margin: 0 auto 1rem;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                    <h4 style="color: #ffffff; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">No
+                        properties found</h4>
+                    <p style="color: #9ca3af; margin-bottom: 1rem;">Try adjusting your search filters</p>
+                    <button onclick="resetFilters()" style="background-color: #1DB954; color: #000000; padding: 0.625rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer;">Reset
+                        Filters</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Property Listings — real data from the NestJS + MongoDB backend -->
+        <section style="max-width: 80rem; margin: 0 auto; padding: 0 2rem 4rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h3 style="font-size: 1.875rem; font-weight: 700; color: #ffffff; margin: 0;">Live Listings</h3>
+                    <p style="color: #9ca3af; font-size: 0.875rem; margin: 0.25rem 0 0;">Fetched in real time from the database — filter by city, type, and price.</p>
+                </div>
+            </div>
+
+            <!-- Server-side filters -->
+            <div style="background-color: #1a1a1a; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); padding: 1.25rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; align-items: end;">
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">City</label>
+                    <input id="live-filter-city" type="text" placeholder="e.g. Chennai" style="width:100%;box-sizing:border-box;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;" data-tv-bound="1" data-tv-restrict="alpha">
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Type</label>
+                    <select id="live-filter-type" style="width:100%;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;" data-tv-bound="1">
+                        <option value="">All Types</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="plot">Plot</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="penthouse">Penthouse</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Min Price (₹)</label>
+                    <input id="live-filter-minprice" type="number" min="0" placeholder="0" style="width:100%;box-sizing:border-box;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;" data-tv-bound="1" data-tv-restrict="number">
+                </div>
+                <div>
+                    <label style="display:block;font-size:0.75rem;color:#9ca3af;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">Max Price (₹)</label>
+                    <input id="live-filter-maxprice" type="number" min="0" placeholder="Any" style="width:100%;box-sizing:border-box;background-color:#282828;color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.6rem 0.75rem;" data-tv-bound="1" data-tv-restrict="number">
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                    <button onclick="loadLiveProperties(1)" style="flex:1;background-color:#1DB954;color:#000;font-weight:600;padding:0.65rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">Search</button>
+                    <button onclick="resetLiveFilters()" style="background-color:#282828;color:#fff;font-weight:600;padding:0.65rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">Reset</button>
+                </div>
+            </div>
+
+            <div id="live-property-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                <div onclick="showPropertyDetails(&#39;6a7a0a49655265bca971482a&#39;)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1564013799919-ab600027ffc6" alt="qsqdfgdsewadfsvb" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">apartment</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">sale</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">qsqdfgdsewadfsvb</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            dfbvgfdsewasfdgbcnv, sadvcbfdswqADVXCB
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>2 bd</span>
+                            <span>12 ba</span>
+                            <span>1234 sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">₹21,34,52,134</div>
+                    </div>
+                </div>
+                <div onclick="showPropertyDetails(&#39;6a7a08fa655265bca9714829&#39;)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1564013799919-ab600027ffc6" alt="sasidhar reddy" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">apartment</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">sale</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">sasidhar reddy</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            kadapa, Andhra Pradesh
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>2 bd</span>
+                            <span>3 ba</span>
+                            <span>2000 sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">₹45,00,000</div>
+                    </div>
+                </div>
+                <div onclick="showPropertyDetails(&#39;6a79fec7af037a3e637be75d&#39;)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1556912172-45b7abe8b7e1" alt="Spacious Family Home" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">villa</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">sale</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Spacious Family Home</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Hyderabad, Telangana
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>4 bd</span>
+                            <span>3 ba</span>
+                            <span>2200 sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">₹78,00,000</div>
+                    </div>
+                </div>
+                <div onclick="showPropertyDetails(&#39;6a79fec7af037a3e637be75c&#39;)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1500382017468-9049fed747ef" alt="Plot with Lake View" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">plot</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">sale</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Plot with Lake View</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Hyderabad, Telangana
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>0 bd</span>
+                            <span>1 ba</span>
+                            <span>3000 sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">₹45,00,000</div>
+                    </div>
+                </div>
+                <div onclick="showPropertyDetails(&#39;6a79fec7af037a3e637be75b&#39;)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1523217582562-09d0def993a6" alt="3BHK Gated Community" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">apartment</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">rent</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">3BHK Gated Community</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Bangalore, Karnataka
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>3 bd</span>
+                            <span>2 ba</span>
+                            <span>1800 sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">₹72,000 / mo</div>
+                    </div>
+                </div>
+                <div onclick="showPropertyDetails(&#39;6a79fec7af037a3e637be75a&#39;)" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="./truEstate - Premium Real Estate Platform_files/photo-1522708323590-d24dbb6b0267" alt="Budget 1BHK Studio" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">apartment</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">rent</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">Budget 1BHK Studio</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            Bangalore, Karnataka
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>1 bd</span>
+                            <span>1 ba</span>
+                            <span>1200 sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">₹32,000 / mo</div>
+                    </div>
+                </div></div>
+            <div id="live-property-empty" style="display:none;text-align:center;padding:2rem;color:#9ca3af;">No properties match those filters yet.</div>
+            <div id="live-property-error" style="display:none;text-align:center;padding:2rem;color:#ef4444;">Couldn't reach the API. Is the backend running?</div>
+
+            <!-- Pagination -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem;">
+                <button onclick="loadLiveProperties(livePropertiesPage - 1)" id="live-prev-btn" style="background-color:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;" disabled="">← Prev</button>
+                <span id="live-page-indicator" style="color:#9ca3af;font-size:0.875rem;">Page 1 of 4 (21 total)</span>
+                <button onclick="loadLiveProperties(livePropertiesPage + 1)" id="live-next-btn" style="background-color:#282828;color:#fff;padding:0.5rem 1rem;border-radius:0.5rem;border:none;cursor:pointer;">Next →</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="background-color: #0a0a0a; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="max-width: 80rem; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; padding-top: 3rem; padding-bottom: 3rem;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-bottom: 2rem;">
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">About truEstate</h4>
+                        <p style="color: #9ca3af; font-size: 0.875rem; line-height: 1.6; margin-bottom: 0.75rem;">
+                            An innovative platform dedicated to property buyers and sellers.
+                            Property search made easy with advanced filters and verified listings.
+                        </p>
+                        <button style="color: #1DB954; font-size: 0.875rem; font-weight: 600; background: none; border: none; cursor: pointer; padding: 0;">
+                            Read more
+                        </button>
+                        <div style="margin-top: 1.5rem;">
+                            <h5 style="color: #ffffff; font-weight: 600; margin-bottom: 0.75rem; font-size: 0.875rem;">
+                                Follow us</h5>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <a href="http://127.0.0.1:3000/index.html#" style="width: 2rem; height: 2rem; background-color: #3b5998; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                    </svg>
+                                </a>
+                                <a href="http://127.0.0.1:3000/index.html#" style="width: 2rem; height: 2rem; background-color: #1DA1F2; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                                    </svg>
+                                </a>
+                                <a href="http://127.0.0.1:3000/index.html#" style="width: 2rem; height: 2rem; background-color: #0077b5; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                        <rect x="2" y="9" width="4" height="12"></rect>
+                                        <circle cx="4" cy="4" r="2"></circle>
+                                    </svg>
+                                </a>
+                                <a href="http://127.0.0.1:3000/index.html#" style="width: 2rem; height: 2rem; background-color: #FF0000; border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                                    </svg>
+                                </a>
+                                <a href="http://127.0.0.1:3000/index.html#" style="width: 2rem; height: 2rem; background: linear-gradient(to top right, #FD5949, #D6249F, #285AEB); border-radius: 9999px; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s;">
+                                    <svg style="width: 1rem; height: 1rem; color: #ffffff;" fill="currentColor" viewBox="0 0 24 24">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">Properties in India</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Mumbai</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Delhi</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Bangalore</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Chennai</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Pune</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Hyderabad</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                in Kolkata</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">New Projects in India</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Delhi</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Mumbai</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Bangalore</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Pune</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Gurgaon</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Chennai</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">New
+                                Projects in Hyderabad</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 1rem;">Property Services</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">PG/Co-living</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Paying
+                                Guest</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Home
+                                Loans</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Property
+                                Management</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Legal
+                                Services</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Interior
+                                Design</a>
+                            <a href="http://127.0.0.1:3000/index.html#" style="display: block; color: #9ca3af; font-size: 0.875rem; transition: color 0.3s; text-decoration: none;">Vastu
+                                Consultation</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.5rem;">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+                        <a href="http://127.0.0.1:3000/index.html#" style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Sitemap</a>
+                        <span style="color: #666;">|</span>
+                        <a href="http://127.0.0.1:3000/index.html#" style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Terms
+                            &amp; Conditions</a>
+                        <span style="color: #666;">|</span>
+                        <a href="http://127.0.0.1:3000/index.html#" style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Privacy
+                            Policy</a>
+                        <span style="color: #666;">|</span>
+                        <a href="http://127.0.0.1:3000/index.html#" style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Help
+                            Center</a>
+                        <span style="color: #666;">|</span>
+                        <a href="http://127.0.0.1:3000/index.html#" style="color: #9ca3af; font-size: 0.75rem; transition: color 0.3s; text-decoration: none;">Feedback</a>
+                    </div>
+                    <p style="text-align: center; color: #777; font-size: 0.75rem;">
+                        All rights reserved © 2026 truEstate.com. All trademarks, logos and names are properties of
+                        their respective owners.
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Auth Page -->
+    <div id="auth-page" style="display: block; animation: 0.3s ease 0s 1 normal none running fadeIn;">
+        <div style="min-height: 100vh; display: flex; position: relative;">
+            <button onclick="showLanding()" style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 50; display: flex; align-items: center; gap: 0.5rem; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; background-color: #282828; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem; color: #ffffff; transition: background-color 0.3s; cursor: pointer;">
+                <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span style="font-size: 0.875rem; font-weight: 500;">Back</span>
+            </button>
+
+            <!-- Left Side -->
+            <div style="width: 50%; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 5rem;">
+                <div style="max-width: 36rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem;">
+                        <div style="background-color: #1DB954; padding: 0.75rem; border-radius: 0.75rem;">
+                            <svg style="width: 2rem; height: 2rem; color: #000000;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 style="font-size: 1.25rem; font-weight: 700; color: #ffffff;">truEstate</h1>
+                            <p style="font-size: 0.75rem; color: #9ca3af;">Premium Real Estate Platform</p>
+                        </div>
+                    </div>
+                    <h2 style="font-size: 3rem; font-weight: 700; color: #ffffff; margin-bottom: 1.5rem; line-height: 1.2;">
+                        Find Your Dream Property <span style="color: #1DB954;">With Confidence</span>
+                    </h2>
+                    <p style="color: #9ca3af; font-size: 1.125rem; margin-bottom: 3rem;">
+                        Join thousands of buyers and sellers who trust truEstate for their real estate needs.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                        <div>
+                            <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                10K+</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Properties</div>
+                        </div>
+                        <div>
+                            <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                50K+</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Happy Clients</div>
+                        </div>
+                        <div>
+                            <div style="color: #1DB954; font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                2K+</div>
+                            <div style="color: #9ca3af; font-size: 0.875rem;">Property Experts</div>
+                        </div>
+                    </div>
+                    <p style="color: #777; font-size: 0.875rem; margin-top: 3rem;">Trusted by industry leaders since
+                        2020</p>
+                </div>
+            </div>
+
+            <!-- Right Side -->
+            <div style="width: 50%; background-color: #2a2a2a; display: flex; align-items: center; justify-content: center; padding: 3rem;">
+                <div style="width: 100%; max-width: 28rem;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.875rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">
+                            Welcome to truEstate</h3>
+                        <p style="color: #9ca3af;">Your journey to finding the perfect property starts here</p>
+                    </div>
+
+                    <form style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.5rem;background:#1a1a1a;border:1px solid #444;border-radius:0.75rem;padding:0.35rem;">
+                            <button id="login-tab" type="button" onclick="switchTab(&#39;login&#39;)" style="background:#1DB954;color:#000;border:none;border-radius:0.5rem;padding:0.65rem 1rem;font-weight:700;cursor:pointer;">Login</button>
+                            <button id="signup-tab" type="button" onclick="switchTab(&#39;signup&#39;)" style="background:transparent;color:#9ca3af;border:none;border-radius:0.5rem;padding:0.65rem 1rem;font-weight:700;cursor:pointer;">Sign Up</button>
+                        </div>
+
+                        <h4 id="form-heading" style="color: #ffffff; font-weight: 600; margin-bottom: 0.5rem;">Login with your email address</h4>
+
+                        <div id="name-field" style="display:none;">
+                            <label style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Full Name</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input id="signup-name" type="text" placeholder="Enter your full name" style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;" data-tv-bound="1" data-tv-restrict="alpha">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Email</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                <input type="email" placeholder="Enter your email address" style="width: 100%; background-color: rgb(26, 26, 26); border: 1px solid rgb(68, 68, 68); border-radius: 0.5rem; padding: 0.75rem 1rem 0.75rem 3rem; color: rgb(255, 255, 255);" data-tv-bound="1" data-tv-restrict="email">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Password</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <input type="password" id="password" placeholder="Enter your password" style="width: 100%; background-color: rgb(26, 26, 26); border: 1px solid rgb(29, 185, 84); border-radius: 0.5rem; padding: 0.75rem 3rem; color: rgb(255, 255, 255);" data-tv-bound="1">
+                                <button type="button" onclick="togglePassword()" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; background: none; border: none; cursor: pointer; padding: 0;">
+                                    <svg id="eye-icon" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="confirm-password-field" style="display:none;">
+                            <label style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Confirm Password</label>
+                            <div style="position: relative;">
+                                <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: #9ca3af;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <input id="confirm-password" type="password" placeholder="Re-enter your password" style="width: 100%; background-color: #1a1a1a; border: 1px solid #444; border-radius: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; padding-left: 3rem; padding-right: 1rem; color: #ffffff;" data-tv-bound="1" data-tv-pw-match="1">
+                            </div><div id="tv-pw-match-confirm-password" style="font-size: 0.75rem; font-weight: 600; margin-top: 0.35rem; padding: 0.25rem 0.6rem; border-radius: 0.4rem; display: none; align-items: center; gap: 0.3rem; transition: 0.2s; width: fit-content;"></div>
+                        </div>
+
+                        <div>
+                            <label id="role-label" style="display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.75rem;">Login as</label>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                                <button type="button" class="role-btn" data-role="buyer" onclick="selectRole(this, &#39;buyer&#39;); window._selectedRole=&#39;buyer&#39;;" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid rgb(68, 68, 68); background-color: rgb(26, 26, 26); color: rgb(156, 163, 175); transition: 0.3s; cursor: pointer;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Buyer</span>
+                                </button>
+                                <button type="button" class="role-btn" data-role="seller" onclick="selectRole(this, &#39;seller&#39;); window._selectedRole=&#39;seller&#39;;" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid rgb(29, 185, 84); background-color: rgba(29, 185, 84, 0.1); color: rgb(29, 185, 84); transition: 0.3s; cursor: pointer;">
+                                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                    </svg>
+                                    <span style="font-size: 0.75rem; font-weight: 500;">Seller</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" style="width: 1rem; height: 1rem; border-radius: 0.25rem; border: 1px solid #444; background-color: #1a1a1a; cursor: pointer;" data-tv-bound="1">
+                                <span style="font-size: 0.875rem; color: #9ca3af;">Remember me</span>
+                            </label>
+                            <button id="forgot-link" type="button" onclick="TruEstate.openForgotPasswordModal(selectedRole)" style="font-size: 0.875rem; color: rgb(29, 185, 84); background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; cursor: pointer; transition: color 0.3s; visibility: visible;">
+                                Forgot password?
+                            </button>
+                        </div>
+
+                        <button type="submit" id="submit-btn" style="width: 100%; background-color: #1DB954; color: #000000; font-weight: 600; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0.5rem; transition: background-color 0.3s; cursor: pointer; border: none;">Login</button>
+
+                        <p style="font-size: 0.75rem; text-align: center; color: #777;">
+                            By continuing, you agree to the
+                            <a href="http://127.0.0.1:3000/index.html#" style="color: #1DB954; transition: color 0.3s; text-decoration: none;">Terms of
+                                Use</a>
+                            and
+                            <a href="http://127.0.0.1:3000/index.html#" style="color: #1DB954; transition: color 0.3s; text-decoration: none;">Privacy
+                                Policy</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Details Modal -->
+    <div id="property-detail-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;">
+        <div id="property-detail-content" style="background-color: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; max-width: 720px; width: 92%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <!-- Close button -->
+            <button onclick="closePropertyDetail()" style="position: absolute; top: 1rem; right: 1rem; z-index: 10; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: none; color: #ffffff; width: 2.5rem; height: 2.5rem; border-radius: 9999px; cursor: pointer; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s;">✕</button>
+            <!-- Image -->
+            <div style="width: 100%; height: 22rem; overflow: hidden; border-radius: 1rem 1rem 0 0;">
+                <img id="pd-image" src="http://127.0.0.1:3000/index.html" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <!-- Details -->
+            <div style="padding: 2rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <h2 id="pd-name" style="font-size: 1.75rem; font-weight: 700; color: #ffffff;"></h2>
+                    <div style="display: flex; align-items: center; gap: 0.375rem; background-color: #282828; padding: 0.375rem 0.75rem; border-radius: 9999px;">
+                        <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <span id="pd-rating" style="color: #ffffff; font-size: 0.875rem; font-weight: 600;"></span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                    <svg style="width: 1.125rem; height: 1.125rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span id="pd-location"></span>
+                </div>
+                <!-- Specs -->
+                <div style="display: flex; gap: 1.5rem; padding: 1.25rem; background-color: #282828; border-radius: 0.75rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        </svg>
+                        <span id="pd-beds" style="color: #ffffff; font-weight: 600;"></span>
+                        <span style="color: #9ca3af; font-size: 0.875rem;">Beds</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"></path>
+                        </svg>
+                        <span id="pd-baths" style="color: #ffffff; font-weight: 600;"></span>
+                        <span style="color: #9ca3af; font-size: 0.875rem;">Baths</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                        </svg>
+                        <span id="pd-area" style="color: #ffffff; font-weight: 600;"></span>
+                    </div>
+                </div>
+                <!-- Description -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: #ffffff; font-weight: 600; margin-bottom: 0.75rem;">About this property</h4>
+                    <p id="pd-description" style="color: #9ca3af; font-size: 0.95rem; line-height: 1.7;"></p>
+                </div>
+                <!-- Price & CTA -->
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div>
+                        <span style="color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Price</span>
+                        <div id="pd-price" style="font-size: 2rem; font-weight: 700; color: #1DB954;"></div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button onclick="closePropertyDetail()" style="background-color: #282828; color: #ffffff; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.3s;">Close</button>
+                        <button onclick="closePropertyDetail(); showAuth();" style="background-color: #1DB954; color: #000000; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background-color 0.3s;">
+                            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M3 3h18v18H3z"></path>
+                                <path d="M3 9h18"></path>
+                                <path d="M9 21V9"></path>
+                            </svg>
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="./truEstate - Premium Real Estate Platform_files/form-validation.js"></script>
+    <script src="./truEstate - Premium Real Estate Platform_files/app.js"></script>
+    <script>
+        // Property data for the featured properties
+        // ========== ALL PROPERTY DATA ==========
+        const allProperties = [
+            {
+                id: 1, name: 'Luxury Apartment', type: 'Apartment', locationArea: 'Banjara Hills',
+                location: 'Banjara Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1758448617677-2f8bebc56d9e?w=800',
+                rating: '4.8', beds: 3, baths: 2, area: '2,100 sqft',
+                price: '₹2.5 Cr', priceValue: 250,
+                description: 'Experience luxury living in the heart of Banjara Hills. This stunning 3-bedroom apartment features premium finishes, spacious rooms with ample natural light, a modern kitchen with high-end appliances, and a private balcony overlooking the city skyline. The gated community offers world-class amenities including a swimming pool, gym, clubhouse, and 24/7 security.'
+            },
+            {
+                id: 2, name: 'Modern Villa', type: 'Villa', locationArea: 'Jubilee Hills',
+                location: 'Jubilee Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1648147870253-c45f6f430528?w=800',
+                rating: '4.9', beds: 4, baths: 3, area: '3,500 sqft',
+                price: '₹5.2 Cr', priceValue: 520,
+                description: 'A masterpiece of modern architecture in the prestigious Jubilee Hills locality. This exquisite 4-bedroom villa boasts state-of-the-art interiors, a landscaped garden, private parking for 3 cars, and a rooftop terrace with panoramic views. Italian marble flooring, smart-home automation, and a designer modular kitchen.'
+            },
+            {
+                id: 3, name: 'Sunset Villa', type: 'Villa', locationArea: 'Gachibowli',
+                location: 'Gachibowli, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1772398539093-fc7b4a6b1bfc?w=800',
+                rating: '5.0', beds: 4, baths: 4, area: '2,800 sqft',
+                price: '₹3.8 Cr', priceValue: 380,
+                description: 'Nestled in the tech corridor of Gachibowli, this breathtaking villa offers a perfect blend of comfort and convenience. Featuring 4 luxurious bedrooms with attached bathrooms, a grand living area, a contemporary open kitchen, and a beautiful garden with a sit-out area.'
+            },
+            {
+                id: 4, name: 'Sky Penthouse', type: 'Penthouse', locationArea: 'HITEC City',
+                location: 'HITEC City, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+                rating: '4.7', beds: 3, baths: 3, area: '4,200 sqft',
+                price: '₹7.5 Cr', priceValue: 750,
+                description: 'An ultra-premium penthouse atop one of HITEC City\'s most iconic towers. Floor-to-ceiling windows offer 360-degree views. Features a private terrace pool, home office, designer interiors, and exclusive elevator access. Minutes from all major IT campuses.'
+            },
+            {
+                id: 5, name: 'Green Valley Apartment', type: 'Apartment', locationArea: 'Gachibowli',
+                location: 'Gachibowli, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+                rating: '4.5', beds: 2, baths: 2, area: '1,450 sqft',
+                price: '₹1.2 Cr', priceValue: 120,
+                description: 'A beautifully designed 2-bedroom apartment in a lush green gated community. Ideal for young professionals and small families. Features modern interiors, a kids play area, jogging track, swimming pool, and excellent connectivity to the IT corridor.'
+            },
+            {
+                id: 6, name: 'Royal Heritage Villa', type: 'Villa', locationArea: 'Banjara Hills',
+                location: 'Banjara Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+                rating: '4.9', beds: 5, baths: 5, area: '5,000 sqft',
+                price: '₹8.5 Cr', priceValue: 850,
+                description: 'An aristocratic villa in the heart of Banjara Hills with a blend of heritage architecture and modern luxury. Sprawling 5-bedroom layout with private garden, swimming pool, home theater, wine cellar, and staff quarters. The epitome of opulent living.'
+            },
+            {
+                id: 7, name: 'Tech Park Apartment', type: 'Apartment', locationArea: 'HITEC City',
+                location: 'HITEC City, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800',
+                rating: '4.3', beds: 2, baths: 1, area: '1,100 sqft',
+                price: '₹85 L', priceValue: 85,
+                description: 'A compact yet modern 2-bedroom apartment perfect for IT professionals. Walking distance to major tech parks. Features include a modular kitchen, gym access, covered parking, and 24/7 security. Great investment opportunity.'
+            },
+            {
+                id: 8, name: 'Jubilee Heights Penthouse', type: 'Penthouse', locationArea: 'Jubilee Hills',
+                location: 'Jubilee Hills, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800',
+                rating: '4.8', beds: 4, baths: 4, area: '3,800 sqft',
+                price: '₹6.8 Cr', priceValue: 680,
+                description: 'A spectacular duplex penthouse in Jubilee Hills with a private rooftop garden and infinity pool. Designed by an award-winning architect, it features marble flooring, imported fixtures, a chef\'s kitchen, and breathtaking views of Hussain Sagar lake.'
+            },
+            {
+                id: 9, name: 'Gachibowli Heights', type: 'Apartment', locationArea: 'Gachibowli',
+                location: 'Gachibowli, Hyderabad',
+                image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800',
+                rating: '4.6', beds: 3, baths: 2, area: '1,800 sqft',
+                price: '₹1.8 Cr', priceValue: 180,
+                description: 'A well-designed 3-bedroom apartment in the heart of Gachibowli. The gated community features a clubhouse, swimming pool, landscaped gardens, indoor games, and a jogging track. Close to international schools and hospitals.'
+            }
+        ];
+
+        // Build lookup for details modal
+        const featuredProperties = {};
+        allProperties.forEach(p => { featuredProperties[p.id] = p; });
+
+        // ========== RENDER PROPERTY CARDS ==========
+        function renderPropertyCards(properties) {
+            const grid = document.getElementById('property-grid');
+            const noResults = document.getElementById('no-results');
+            if (properties.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+            grid.innerHTML = properties.map(prop => `
+                <div onclick="showPropertyDetails(${prop.id})" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; transition: all 0.3s; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="${prop.image}" alt="${prop.name}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.375rem; padding-bottom: 0.375rem; border-radius: 9999px; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954; fill: #1DB954;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span style="color: #ffffff; font-size: 0.875rem; font-weight: 600;">${prop.rating}</span>
+                        </div>
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000;">${prop.type}</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">${prop.name}</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            ${prop.location}
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                                    <span>${prop.beds}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 0l-1 1a1.5 1.5 0 0 0 0 1L7 9"/></svg>
+                                    <span>${prop.baths}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                                    <span>${prop.area}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #1DB954;">${prop.price}</div>
+                            <button onclick="event.stopPropagation(); showPropertyDetails(${prop.id})" style="background-color: #282828; color: #ffffff; padding-left: 1rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0.5rem; transition: all 0.3s; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========== SEARCH / FILTER ==========
+        function searchProperties() {
+            const location = document.getElementById('filter-location').value;
+            const type = document.getElementById('filter-type').value;
+            const budget = document.getElementById('filter-budget').value;
+
+            let filtered = allProperties.filter(prop => {
+                // Location filter
+                if (location !== 'All Locations' && prop.locationArea !== location) return false;
+                // Type filter
+                if (type !== 'All Types' && prop.type !== type) return false;
+                // Budget filter (priceValue is in Lakhs)
+                if (budget !== 'All Prices') {
+                    if (budget === '50L - 1Cr' && (prop.priceValue < 50 || prop.priceValue >= 100)) return false;
+                    if (budget === '1Cr - 2Cr' && (prop.priceValue < 100 || prop.priceValue >= 200)) return false;
+                    if (budget === '2Cr - 5Cr' && (prop.priceValue < 200 || prop.priceValue >= 500)) return false;
+                    if (budget === '5Cr+' && prop.priceValue < 500) return false;
+                }
+                return true;
+            });
+
+            renderPropertyCards(filtered);
+
+            // Update heading
+            const heading = document.getElementById('properties-heading');
+            const resetBtn = document.getElementById('reset-filters-btn');
+            if (location !== 'All Locations' || type !== 'All Types' || budget !== 'All Prices') {
+                heading.textContent = `Search Results (${filtered.length})`;
+                resetBtn.style.display = 'flex';
+            } else {
+                heading.textContent = 'Featured Properties';
+                resetBtn.style.display = 'none';
+            }
+
+            // Scroll to results
+            document.getElementById('property-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-location').value = 'All Locations';
+            document.getElementById('filter-type').value = 'All Types';
+            document.getElementById('filter-budget').value = 'All Prices';
+            document.getElementById('properties-heading').textContent = 'Featured Properties';
+            document.getElementById('reset-filters-btn').style.display = 'none';
+            renderPropertyCards(allProperties);
+        }
+
+        // ========== LIVE LISTINGS (real backend data) ==========
+        let livePropertiesPage = 1;
+        const LIVE_PAGE_SIZE = 6;
+
+        function formatInr(amount) {
+            return '₹' + Number(amount).toLocaleString('en-IN');
+        }
+
+        function renderLiveProperties(items) {
+            const grid = document.getElementById('live-property-grid');
+            const empty = document.getElementById('live-property-empty');
+            const error = document.getElementById('live-property-error');
+            error.style.display = 'none';
+
+            if (!items.length) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+
+            grid.innerHTML = items.map(prop => {
+                // Register in the shared lookup so the existing detail modal works for live data too.
+                featuredProperties[prop.id] = {
+                    id: prop.id,
+                    name: prop.title,
+                    location: prop.city + ', ' + prop.state,
+                    image: (prop.images && prop.images[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+                    rating: '—',
+                    beds: prop.bedrooms,
+                    baths: prop.bathrooms,
+                    area: prop.areaSqft + ' sqft',
+                    price: formatInr(prop.price) + (prop.listingType === 'rent' ? ' / mo' : ''),
+                    description: prop.description,
+                };
+                return `
+                <div onclick="showPropertyDetails('${prop.id}')" style="background-color: #1a1a1a; border-radius: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; cursor: pointer; animation: fadeIn 0.4s ease;">
+                    <div style="position: relative; height: 14rem; overflow: hidden;">
+                        <img src="${featuredProperties[prop.id].image}" alt="${prop.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 1rem; left: 1rem; background-color: #1DB954; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #000000; text-transform: capitalize;">${prop.type}</div>
+                        <div style="position: absolute; top: 1rem; right: 1rem; background-color: rgba(0,0,0,0.8); padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; color: #fff; text-transform: capitalize;">${prop.listingType}</div>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <h4 style="font-size: 1.125rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">${prop.title}</h4>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                            <svg style="width: 1rem; height: 1rem; color: #1DB954;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            ${prop.city}, ${prop.state}
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem; font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <span>${prop.bedrooms} bd</span>
+                            <span>${prop.bathrooms} ba</span>
+                            <span>${prop.areaSqft} sqft</span>
+                        </div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: #1DB954;">${featuredProperties[prop.id].price}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function loadLiveProperties(page) {
+            livePropertiesPage = Math.max(1, page || 1);
+            const params = new URLSearchParams();
+            params.set('page', livePropertiesPage);
+            params.set('limit', LIVE_PAGE_SIZE);
+
+            const city = document.getElementById('live-filter-city').value.trim();
+            const type = document.getElementById('live-filter-type').value;
+            const minPrice = document.getElementById('live-filter-minprice').value;
+            const maxPrice = document.getElementById('live-filter-maxprice').value;
+            if (city) params.set('city', city);
+            if (type) params.set('type', type);
+            if (minPrice) params.set('minPrice', minPrice);
+            if (maxPrice) params.set('maxPrice', maxPrice);
+
+            try {
+                const result = await TruEstate.api('/properties?' + params.toString());
+                const { items, page: currentPage, totalPages } = result.data;
+                renderLiveProperties(items);
+                document.getElementById('live-page-indicator').textContent =
+                    `Page ${currentPage} of ${Math.max(totalPages, 1)} (${result.data.total} total)`;
+                document.getElementById('live-prev-btn').disabled = currentPage <= 1;
+                document.getElementById('live-next-btn').disabled = currentPage >= totalPages;
+            } catch (err) {
+                document.getElementById('live-property-grid').style.display = 'none';
+                document.getElementById('live-property-empty').style.display = 'none';
+                document.getElementById('live-property-error').style.display = 'block';
+                document.getElementById('live-property-error').textContent =
+                    (err.message && err.status !== undefined) ? err.message : "Couldn't reach the API. Is the backend running?";
+            }
+        }
+
+        function resetLiveFilters() {
+            document.getElementById('live-filter-city').value = '';
+            document.getElementById('live-filter-type').value = '';
+            document.getElementById('live-filter-minprice').value = '';
+            document.getElementById('live-filter-maxprice').value = '';
+            loadLiveProperties(1);
+        }
+
+        // ========== PROPERTY DETAIL MODAL ==========
+        function showPropertyDetails(id) {
+            const prop = featuredProperties[id];
+            if (!prop) return;
+            document.getElementById('pd-image').src = prop.image;
+            document.getElementById('pd-image').alt = prop.name;
+            document.getElementById('pd-name').textContent = prop.name;
+            document.getElementById('pd-location').textContent = prop.location;
+            document.getElementById('pd-rating').textContent = prop.rating;
+            document.getElementById('pd-beds').textContent = prop.beds;
+            document.getElementById('pd-baths').textContent = prop.baths;
+            document.getElementById('pd-area').textContent = prop.area;
+            document.getElementById('pd-price').textContent = prop.price;
+            document.getElementById('pd-description').textContent = prop.description;
+            const modal = document.getElementById('property-detail-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePropertyDetail() {
+            document.getElementById('property-detail-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on clicking outside content
+        document.getElementById('property-detail-modal').addEventListener('click', function (e) {
+            if (e.target === this) closePropertyDetail();
+        });
+
+        // --- NEW: Read Property from localStorage (The "Read" in CRUD) ---
+        try {
+            let localProps = JSON.parse(localStorage.getItem('properties')) || [];
+            localProps.forEach(lp => {
+                if (lp.status !== 'approved' && lp.status !== 'Verified') return;
+                let newProp = {
+                    id: lp.id,
+                    name: lp.name,
+                    type: lp.type || 'Apartment',
+                    locationArea: lp.location ? lp.location.split(',')[0] : 'Unknown',
+                    location: lp.location,
+                    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80',
+                    rating: '4.5', beds: parseInt(lp.beds) || 2, baths: parseInt(lp.baths) || 2, area: `${lp.sqft || 1500} sqft`,
+                    price: `₹${lp.price}`,
+                    priceValue: parseInt((lp.price || '0').toString().replace(/,/g, '')) / 100000 || 0,
+                    description: 'A newly added property from the seller dashboard.'
+                };
+                allProperties.push(newProp);
+                featuredProperties[newProp.id] = newProp;
+            });
+        } catch (e) { console.error("Error loading properties from localStorage", e); }
+        // -----------------------------------------------------------------
+
+        // Render all properties on page load
+        renderPropertyCards(allProperties);
+        loadLiveProperties(1);
+
+        let selectedRole = 'buyer';
+        let currentTab = 'login';
+
+        function showAuth() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('auth-page').style.display = 'block';
+            document.getElementById('auth-page').style.animation = 'fadeIn 0.3s ease';
+            switchTab(currentTab);
+        }
+
+        function showLanding() {
+            document.getElementById('auth-page').style.display = 'none';
+            document.getElementById('landing-page').style.display = 'block';
+            document.getElementById('landing-page').style.animation = 'fadeIn 0.3s ease';
+        }
+
+        function selectRole(element, role) {
+            selectedRole = role;
+            const roleBtns = document.querySelectorAll('.role-btn');
+            roleBtns.forEach(btn => {
+                btn.style.border = '2px solid #444';
+                btn.style.backgroundColor = '#1a1a1a';
+                btn.style.color = '#9ca3af';
+            });
+            element.style.border = '2px solid #1DB954';
+            element.style.backgroundColor = 'rgba(29, 185, 84, 0.1)';
+            element.style.color = '#1DB954';
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const isSignup = tab === 'signup';
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const nameField = document.getElementById('name-field');
+            const confirmField = document.getElementById('confirm-password-field');
+            const heading = document.getElementById('form-heading');
+            const roleLabel = document.getElementById('role-label');
+            const submitBtn = document.getElementById('submit-btn');
+            const forgotLink = document.getElementById('forgot-link');
+
+            if (loginTab && signupTab) {
+                loginTab.style.background = isSignup ? 'transparent' : '#1DB954';
+                loginTab.style.color = isSignup ? '#9ca3af' : '#000';
+                signupTab.style.background = isSignup ? '#1DB954' : 'transparent';
+                signupTab.style.color = isSignup ? '#000' : '#9ca3af';
+            }
+            if (nameField) nameField.style.display = isSignup ? 'block' : 'none';
+            if (confirmField) confirmField.style.display = isSignup ? 'block' : 'none';
+            if (heading) heading.textContent = isSignup ? 'Create a Buyer or Seller account' : 'Login with your email address';
+            if (roleLabel) roleLabel.textContent = isSignup ? 'Sign up as' : 'Login as';
+            if (submitBtn) submitBtn.textContent = isSignup ? 'Create Account' : 'Login';
+            if (forgotLink) forgotLink.style.visibility = isSignup ? 'hidden' : 'visible';
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            // ── Run friendly validation first (shows toasts, returns false on failure) ──
+            if (typeof tvValidateLoginForm === 'function' && !tvValidateLoginForm()) return;
+
+            const form = event.target;
+            const emailInput = form.querySelector('input[type="email"]');
+            const passwordInput = form.querySelector('input[type="password"]');
+
+            // ── Field-level validation with specific messages ──
+            const emailVal    = emailInput ? emailInput.value.trim() : '';
+            const passwordVal = document.getElementById('password') ? document.getElementById('password').value : '';
+
+            if (!emailVal) {
+                if (emailInput) emailInput.style.borderColor = '#ef4444';
+                showToast('📧 Please enter your email address', 'error');
+                return;
+            }
+            const isValidEmail = typeof tvIsEmail === 'function' ? tvIsEmail(emailVal) : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+            if (!isValidEmail) {
+                if (emailInput) emailInput.style.borderColor = '#ef4444';
+                showToast('📧 Please enter a valid email address', 'error');
+                return;
+            }
+            if (!passwordVal) {
+                const pwEl = document.getElementById('password');
+                if (pwEl) pwEl.style.borderColor = '#ef4444';
+                showToast('🔒 Please enter your password', 'error');
+                return;
+            }
+            if (emailInput) emailInput.style.borderColor = '';
+            const pwEl = document.getElementById('password');
+            if (pwEl) pwEl.style.borderColor = '';
+
+            const isSignup = currentTab === 'signup';
+            const nameInput = document.getElementById('signup-name');
+            const signupName = nameInput ? nameInput.value.trim() : '';
+
+            if (isSignup && !signupName) {
+                showToast('👤 Please enter your name', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            const originalBtnText = submitBtn ? submitBtn.textContent : '';
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isSignup ? 'Creating account...' : 'Logging in...'; }
+
+            try {
+                // ── Real backend auth (JWT) — POST /auth/register or /auth/login ──
+                const result = isSignup
+                    ? await TruEstate.api('/auth/register', {
+                        method: 'POST',
+                        body: JSON.stringify({ name: signupName, email: emailVal, password: passwordVal, userType: selectedRole })
+                    })
+                    : await TruEstate.api('/auth/login', {
+                        method: 'POST',
+                        // userType scopes login to the selected tab — the same email can
+                        // separately own a buyer account and a seller account, so this
+                        // must match to avoid landing in the wrong dashboard.
+                        body: JSON.stringify({ email: emailVal, password: passwordVal, userType: selectedRole })
+                    });
+
+                const authData = result.data;
+                const account = authData.user;
+                // The account's own userType (buyer/seller) decides the dashboard —
+                // trust the stored account over whichever tab happened to be selected.
+                const uiRole = account.role === 'admin' ? 'admin' : (account.userType || selectedRole);
+
+                TruEstate.setUser({
+                    id: account.id,
+                    name: account.name,
+                    email: account.email,
+                    role: uiRole,
+                    token: authData.accessToken
+                });
+
+                // ── Sync into globalUsers so the Super Admin mock view keeps showing every account ──
+                try {
+                    let gUsers = JSON.parse(localStorage.getItem('globalUsers')) || [];
+                    const roleLabelForList = uiRole.charAt(0).toUpperCase() + uiRole.slice(1);
+                    const byEmail = gUsers.find(u => u.email === account.email);
+                    if (byEmail) {
+                        byEmail.name = account.name;
+                        byEmail.status = 'Active';
+                    } else {
+                        gUsers.push({ id: account.id, name: account.name, email: account.email, role: roleLabelForList, status: 'Active' });
+                    }
+                    localStorage.setItem('globalUsers', JSON.stringify(gUsers));
+                } catch (_) {}
+
+                showToast((isSignup ? 'Account created' : 'Login successful') + '! Redirecting...', 'success');
+
+                // Redirect based on the account's role
+                setTimeout(() => {
+                    const dashboards = {
+                        buyer: 'Buyer Dashboard - truEstate.html',
+                        seller: 'seller-dashboard.html',
+                        admin: 'admin-dashboard.html'
+                    };
+                    window.location.href = dashboards[uiRole] || 'index.html';
+                }, 800);
+            } catch (err) {
+                const detail = (err.errors && err.errors.length) ? ': ' + err.errors[0] : '';
+                // Login failures are intentionally generic on the backend (no account-existence
+                // leak), but we can still hint at the selected tab client-side for clarity.
+                const message = (!isSignup && err.status === 401)
+                    ? `No ${selectedRole} account found for that email, or the password is wrong.`
+                    : err.message + detail;
+                showToast('⚠️ ' + message, 'error');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
+            }
+        }
+
+        // Landing page search filter
+        function filterProperties() {
+            showAuth();
+        }
+
+        // Add form submit handler when page loads
+        window.addEventListener('DOMContentLoaded', function () {
+            const authForm = document.querySelector('#auth-page form');
+            if (authForm) {
+                authForm.addEventListener('submit', handleLogin);
+            }
+
+            // Reset border color on input focus
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.style.borderColor = '#1DB954';
+                });
+                input.addEventListener('blur', function () {
+                    if (this.value.trim()) this.style.borderColor = '#444';
+                });
+            });
+        });
+    </script>
+
+
+
+</body></html>

@@ -1,10 +1,9 @@
 /**
  * truEstate – Central Form Validation Library
  * Covers every form / interactive input across ALL pages:
- *   index.html (Login / Sign-Up)
+ *   index.html (Buyer/Seller Login + Signup)
  *   seller-dashboard.html  (Add Property, Counter Offer, Reschedule, Profile)
- *   agent-dashboard.html   (Edit Profile, Reschedule)
- *   admin-dashboard.html   (Profile + Password Change)
+ *   admin-dashboard.html   (Profile, Password Change, Visit Workflows)
  *   superuser-dashboard.html (User CRUD, Property CRUD, Settings)
  *   Buyer Dashboard        (Offer form, Profile)
  */
@@ -25,6 +24,28 @@ function tvIsPhone(v) {
 }
 function tvIsPositiveNumber(v) {
     return /^[\d,\.]+$/.test(v.trim()) && parseFloat(v.replace(/,/g, '')) > 0;
+}
+
+/**
+ * Selection APIs are unavailable on several valid input types, including
+ * `email` and `number`. Input cleanup should still work for those fields;
+ * only restoring the caret is optional, so keep it best-effort.
+ */
+function tvSelectionStart(input) {
+    return typeof input.selectionStart === 'number' ? input.selectionStart : input.value.length;
+}
+
+function tvSelectionEnd(input, fallback) {
+    return typeof input.selectionEnd === 'number' ? input.selectionEnd : fallback;
+}
+
+function tvRestoreCaret(input, position) {
+    try {
+        input.setSelectionRange(position, position);
+    } catch (_) {
+        // `email`/`number` inputs do not support selection ranges. Their
+        // sanitized value is already set, which is all this helper requires.
+    }
 }
 
 /** Show an inline error message below an input */
@@ -164,7 +185,7 @@ function tvRestrictInput(el, mode) {
     };
 
     el.addEventListener('input', function () {
-        const pos = this.selectionStart;
+        const pos = tvSelectionStart(this);
         const val = this.value;
         let cleaned = val;
 
@@ -183,7 +204,7 @@ function tvRestrictInput(el, mode) {
             this.value = cleaned;
             const removed = val.length - cleaned.length;
             const newPos = Math.max(0, pos - (mode === 'email' ? 0 : removed));
-            this.setSelectionRange(newPos, newPos);
+            tvRestoreCaret(this, newPos);
         }
     });
 
@@ -201,11 +222,11 @@ function tvRestrictInput(el, mode) {
             tvHint(this, hints[mode]);
         }
 
-        const start = this.selectionStart;
-        const end   = this.selectionEnd;
+        const start = tvSelectionStart(this);
+        const end   = tvSelectionEnd(this, start);
         this.value  = this.value.slice(0, start) + cleanedPaste + this.value.slice(end);
         const newPos = start + cleanedPaste.length;
-        this.setSelectionRange(newPos, newPos);
+        tvRestoreCaret(this, newPos);
     });
 }
 
@@ -245,7 +266,7 @@ function tvApplyRestrictionsToPage() {
             'full-name', 'fullname', 'city', 'location', 'area',
             'platform', 'title', 'prop-name', 'prop-title',
             'user-name', 'pf-name', 'ep-name', 'profile-fname', 'profile-lname',
-            'prof-fname', 'prof-lname', 'tv-signup-name', 'new-prop-name',
+            'prof-fname', 'prof-lname', 'signup-name', 'new-prop-name',
             'new-prop-location', 'new-prop-type', 'counter-prop-name',
         ];
         if (alphaKeywords.some(k => id.includes(k) || name.includes(k))) {
@@ -537,7 +558,7 @@ function tvValidate(rules) {
 
 
 /* ═══════════════════════════════════════════════════════════
-   PAGE 1 – index.html  (Login / Sign-Up)
+   PAGE 1 – index.html  (Buyer/Seller Login + Signup)
 ═══════════════════════════════════════════════════════════ */
 /**
  * tvValidateLoginForm()
@@ -546,77 +567,62 @@ function tvValidate(rules) {
  * Does NOT redirect — that is handleLogin()'s job.
  */
 function tvValidateLoginForm() {
-    const nameWrapper    = document.getElementById('name-field');
-    const confirmWrapper = document.getElementById('confirm-password-field');
-    const isSignup       = (nameWrapper && nameWrapper.style.display !== 'none');
-
     const submitBtn = document.getElementById('submit-btn');
     const emailEl   = document.querySelector('#auth-page input[type="email"]');
     const passEl    = document.getElementById('password');
-    const nameEl    = (isSignup && nameWrapper) ? nameWrapper.querySelector('input') : null;
-    const confEl    = (isSignup && confirmWrapper) ? confirmWrapper.querySelector('input[type="password"]') : null;
+    const nameEl    = document.getElementById('signup-name');
+    const confEl    = document.getElementById('confirm-password');
+    const nameWrapper = document.getElementById('name-field');
+    const isSignup = (typeof currentTab !== 'undefined' && currentTab === 'signup') ||
+        (nameWrapper && nameWrapper.style.display !== 'none');
 
     const emailVal = (emailEl ? emailEl.value : '').trim();
     const passVal  = (passEl  ? passEl.value  : '').trim();
     const nameVal  = (nameEl  ? nameEl.value  : '').trim();
     const confVal  = (confEl  ? confEl.value  : '').trim();
 
-    if (isSignup) {
-        if (!nameVal) {
-            tvLoginToast('👤 Please enter your full name to sign up.');
-            if (submitBtn) tvShake(submitBtn);
-            if (nameEl) nameEl.focus();
-            return false;
-        }
-        if (!emailVal) {
-            tvLoginToast('📧 Please enter your email address.');
-            if (submitBtn) tvShake(submitBtn);
-            if (emailEl) emailEl.focus();
-            return false;
-        }
-        if (!tvIsEmail(emailVal)) {
-            tvLoginToast('📧 Please enter a valid email address.');
-            if (submitBtn) tvShake(submitBtn);
-            if (emailEl) emailEl.focus();
-            return false;
-        }
-        if (!passVal || passVal.length < 6) {
-            tvLoginToast('🔒 Password must be at least 6 characters.');
-            if (submitBtn) tvShake(submitBtn);
-            if (passEl) passEl.focus();
-            return false;
-        }
-        if (!confVal || confVal !== passVal) {
-            tvLoginToast('🔒 Passwords do not match. Please re-enter.');
-            if (submitBtn) tvShake(submitBtn);
-            if (confEl) confEl.focus();
-            return false;
-        }
-    } else {
-        if (!emailVal && !passVal) {
-            tvLoginToast('📧 Please fill in your email and password to login.');
-            if (submitBtn) tvShake(submitBtn);
-            if (emailEl) emailEl.focus();
-            return false;
-        }
-        if (!emailVal) {
-            tvLoginToast('📧 Please enter your email address.');
-            if (submitBtn) tvShake(submitBtn);
-            if (emailEl) emailEl.focus();
-            return false;
-        }
-        if (!tvIsEmail(emailVal)) {
-            tvLoginToast('📧 Please enter a valid email address.');
-            if (submitBtn) tvShake(submitBtn);
-            if (emailEl) emailEl.focus();
-            return false;
-        }
-        if (!passVal) {
-            tvLoginToast('🔒 Please enter your password.');
-            if (submitBtn) tvShake(submitBtn);
-            if (passEl) passEl.focus();
-            return false;
-        }
+    if (isSignup && !nameVal) {
+        tvLoginToast('👤 Please enter your full name to sign up.');
+        if (submitBtn) tvShake(submitBtn);
+        if (nameEl) nameEl.focus();
+        return false;
+    }
+
+    if (!emailVal && !passVal) {
+        tvLoginToast(`📧 Please fill in your email and password to ${isSignup ? 'sign up' : 'login'}.`);
+        if (submitBtn) tvShake(submitBtn);
+        if (emailEl) emailEl.focus();
+        return false;
+    }
+    if (!emailVal) {
+        tvLoginToast('📧 Please enter your email address.');
+        if (submitBtn) tvShake(submitBtn);
+        if (emailEl) emailEl.focus();
+        return false;
+    }
+    if (!tvIsEmail(emailVal)) {
+        tvLoginToast('📧 Please enter a valid email address.');
+        if (submitBtn) tvShake(submitBtn);
+        if (emailEl) emailEl.focus();
+        return false;
+    }
+    if (!passVal) {
+        tvLoginToast('🔒 Please enter your password.');
+        if (submitBtn) tvShake(submitBtn);
+        if (passEl) passEl.focus();
+        return false;
+    }
+    if (isSignup && passVal.length < 6) {
+        tvLoginToast('🔒 Password must be at least 6 characters.');
+        if (submitBtn) tvShake(submitBtn);
+        if (passEl) passEl.focus();
+        return false;
+    }
+    if (isSignup && confVal !== passVal) {
+        tvLoginToast('🔒 Passwords do not match. Please re-enter.');
+        if (submitBtn) tvShake(submitBtn);
+        if (confEl) confEl.focus();
+        return false;
     }
     return true;
 }
@@ -772,11 +778,11 @@ function tvValidatePasswordChange(currentId, newId, confirmId) {
 
 
 /* ═══════════════════════════════════════════════════════════
-   PAGE 3 – agent-dashboard.html
+   PAGE 3 – admin-dashboard.html workflow forms
 ═══════════════════════════════════════════════════════════ */
 
 /* -- Edit Profile modal -- */
-function tvValidateAgentEditProfile() {
+function tvValidateAdminWorkflowEditProfile() {
     return tvValidate([
         { id: 'ep-name',     label: 'Full Name',  required: true },
         { id: 'ep-email',    label: 'Email',      required: true, type: 'email' },
@@ -785,8 +791,8 @@ function tvValidateAgentEditProfile() {
     ]);
 }
 
-/* -- Agent Profile page fields -- */
-function tvValidateAgentProfile() {
+/* -- Admin workflow profile page fields -- */
+function tvValidateAdminWorkflowProfile() {
     return tvValidate([
         { id: 'pf-name',     label: 'Full Name',      required: true },
         { id: 'pf-phone',    label: 'Phone',          required: true, type: 'phone' },
@@ -968,10 +974,8 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ── index.html ───────────────────────────────────── */
     if (page === 'index.html' || page === '') {
         tvInitLoginPage();
-        // Wire confirm-password match indicator for the Sign-Up form
-        // The confirm input gets its id set lazily by tvInitLoginPage, so defer slightly
         setTimeout(() => {
-            tvWirePasswordMatch('password', 'tv-confirm-pw');
+            tvWirePasswordMatch('password', 'confirm-password');
         }, 100);
     }
 
@@ -1038,41 +1042,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, true);
     }
 
-    /* ── agent-dashboard.html ────────────────────────── */
-    if (page === 'agent-dashboard.html') {
-
-        /* Edit Profile modal Save button — matches onclick="saveAgentProfile()" */
-        document.addEventListener('click', function(e) {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-            const oc = btn.getAttribute('onclick') || '';
-            if (oc.includes('saveEditProfile') || oc.includes('saveAgentProfile')) {
-                if (!tvValidateAgentEditProfile()) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    tvShake(btn);
-                    showToast && showToast('Please fill in all required profile fields.', 'error');
-                }
-            }
-        }, true);
-
-        /* Profile page inline Save Changes (text may span lines) */
-        document.addEventListener('click', function(e) {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-            const oc  = btn.getAttribute('onclick') || '';
-            const txt = btn.textContent.replace(/\s+/g, ' ').trim();
-            if ((txt === 'Save Changes' || oc.includes('saveAgentProfile')) && !oc.includes('saveEditProfile')) {
-                if (!tvValidateAgentProfile()) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    tvShake(btn);
-                    showToast && showToast('Please complete all required profile fields.', 'error');
-                }
-            }
-        }, true);
-    }
-
     /* ── admin-dashboard.html ────────────────────────── */
     if (page === 'admin-dashboard.html') {
         // Wire confirm-password match indicator for Security Settings
@@ -1081,7 +1050,30 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('button');
             if (!btn) return;
-            if (btn.textContent.trim() === 'Save Changes') {
+            const oc  = btn.getAttribute('onclick') || '';
+            const txt = btn.textContent.replace(/\s+/g, ' ').trim();
+
+            if (oc.includes('saveEditProfile')) {
+                if (!tvValidateAdminWorkflowEditProfile()) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    tvShake(btn);
+                    showToast && showToast('Please fill in all required profile fields.', 'error');
+                }
+                return;
+            }
+
+            if (oc.includes('saveAdminProfile') || oc.includes('saveProfileInline')) {
+                if (!tvValidateAdminWorkflowProfile()) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    tvShake(btn);
+                    showToast && showToast('Please complete all required profile fields.', 'error');
+                }
+                return;
+            }
+
+            if (txt === 'Save Changes' && document.getElementById('profile-fname')) {
                 if (!tvValidateAdminProfile()) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -1208,8 +1200,8 @@ window.tvValidateAddProperty      = tvValidateAddProperty;
 window.tvValidateCounterOffer     = tvValidateCounterOffer;
 window.tvValidateReschedule       = tvValidateReschedule;
 window.tvValidateSellerProfile    = tvValidateSellerProfile;
-window.tvValidateAgentEditProfile = tvValidateAgentEditProfile;
-window.tvValidateAgentProfile     = tvValidateAgentProfile;
+window.tvValidateAdminWorkflowEditProfile = tvValidateAdminWorkflowEditProfile;
+window.tvValidateAdminWorkflowProfile     = tvValidateAdminWorkflowProfile;
 window.tvValidateAdminProfile     = tvValidateAdminProfile;
 window.tvValidateUserForm         = tvValidateUserForm;
 window.tvValidatePropForm         = tvValidatePropForm;

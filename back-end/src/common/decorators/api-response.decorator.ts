@@ -42,7 +42,7 @@ export function ApiNotFound(resource = 'Resource') {
         success: { type: 'boolean', example: false },
         statusCode: { type: 'number', example: 404 },
         message: { type: 'string', example: `${resource} not found` },
-        timestamp: { type: 'string', example: '2025-01-01T00:00:00.000Z' },
+        timestamp: { type: 'string', example: '2025-01-01T05:30:00.000+05:30' },
         path: { type: 'string', example: '/api/v1/resource/123' },
       },
     },

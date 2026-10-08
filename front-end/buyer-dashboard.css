@@ -87,8 +87,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', san
 .category-card { border-radius:0.75rem; overflow:hidden; position:relative; height:10rem; background-size:cover; background-position:center; cursor:pointer; transition:transform 0.3s; }
 .category-card:hover { transform:translateY(-4px); }
 .category-card .overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.8),transparent); display:flex; flex-direction:column; justify-content:flex-end; padding:1.25rem; }
-.agent-scroll { display:flex; gap:1.5rem; overflow-x:auto; padding-bottom:1rem; }
-.agent-card { background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); border-radius:0.75rem; padding:1.25rem; min-width:16rem; flex-shrink:0; }
+.manager-scroll { display:flex; gap:1.5rem; overflow-x:auto; padding-bottom:1rem; }
+.manager-card { background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); border-radius:0.75rem; padding:1.25rem; min-width:16rem; flex-shrink:0; }
 .cta-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2.5rem; }
 .cta-card { border-radius:0.75rem; padding:1.5rem; cursor:pointer; transition:transform 0.3s; }
 .cta-card:hover { transform:translateY(-2px); }
@@ -107,3 +107,108 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', san
 @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 .te-fade-in { animation: fadeIn 0.3s ease; }
 @keyframes cardOut { to { opacity:0; transform:translateX(50px); height:0; padding:0; margin:0; overflow:hidden; } }
+
+/* ── Payments page ───────────────────────────────────────────────────────── */
+.pay-section-head { margin-bottom: 1.5rem; }
+.pay-h2 { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+.pay-sub { color: #9ca3af; font-size: 0.875rem; line-height: 1.7; max-width: 46rem; }
+.pay-sub strong { color: #d1d5db; }
+
+/* Commission invoices — cards, not table rows. A charge this size needs room
+   to show what it was calculated from, or it reads as an arbitrary number. */
+.commission-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.875rem;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+}
+.commission-card.due { border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(180deg, rgba(245,158,11,0.05), #1a1a1a 40%); }
+
+.commission-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.commission-card-title { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.commission-card-property { font-size: 1.0625rem; font-weight: 700; color: #fff; line-height: 1.35; }
+
+.commission-status {
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.3rem;
+}
+.commission-status.accrued { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.commission-status.paid { background: rgba(29, 185, 84, 0.15); color: #1DB954; }
+.commission-status.waived { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+
+.commission-card-amount { text-align: right; flex-shrink: 0; }
+.commission-amount-value { display: block; font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.1; }
+.commission-amount-note { display: block; font-size: 0.75rem; color: #6b7280; margin-top: 0.3rem; }
+
+/* The arithmetic, laid out so the total is obviously derived and not invented */
+.commission-breakdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+}
+.commission-fact { display: flex; flex-direction: column; gap: 0.35rem; }
+.commission-fact-label { font-size: 0.6875rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; }
+.commission-fact-value { font-size: 1rem; font-weight: 600; color: #fff; }
+
+.commission-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+.commission-card-note { color: #9ca3af; font-size: 0.8125rem; line-height: 1.6; margin: 0; flex: 1; min-width: 14rem; }
+.commission-pay-btn {
+    background: #f59e0b;
+    color: #111;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    font-weight: 800;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+.commission-pay-btn:hover { background: #fbbf24; }
+
+.commission-empty {
+    background: #1a1a1a;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 0.875rem;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+.commission-empty-icon {
+    width: 3rem; height: 3rem;
+    margin: 0 auto 1rem;
+    border-radius: 9999px;
+    background: #282828;
+    color: #6b7280;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem;
+}
+.commission-empty h3 { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.commission-empty p { color: #9ca3af; font-size: 0.875rem; line-height: 1.7; max-width: 30rem; margin: 0 auto; }
+
+@media (max-width: 900px) {
+    .commission-breakdown { grid-template-columns: repeat(2, 1fr); }
+    .commission-card-amount { text-align: left; }
+}
