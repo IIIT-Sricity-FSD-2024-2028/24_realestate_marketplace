@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+*/node_modules/
+*/*/node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+back-end/logs/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Production builds (note: front-end/admin and front-end/superuser are committed static assets for NestJS)
+dist/
+dist-ssr/
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sw?
