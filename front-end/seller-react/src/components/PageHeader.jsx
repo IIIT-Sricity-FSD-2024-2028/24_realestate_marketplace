@@ -1,17 +1,27 @@
-import { useSellerProfile } from '../context/SellerProfileContext.jsx';
+import { useSellerProfile as useSellerDetails } from '../context/SellerProfileContext.jsx';
 
-export default function PageHeader({ title, subtitle, action, showAvatar = true }) {
-  const { initials } = useSellerProfile();
+export default function PageHeader({
+  title: pageHeading,
+  subtitle: pageDescription,
+  action: headerAction,
+  showAvatar: shouldDisplayAvatar = true,
+}) {
+  const { initials: profileInitials } = useSellerDetails();
 
   return (
     <div className="page-header">
       <div>
-        <h1 className="page-title">{title}</h1>
-        {subtitle && <p className="page-subtitle">{subtitle}</p>}
+        <h1 className="page-title">{pageHeading}</h1>
+        {pageDescription && (
+          <p className="page-subtitle">{pageDescription}</p>
+        )}
       </div>
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        {action}
-        {showAvatar && <div className="user-avatar">{initials}</div>}
+        {headerAction}
+        {shouldDisplayAvatar && (
+          <div className="user-avatar">{profileInitials}</div>
+        )}
       </div>
     </div>
   );
