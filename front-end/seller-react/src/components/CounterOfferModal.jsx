@@ -34,6 +34,10 @@ export default function CounterOfferModal({ negotiation, onClose, onSuccess }) {
     }
   }
 
+  const submitButtonText = submitting
+    ? 'Submitting…'
+    : 'Submit Counter Offer';
+
   return (
     <Modal title="Make Counter Offer" onClose={onClose} maxWidth="480px">
       <div
@@ -96,7 +100,7 @@ export default function CounterOfferModal({ negotiation, onClose, onSuccess }) {
           className="btn-primary"
           style={{ width: '100%', justifyContent: 'center', padding: '0.875rem', fontSize: '1rem', marginBottom: '0.75rem' }}
         >
-          {submitting ? 'Submitting…' : 'Submit Counter Offer'}
+          {submitButtonText}
         </button>
         <p style={{ textAlign: 'center', color: '#9ca3af', fontSize: '0.8125rem' }}>
           The buyer will be notified of your counter offer
