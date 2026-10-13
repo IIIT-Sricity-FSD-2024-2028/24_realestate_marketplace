@@ -1211,6 +1211,16 @@
             showAuth();
         }
 
+        function checkAutoAuth() {
+            if (window.location.hash === '#login' || window.location.hash === '#auth' || window.location.search.includes('auth')) {
+                showAuth();
+                if (window.location.hash.includes('seller') || window.location.search.includes('role=seller')) {
+                    const sellerBtn = document.querySelector('.role-btn[data-role="seller"]');
+                    if (sellerBtn) selectRole(sellerBtn, 'seller');
+                }
+            }
+        }
+
         // Add form submit handler when page loads
         window.addEventListener('DOMContentLoaded', function () {
             const authForm = document.querySelector('#auth-page form');
@@ -1227,7 +1237,11 @@
                     if (this.value.trim()) this.style.borderColor = '#444';
                 });
             });
+
+            checkAutoAuth();
         });
+
+        window.addEventListener('hashchange', checkAutoAuth);
     </script>
 </body>
 
