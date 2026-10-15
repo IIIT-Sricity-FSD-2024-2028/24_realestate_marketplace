@@ -1,7 +1,13 @@
+import { Navigate, useLocation } from 'react-router-dom';
 import { isSellerSession } from '../api/session.js';
 
 export default function ProtectedRoute({ children }) {
+  const location = useLocation();
+  const prefix = location.pathname.startsWith('/seller') ? '/seller' : '';
   if (!isSellerSession()) {
+    if (prefix) {
+      return <Navigate to={`${prefix}/login`} replace />;
+    }
     const target = window.location.port === '5175'
       ? 'http://127.0.0.1:3000/index.html#login'
       : '../index.html#login';

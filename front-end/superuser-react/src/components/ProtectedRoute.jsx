@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { isSuperuserSession } from '../api/session.js';
 
 /**
@@ -6,8 +6,10 @@ import { isSuperuserSession } from '../api/session.js';
  * the superuser portal. Others are redirected to the login page.
  */
 export default function ProtectedRoute({ children }) {
+  const location = useLocation();
+  const prefix = location.pathname.startsWith('/superuser') ? '/superuser' : '';
   if (!isSuperuserSession()) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={`${prefix}/login`} replace />;
   }
   return children;
 }

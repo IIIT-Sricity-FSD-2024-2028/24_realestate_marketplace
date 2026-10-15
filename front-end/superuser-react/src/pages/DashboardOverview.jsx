@@ -105,47 +105,52 @@ export default function DashboardOverview() {
             <div className="panel-head">
               <h3>Superuser Quick Access</h3>
             </div>
-            <div className="quick-links-grid">
-              <Link to="/users" className="quick-link-card">
-                <div className="quick-link-icon primary">
-                  <Icon name="users" size="1.25rem" />
-                </div>
-                <div>
-                  <strong>Manage Users</strong>
-                  <p>Mint admin city desks and manage access</p>
-                </div>
-              </Link>
+            {(() => {
+              const prefix = window.location.pathname.startsWith('/superuser') ? '/superuser' : '';
+              return (
+                <div className="quick-links-grid">
+                  <Link to={`${prefix}/users`} className="quick-link-card">
+                    <div className="quick-link-icon primary">
+                      <Icon name="users" size="1.25rem" />
+                    </div>
+                    <div>
+                      <strong>Manage Users</strong>
+                      <p>Mint admin city desks and manage access</p>
+                    </div>
+                  </Link>
 
-              <Link to="/properties" className="quick-link-card">
-                <div className="quick-link-icon info">
-                  <Icon name="home" size="1.25rem" />
-                </div>
-                <div>
-                  <strong>Property Operations</strong>
-                  <p>Inspect, edit, and moderate catalog listings</p>
-                </div>
-              </Link>
+                  <Link to={`${prefix}/properties`} className="quick-link-card">
+                    <div className="quick-link-icon info">
+                      <Icon name="home" size="1.25rem" />
+                    </div>
+                    <div>
+                      <strong>Property Operations</strong>
+                      <p>Inspect, edit, and moderate catalog listings</p>
+                    </div>
+                  </Link>
 
-              <Link to="/revenue" className="quick-link-card">
-                <div className="quick-link-icon warning">
-                  <Icon name="revenue" size="1.25rem" />
-                </div>
-                <div>
-                  <strong>Platform Revenue</strong>
-                  <p>Collected fees, receivables, and plans</p>
-                </div>
-              </Link>
+                  <Link to={`${prefix}/revenue`} className="quick-link-card">
+                    <div className="quick-link-icon warning">
+                      <Icon name="revenue" size="1.25rem" />
+                    </div>
+                    <div>
+                      <strong>Platform Revenue</strong>
+                      <p>Collected fees, receivables, and plans</p>
+                    </div>
+                  </Link>
 
-              <Link to="/logs" className="quick-link-card">
-                <div className="quick-link-icon logs">
-                  <Icon name="logs" size="1.25rem" />
+                  <Link to={`${prefix}/logs`} className="quick-link-card">
+                    <div className="quick-link-icon logs">
+                      <Icon name="logs" size="1.25rem" />
+                    </div>
+                    <div>
+                      <strong>Live System Logs</strong>
+                      <p>Audit trail, errors, and request throughput</p>
+                    </div>
+                  </Link>
                 </div>
-                <div>
-                  <strong>Live System Logs</strong>
-                  <p>Audit trail, errors, and request throughput</p>
-                </div>
-              </Link>
-            </div>
+              );
+            })()}
           </div>
         </div>
       </div>

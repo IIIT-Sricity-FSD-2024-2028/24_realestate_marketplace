@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import Icon from './Icons.jsx';
 import { useSuperuserProfile } from '../context/SuperuserProfileContext.jsx';
 
@@ -27,6 +27,8 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ open = false, onNavigate, onLogout }) {
   const { profile } = useSuperuserProfile();
+  const location = useLocation();
+  const prefix = location.pathname.startsWith('/superuser') ? '/superuser' : '';
 
   return (
     <aside className={'sidebar' + (open ? ' sidebar--open' : '')}>
@@ -36,7 +38,7 @@ export default function Sidebar({ open = false, onNavigate, onLogout }) {
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
-            to={item.to}
+            to={prefix + item.to}
             className={({ isActive }) => 'nav-item' + (isActive ? ' active' : '')}
             onClick={onNavigate}
           >

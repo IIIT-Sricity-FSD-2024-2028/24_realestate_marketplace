@@ -16,7 +16,8 @@ export default function SuperuserLayout() {
 
   const handleLogout = () => {
     clearUser();
-    navigate('/login', { replace: true });
+    const target = window.location.pathname.startsWith('/superuser') ? '/superuser/login' : '/login';
+    navigate(target, { replace: true });
   };
 
   return (

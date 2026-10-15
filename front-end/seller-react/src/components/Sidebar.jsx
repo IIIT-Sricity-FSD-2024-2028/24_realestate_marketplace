@@ -1,5 +1,5 @@
 import { useState as useToggleState } from 'react';
-import { NavLink as NavigationLink, useNavigate as useRouterNavigate } from 'react-router-dom';
+import { NavLink as NavigationLink, useNavigate as useRouterNavigate, useLocation } from 'react-router-dom';
 import { clearUser as clearSessionUser } from '../api/session.js';
 import { useSellerProfile as useSellerDetails } from '../context/SellerProfileContext.jsx';
 import {
@@ -20,6 +20,8 @@ export default function Sidebar({
   onCloseMobile: closeMobileSidebar = () => {},
 }) {
   const navigateToRoute = useRouterNavigate();
+  const location = useLocation();
+  const prefix = location.pathname.startsWith('/seller') ? '/seller' : '';
   const { fullName: sellerFullName, initials: sellerInitials } = useSellerDetails();
 
   // Maintain independent expansion states for each navigation group.
@@ -29,12 +31,7 @@ export default function Sidebar({
 
   function performLogout() {
     clearSessionUser();
-
-    const loginDestination = window.location.port === '5175'
-      ? 'http://127.0.0.1:3000/index.html#login'
-      : '../index.html#login';
-
-    window.location.href = loginDestination;
+    navigateToRoute(prefix ? `${prefix}/login` : '/login');
   }
 
   function closeSidebarAfterNavigation() {
@@ -67,7 +64,7 @@ export default function Sidebar({
 
       <nav className="nav">
         <NavigationLink
-          to="/dashboard"
+          to={`${prefix}/dashboard`}
           onClick={closeSidebarAfterNavigation}
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         >
@@ -93,7 +90,7 @@ export default function Sidebar({
 
         <div className={`dropdown-content ${isPropertiesExpanded ? 'open' : ''}`}>
           <NavigationLink
-            to="/my-listings"
+            to={`${prefix}/my-listings`}
             onClick={closeSidebarAfterNavigation}
             className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}
           >
@@ -101,7 +98,7 @@ export default function Sidebar({
           </NavigationLink>
 
           <NavigationLink
-            to="/add-property"
+            to={`${prefix}/add-property`}
             onClick={closeSidebarAfterNavigation}
             className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}
           >
@@ -126,7 +123,7 @@ export default function Sidebar({
 
         <div className={`dropdown-content ${isBuyerManagementExpanded ? 'open' : ''}`}>
           <NavigationLink
-            to="/negotiate"
+            to={`${prefix}/negotiate`}
             onClick={closeSidebarAfterNavigation}
             className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}
           >
@@ -134,7 +131,7 @@ export default function Sidebar({
           </NavigationLink>
 
           <NavigationLink
-            to="/track-payment"
+            to={`${prefix}/track-payment`}
             onClick={closeSidebarAfterNavigation}
             className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}
           >
@@ -159,7 +156,7 @@ export default function Sidebar({
 
         <div className={`dropdown-content ${isSoldRentedExpanded ? 'open' : ''}`}>
           <NavigationLink
-            to="/sold"
+            to={`${prefix}/sold`}
             onClick={closeSidebarAfterNavigation}
             className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}
           >
@@ -167,7 +164,7 @@ export default function Sidebar({
           </NavigationLink>
 
           <NavigationLink
-            to="/rent-given"
+            to={`${prefix}/rent-given`}
             onClick={closeSidebarAfterNavigation}
             className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`}
           >
@@ -177,7 +174,7 @@ export default function Sidebar({
 
         {/* Single Navigation Items */}
         <NavigationLink
-          to="/billing"
+          to={`${prefix}/billing`}
           onClick={closeSidebarAfterNavigation}
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         >
@@ -187,7 +184,7 @@ export default function Sidebar({
         </NavigationLink>
 
         <NavigationLink
-          to="/notifications"
+          to={`${prefix}/notifications`}
           onClick={closeSidebarAfterNavigation}
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         >
@@ -197,7 +194,7 @@ export default function Sidebar({
         </NavigationLink>
 
         <NavigationLink
-          to="/profile"
+          to={`${prefix}/profile`}
           onClick={closeSidebarAfterNavigation}
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         >
@@ -212,7 +209,7 @@ export default function Sidebar({
         <div
           className="user-profile"
           onClick={() => {
-            navigateToRoute('/profile');
+            navigateToRoute(`${prefix}/profile`);
             closeMobileSidebar();
           }}
         >
