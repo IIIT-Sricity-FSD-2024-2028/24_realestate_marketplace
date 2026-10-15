@@ -38,14 +38,16 @@ export default function Sidebar({ open, onNavigate, onLogout }) {
   const { displayName, avatarText, cityLabel } = useAdminProfile();
   const [openGroups, setOpenGroups] = useState({});
 
+  const prefix = location.pathname.startsWith('/admin') ? '/admin' : '';
+
   // Keep a group expanded while one of its pages is active.
   useEffect(() => {
     NAV_ITEMS.forEach((item) => {
-      if (item.children && item.children.some((c) => location.pathname.startsWith(c.to))) {
+      if (item.children && item.children.some((c) => location.pathname.startsWith(prefix + c.to) || location.pathname.startsWith(c.to))) {
         setOpenGroups((g) => ({ ...g, [item.group]: true }));
       }
     });
-  }, [location.pathname]);
+  }, [location.pathname, prefix]);
 
   const linkClass = ({ isActive }) => 'nav-item' + (isActive ? ' active' : '');
 
@@ -70,7 +72,7 @@ export default function Sidebar({ open, onNavigate, onLogout }) {
                 </button>
                 <div className={'admin-drop' + (isOpen ? ' open' : '')}>
                   {item.children.map((child) => (
-                    <NavLink key={child.to} to={child.to} className={({ isActive }) => 'nav-subitem' + (isActive ? ' active' : '')} onClick={onNavigate}>
+                    <NavLink key={child.to} to={prefix + child.to} className={({ isActive }) => 'nav-subitem' + (isActive ? ' active' : '')} onClick={onNavigate}>
                       {child.label}
                     </NavLink>
                   ))}
@@ -79,7 +81,7 @@ export default function Sidebar({ open, onNavigate, onLogout }) {
             );
           }
           return (
-            <NavLink key={item.to} to={item.to} className={linkClass} onClick={onNavigate}>
+            <NavLink key={item.to} to={prefix + item.to} className={linkClass} onClick={onNavigate}>
               {({ isActive }) => (
                 <>
                   <Icon name={item.icon} /><span>{item.label}</span>

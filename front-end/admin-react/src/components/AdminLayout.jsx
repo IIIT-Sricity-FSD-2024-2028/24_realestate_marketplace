@@ -18,7 +18,8 @@ export default function AdminLayout() {
   // Logout = drop the stored session and return to the login page (TruEstate.logout('admin')).
   const logout = () => {
     clearUser();
-    navigate('/login', { replace: true });
+    const target = window.location.pathname.startsWith('/admin') ? '/admin/login' : '/login';
+    navigate(target, { replace: true });
   };
 
   return (

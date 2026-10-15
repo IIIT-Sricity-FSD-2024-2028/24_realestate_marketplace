@@ -62,7 +62,8 @@ export default function LoginPage() {
       } catch { /* storage unavailable */ }
 
       showToast('Login successful! Redirecting...');
-      setTimeout(() => navigate('/dashboard', { replace: true }), 600);
+      const target = window.location.pathname.startsWith('/admin') ? '/admin/dashboard' : '/dashboard';
+      setTimeout(() => navigate(target, { replace: true }), 600);
     } catch (err) {
       showToast(err.message || 'Invalid admin credentials', 'error');
       setInvalid(true);
@@ -73,7 +74,42 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <main className="login-card">
+      <main className="login-card" style={{ position: 'relative' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/')}
+          aria-label="Back to home"
+          title="Back to home"
+          style={{
+            position: 'absolute',
+            top: '1.25rem',
+            right: '1.25rem',
+            background: 'transparent',
+            border: 'none',
+            color: '#9ca3af',
+            fontSize: '1.25rem',
+            lineHeight: 1,
+            cursor: 'pointer',
+            width: '2rem',
+            height: '2rem',
+            borderRadius: '0.375rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'color 0.2s, background-color 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#ffffff';
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#9ca3af';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
+          ✕
+        </button>
+
         <div className="login-card__brand">
           <div className="brand-mark brand-mark--lg"><Icon name="home" size="1.5rem" color="#000" /></div>
           <div>

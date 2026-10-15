@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { isAdminSession } from '../api/session.js';
 
 /**
@@ -8,6 +8,8 @@ import { isAdminSession } from '../api/session.js';
  * every API call; this only keeps the UI out of reach.
  */
 export default function ProtectedRoute({ children }) {
-  if (!isAdminSession()) return <Navigate to="/login" replace />;
+  const location = useLocation();
+  const prefix = location.pathname.startsWith('/admin') ? '/admin' : '';
+  if (!isAdminSession()) return <Navigate to={`${prefix}/login`} replace />;
   return children;
 }
