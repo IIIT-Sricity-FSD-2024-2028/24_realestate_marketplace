@@ -1,84 +1,106 @@
 /**
- * SellerOverview.jsx - Page Construction & Architecture Plan
- * ============================================================================
- * [PURPOSE]: Main Seller Workspace overview — live KPIs and recent listings.
- * [INPUTS]:  data - from useSellerData(); account - seller profile information.
- * [OUTPUTS]: Welcome header, 4 metric stat cards, and recent listings table.
- * [APIs]:    GET /properties/mine, GET /purchases/seller-queue.
+ * SellerOverview.jsx - Comprehensive Construction & Architecture Specification
+ * =========================================================================================
+ * [PAGE ROLE & DOMAIN]:
+ *   Primary dashboard landing view for authenticated sellers:
+ *   - Aggregates high-impact portfolio telemetry (Total Listings, Active, Pending, Revenue).
+ *   - Displays personalized greeting with seller avatar initials.
+ *   - Presents quick-reference data table containing the 4 most recent property listings.
+ *   - Provides direct visual indicators for listing approval statuses.
  *
- * [METRIC DERIVATIONS & COMPUTATIONS]:
- * 1. Completed deals: extract closed sales and rentals from data.purchases.
- * 2. Closed IDs: create Set of property IDs that have concluded deals.
- * 3. Active Listings: listings where verificationStatus === "verified" and not closed.
- * 4. Pending Review: listings where verificationStatus === "pending".
- * 5. Total Revenue: sum of agreedPrice for all completed sale deals.
- * 6. Loading state: extract data.loading.listings for skeleton/spinner states.
+ * [INPUT PROPERTIES & CONTRACT]:
+ *   @param {Object} props.data - Output of useSellerData()
+ *     - data.listings: Array<PropertyListing>
+ *     - data.purchases: Array<PurchaseDealRecord>
+ *     - data.loading: { listings: boolean, purchases: boolean, ... }
+ *   @param {Object} props.account - Output of useAccountProfile('sellerProfile')
+ *     - account.fullName: string (seller's display name)
  *
- * [UI COMPONENT HIERARCHY]:
- * 1. Page Header:
- *    - <PageHeader title="Seller Dashboard" subtitle="Welcome back..." />
- *    - Right action: <Avatar name={account.fullName} color="var(--brand)" />
- * 2. Main Content Container (<div className="content">):
- *    - Statistics Grid (<div className="stats-grid">):
- *      * Card 1: Total Listings (icon="home")
- *      * Card 2: Active Listings (icon="file")
- *      * Card 3: Pending Review (icon="clock", tone="orange")
- *      * Card 4: Total Revenue (icon="dollar")
- *    - Section Subheading: <h2 className="section-title-sm">Recent Listings</h2>
- *    - Table Card (<div className="table-card"><div className="table-scroll">):
- *      * <table className="data-table">
- *      * Table Header: Property, Location, Price, Status
- *      * Table Body States: Loading row, Empty row, or Listing rows (slice 0..4)
- *      * Status Badges: Verified (green), Pending (orange), Rejected (red)
+ * [API ENDPOINTS & SOURCE CONTRACT]:
+ *   - GET /properties/mine
+ *     Returns listings created by the authenticated seller.
+ *     Fields: id, title, city, price, verificationStatus ('verified'|'pending'|'rejected'), createdAt.
+ *   - GET /purchases/seller-queue
+ *     Returns deals involving this seller, used to calculate completed revenue and filter closed units.
  *
- * [TABLE RENDERING LOGIC]:
- * - Loading: single row spanning 4 columns showing "Loading…".
- * - Empty: single row spanning 4 columns with empty guidance prompt.
- * - Populated: maximum 4 rows displaying title, city, formatted price, and status badge.
- * - Badge Styling: mapped from VERIFICATION_DISPLAY constants.
+ * [COMPONENT ARCHITECTURE & HIERARCHY DIAGRAM]:
+ * ┌────────────────────────────────────────────────────────────────────────┐
+ * │ SellerOverview                                                         │
+ * │  ├── PageHeader                                                        │
+ * │  │    ├── Title: "Seller Dashboard"                                    │
+ * │  │    ├── Subtitle: "Welcome back, {fullName}! Here's your overview"   │
+ * │  │    └── Action: Avatar (name, brand background, contrast text)       │
+ * │  └── div.content                                                       │
+ * │       ├── div.stats-grid (4 Metric Stat Cards)                         │
+ * │       │    ├── StatCard 1: Total Listings (icon: home)                 │
+ * │       │    ├── StatCard 2: Active Listings (icon: file)                │
+ * │       │    ├── StatCard 3: Pending Review (icon: clock, tone: orange)  │
+ * │       │    └── StatCard 4: Total Revenue (icon: dollar)                │
+ * │       ├── h2.section-title-sm ("Recent Listings")                      │
+ * │       └── div.table-card > div.table-scroll                            │
+ * │            └── table.data-table                                        │
+ * │                 ├── thead (Headers: Property, Location, Price, Status) │
+ * │                 └── tbody (State-dependent rows)                       │
+ * │                      ├── [If loading]  -> 1 row spanning 4 cols: "…"   │
+ * │                      ├── [If empty]    -> 1 row spanning 4 cols: empty │
+ * │                      └── [If populated]-> slice(0, 4) listing rows:    │
+ * │                           ├── td (title)                               │
+ * │                           ├── td.text-secondary (city)                 │
+ * │                           ├── td (formatINR price)                     │
+ * │                           └── td > Badge (tone & label from status)    │
+ * └────────────────────────────────────────────────────────────────────────┘
  *
- * [DATA REFRESH & CACHING]:
- * - State is re-synchronized every 15 seconds through the parent useLiveRefresh hook.
- * - If an offer is accepted or listing is verified, metrics update reactively.
+ * [METRIC DERIVATION & PIPELINE FLOW]:
+ *   data.purchases ──> completedDeals('sale') ──> soldListings
+ *                                                       │
+ *                          ┌────────────────────────────┴───────────────────────────┐
+ *                          ▼                                                        ▼
+ *                   Total Revenue                                            Closed Property IDs
+ *          (sum of agreedPrice in sold)                               (Set of closed property IDs)
+ *                                                                                   │
+ *   data.listings ──────────────────────────────────────────────────────────────────┤
+ *         │                                                                         │
+ *         ├─► Total Count: listings.length                                          ▼
+ *         ├─► Active Count: verified status AND NOT in Closed IDs (on active market)
+ *         └─► Pending Count: pending admin review status
  *
- * [INTERNATIONALIZATION & FORMATTING]:
- * - Prices format in Indian Rupee format (INR) via formatINR.
- * - Compact amounts (Lakhs / Crores) format via formatCompactINR.
+ * [STATUS BADGE MAPPING SPECIFICATION (VERIFICATION_DISPLAY)]:
+ *   - 'verified': { label: 'Verified', tone: 'green' }
+ *   - 'pending':  { label: 'Pending Review', tone: 'orange' }
+ *   - 'rejected': { label: 'Rejected', tone: 'red' }
  *
- * [SECURITY & ACCESS CONTROL]:
- * - Restrict section viewing to authenticated users with role="seller".
- * - Sanitize dynamic listing attributes before inserting into DOM.
- * - Guard against cross-site script injection via listing titles or notes.
+ * [RESPONSIVE BEHAVIOR & BREAKPOINTS]:
+ *   - Desktop (>900px): 4-column metrics grid; full table layout.
+ *   - Tablet (641px - 900px): 2x2 grid for metrics; horizontally scrollable table (`.table-scroll`).
+ *   - Mobile (<=640px): 1-column metrics grid; compacted table font size and padding.
  *
- * [EDGE CASE HANDLING]:
- * - Handle network disconnections with friendly offline indicators.
- * - Fallback gracefully when profile name or avatar is missing.
- * - Support zero-state styling when all listings have been archived.
- * - Ensure proper currency formatting when prices are null or undefined.
- * - Retain layout stability during async data revalidation.
- *
- * [CONSTRUCTION STEPS]:
- * [ ] Step 1: Import PageHeader, StatCard, Avatar, Badge from ui.jsx.
- * [ ] Step 2: Import formatINR, formatCompactINR, and VERIFICATION_DISPLAY map.
- * [ ] Step 3: Compute active, pending, revenue, and loading variables defensively.
- * [ ] Step 4: Construct header with personalized welcome subtitle and seller avatar.
- * [ ] Step 5: Render 4-card KPI grid with dynamic values or loading ellipsis ("…").
- * [ ] Step 6: Construct responsive table with scroll wrapper and standard styling.
- * [ ] Step 7: Map the 4 most recent listings with title, city, formatted price, and badge.
- * [ ] Step 8: Handle edge cases where account profile or listings data is still loading.
- * ============================================================================
+ * [STEP-BY-STEP IMPLEMENTATION CHECKLIST]:
+ * [ ] Step 1: Import PageHeader, StatCard, Avatar, Badge from components/common/ui.jsx.
+ * [ ] Step 2: Import formatINR, formatCompactINR from utils/format.js.
+ * [ ] Step 3: Import VERIFICATION_DISPLAY constants from utils/constants.js.
+ * [ ] Step 4: Import completedDeals helper from ../useSellerData.js.
+ * [ ] Step 5: Derive closedIds Set combining both sold and rented purchase records.
+ * [ ] Step 6: Filter active listings: status is 'verified' and id is not in closedIds.
+ * [ ] Step 7: Filter pending listings: status is 'pending'.
+ * [ ] Step 8: Calculate total sale revenue summing agreedPrice across sold deals.
+ * [ ] Step 9: Render PageHeader with seller's full name and circular Avatar.
+ * [ ] Step 10: Render stats-grid with 4 StatCards, handling loading state with "…".
+ * [ ] Step 11: Construct Recent Listings table rendering slice(0, 4) items.
+ * [ ] Step 12: Attach status badges with correct semantic colors (green/orange/red).
+ * [ ] Step 13: Implement robust table empty state with prompt to add first listing.
+ * =========================================================================================
  */
 export default function SellerOverview({ data, account }) {
   const listingsCount = data?.listings?.length || 0;
-  const sellerName = account?.fullName || "Seller";
+  const sellerName = account?.fullName || 'Seller';
   return (
     <div className="content" data-plan="seller-overview" data-user={sellerName}>
       <div className="page-header-plan">
-        <h2>Seller Dashboard (Construction Plan)</h2>
+        <h2>Seller Dashboard (Architecture Plan)</h2>
         <p>Welcome back, {sellerName}! Total Listings in state: {listingsCount}</p>
       </div>
       <div className="plan-kpi-preview">
-        <span>Planned KPIs: Total Listings | Active | Pending Review | Revenue</span>
+        <span>Planned Telemetry: Total Listings | Active | Pending Review | Revenue</span>
       </div>
       {/* Planned: PageHeader, 4 StatCards, Recent Listings Data Table */}
     </div>

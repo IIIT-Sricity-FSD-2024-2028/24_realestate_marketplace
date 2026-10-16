@@ -1,69 +1,119 @@
 /**
- * ClosedDealsSection.jsx - Page Construction & Architecture Plan
- * ============================================================================
- * [PURPOSE]: Displays closed sales ("Sold Properties") or rentals ("Rent Given").
- * [INPUTS]:  data - from useSellerData(); mode - "sale" | "rent".
- * [OUTPUTS]: 4 KPI summary cards + responsive grid of completed deal cards.
- * [APIs]:    GET /purchases/seller-queue (supplied via data.purchases).
+ * ClosedDealsSection.jsx - Comprehensive Construction & Architecture Specification
+ * =========================================================================================
+ * [PAGE ROLE & DOMAIN]:
+ *   Dedicated analytics and registry for a seller's finalized real estate transactions:
+ *   - Mode "sale": "Sold Properties" (completed purchase contracts).
+ *   - Mode "rent": "Rent Given Properties" (completed rental/lease agreements).
+ *   Displays high-level KPI cards (count, revenue, average price, closed this year)
+ *   followed by an interactive card catalogue of closed property deals.
  *
- * [DATA PROCESSING & DERIVED METRICS]:
- * 1. Determine rental flag: const rent = mode === "rent";
- * 2. Filter completed deals using completedDeals(data.purchases, mode).
- * 3. Compute total revenue by summing d.agreedPrice across all completed deals.
- * 4. Compute closed this year by comparing d.updatedAt year with current year.
- * 5. Compute average price/rent: total / (deals.length || 1).
+ * [INPUT PROPERTIES & CONTRACT]:
+ *   @param {Object} props.data - Shared state produced by useSellerData()
+ *     - data.purchases: Array<PurchaseDealRecord>
+ *     - data.loading.purchases: boolean
+ *     - data.reloadAll: () => Promise<void>
+ *   @param {string} props.mode - Transaction filter mode: 'sale' | 'rent'
  *
- * [COMPONENT & UI STRUCTURE]:
- * 1. Root Container:
- *    - <div className="content">
- * 2. Section Heading:
- *    - <h1 className="page-title">{rent ? "Rent Given Properties" : "Sold Properties"}</h1>
- * 3. Metric KPI Cards (<div className="stats-grid">):
- *    - StatCard #1: Total count (icon="checkCircle" or "home")
- *    - StatCard #2: Total / Monthly Revenue (icon="dollar", tone="orange")
- *    - StatCard #3: Avg Price / Rent (icon="activity", tone="blue")
- *    - StatCard #4: Closed This Year (icon="calendar", tone="orange")
- * 4. Conditional Content:
- *    - If deals.length === 0: Render <EmptyState> with helpful contextual guidance.
- *    - Else: Render <div className="card-grid-3"> iterating over deals.
- * 5. Deal Article Card (<article className="card card-flush">):
- *    - Media container with property image, status badge, and price overlay.
- *    - Card body with property title, location pin, price, counterparty, and close date.
+ * [API ENDPOINTS & SOURCE CONTRACT]:
+ *   - GET /purchases/seller-queue
+ *     Returns all purchases/deals where the authenticated user is the seller.
+ *     Fields consumed per deal:
+ *       * id: string (deal UUID)
+ *       * propertyId: string (referenced property id)
+ *       * propertyTitle: string (title of the listing)
+ *       * propertyImage: string (cover image URL or fallback)
+ *       * propertyCity, propertyState: string (geographic location)
+ *       * agreedPrice: number (final agreed sale price or monthly rent)
+ *       * buyerName: string (buyer or tenant full name)
+ *       * dealStatus: 'pending' | 'in_progress' | 'completed' | 'cancelled'
+ *       * propertyListingType: 'sale' | 'rent'
+ *       * updatedAt, createdAt: ISO date string
  *
- * [FIELD MAPPING REFERENCE]:
- * - Property Image: d.propertyImage || FALLBACK_PROPERTY_IMAGE
- * - Property Title: d.propertyTitle || "Property"
- * - Location: joinPlace(d.propertyCity, d.propertyState) || "—"
- * - Price Display: formatCompactINR(d.agreedPrice) + (rent ? "/mo" : "")
- * - Counterparty: rent ? "Tenant: " + d.buyerName : "Buyer: " + d.buyerName
- * - Completion Date: shortDate(d.updatedAt)
+ * [COMPONENT ARCHITECTURE & HIERARCHY DIAGRAM]:
+ * ┌────────────────────────────────────────────────────────────────────────┐
+ * │ ClosedDealsSection                                                     │
+ * │  └── div.content                                                       │
+ * │       ├── h1.page-title ("Sold Properties" | "Rent Given Properties")  │
+ * │       ├── div.stats-grid (4 Responsive Stat Cards)                     │
+ * │       │    ├── StatCard 1: Total Count (icon: checkCircle / home)      │
+ * │       │    ├── StatCard 2: Total / Monthly Revenue (icon: dollar)      │
+ * │       │    ├── StatCard 3: Avg Sale Price / Avg Rent (icon: activity)  │
+ * │       │    └── StatCard 4: Deals Closed This Year (icon: calendar)     │
+ * │       └── Conditional Deal Catalogue:                                  │
+ * │            ├── [If deals.length === 0]                                 │
+ * │            │    └── EmptyState (Contextual icon, header, advice prompt)│
+ * │            └── [If deals.length > 0]                                   │
+ * │                 └── div.card-grid-3 (3-Column Responsive Grid)         │
+ * │                      └── article.card.card-flush (Iterated deal card)  │
+ * │                           ├── div.deal-media                           │
+ * │                           │    ├── img (property cover thumbnail)      │
+ * │                           │    ├── Badge (tone="green", SOLD / RENTED) │
+ * │                           │    └── span.deal-media-price (agreed price)│
+ * │                           └── div.card-pad                             │
+ * │                                ├── h3.strong (propertyTitle)           │
+ * │                                ├── p (location: city, state)           │
+ * │                                ├── Price row (formatted currency)      │
+ * │                                ├── Counterparty info (buyer/tenant name│
+ * │                                └── Closed date (shortDate formatted)   │
+ * └────────────────────────────────────────────────────────────────────────┘
  *
- * [RESPONSIVE BEHAVIOR]:
- * - stats-grid collapses from 4 columns to 2 on tablets, and 1 on mobile screens.
- * - card-grid-3 collapses to single column on mobile devices (<=640px).
+ * [DEAL LIFECYCLE & STATE TRANSITION DIAGRAM]:
+ *   [Buyer Makes Offer] ──> [Seller Accepts Offer] ──> [Admin Deal Initialized]
+ *                                                               │
+ *   ┌───────────────────────────────────────────────────────────┘
+ *   ▼
+ *   Step 1: Token Deposit ──> Step 2: Document Verification ──> Step 3: Registration
+ *                                                                        │
+ *   ┌────────────────────────────────────────────────────────────────────┘
+ *   ▼
+ *   Step 4: Final Settlement ──> Step 5: Possession Handover ──> [dealStatus = "completed"]
+ *                                                                        │
+ *   ┌────────────────────────────────────────────────────────────────────┘
+ *   ▼
+ *   Filter matches: completedDeals(data.purchases, mode) ──> Appears in ClosedDealsSection!
  *
- * [IMPLEMENTATION CHECKLIST]:
- * [ ] Step 1: Import StatCard, Badge, EmptyState from ui.jsx and format utilities.
- * [ ] Step 2: Implement completedDeals helper to filter purchases by dealStatus and mode.
- * [ ] Step 3: Compute aggregations (total, yearCount, avgPrice) with defensive fallbacks.
- * [ ] Step 4: Render responsive statistics grid with appropriate tone colors.
- * [ ] Step 5: Implement deal card image thumbnail with fallback image handling.
- * [ ] Step 6: Format currency with formatCompactINR and dates with shortDate.
- * [ ] Step 7: Test responsive breakpoints (mobile grid collapsing to single column).
- * [ ] Step 8: Validate accessibility (proper alt text on images and semantic headings).
- * [ ] Step 9: Verify empty state transitions gracefully when deals are completed.
- * [ ] Step 10: Test keyboard navigation across all generated deal cards.
- * [ ] Step 11: Validate correct currency symbol and abbreviation formatting.
- * ============================================================================
+ * [DATA AGGREGATION & DERIVATION SPECIFICATIONS]:
+ *   1. Rental Flag:
+ *        const rent = mode === 'rent';
+ *   2. Filtered Set:
+ *        const deals = completedDeals(data.purchases, mode);
+ *   3. Total Revenue:
+ *        const total = deals.reduce((sum, d) => sum + (d.agreedPrice || 0), 0);
+ *   4. Current Year Tally:
+ *        const currentYear = new Date().getFullYear();
+ *        const yearCount = deals.filter(d => new Date(d.updatedAt).getFullYear() === currentYear).length;
+ *   5. Average Price per Unit:
+ *        const avgPrice = deals.length ? total / deals.length : 0;
+ *
+ * [RESPONSIVE BEHAVIOR & MEDIA QUERIES]:
+ *   - Desktop (>900px): 4-column metric grid (`.stats-grid`), 3-column deal cards (`.card-grid-3`).
+ *   - Tablet (641px - 900px): 2-column metrics grid, 2-column deal card layout.
+ *   - Mobile (<=640px): 1-column metrics grid, 1-column deal cards; full-width thumbnails.
+ *
+ * [STEP-BY-STEP IMPLEMENTATION CHECKLIST]:
+ * [ ] Step 1: Import StatCard, Badge, EmptyState from components/common/ui.jsx.
+ * [ ] Step 2: Import formatCompactINR, joinPlace, shortDate from utils/format.js.
+ * [ ] Step 3: Import FALLBACK_PROPERTY_IMAGE from utils/constants.js.
+ * [ ] Step 4: Import completedDeals filter utility from ../useSellerData.js.
+ * [ ] Step 5: Derive `rent`, `deals`, `total`, `yearCount`, and `avgPrice` with defensive fallbacks.
+ * [ ] Step 6: Render semantic page title dynamically reflecting `mode`.
+ * [ ] Step 7: Construct 4 StatCards with tailored color tones ("orange", "blue", "green").
+ * [ ] Step 8: Implement conditional EmptyState with distinct copy for sales vs. rentals.
+ * [ ] Step 9: Iterate through deals inside `.card-grid-3` rendering `.deal-media` and `.card-pad`.
+ * [ ] Step 10: Attach image error fallback to avoid broken image icons on deleted external URLs.
+ * [ ] Step 11: Ensure responsive grid behavior at <=900px and <=640px breakpoints.
+ * [ ] Step 12: Verify keyboard accessibility and proper heading level hierarchy (h1 -> h3).
+ * =========================================================================================
  */
 export default function ClosedDealsSection({ data, mode }) {
-  const rent = mode === "rent";
+  const rent = mode === 'rent';
   const dealsCount = data?.purchases?.length || 0;
   return (
     <div className="content" data-plan="closed-deals" data-mode={mode} data-count={dealsCount}>
-      <h1 className="page-title">{rent ? "Rent Given Properties (Plan)" : "Sold Properties (Plan)"}</h1>
+      <h1 className="page-title">{rent ? 'Rent Given Properties (Architecture Plan)' : 'Sold Properties (Architecture Plan)'}</h1>
       <div className="plan-stats-preview">
-        <p>Mode: {mode} | Recorded Deals in State: {dealsCount}</p>
+        <p>Active Mode: {mode} | Recorded Transactions in State: {dealsCount}</p>
       </div>
       {/* Planned: StatsGrid (4 StatCards), EmptyState or CardGrid3 with Deal Cards */}
     </div>
