@@ -1,24 +1,24 @@
 /**
- * SellerProfileSection.jsx
- * Purpose: Seller "My Profile" — summary card, personal details form and
- *          password change.
- * Inputs (props): account – useAccountProfile('sellerProfile') result
- * Outputs: the profile page.
- * API calls: GET /auth/me (inside useAccountProfile), PATCH /auth/change-password,
- *            POST /auth/forgot-password (through ChangePasswordCard).
+ * SellerProfileSection.jsx - Page Construction & Architecture Plan
+ * ============================================================================
+ * [PURPOSE]: Seller "My Profile" page: personal details, summary, and security.
+ * [INPUTS]:  account - output of useAccountProfile("sellerProfile")
+ * [OUTPUTS]: Profile layout with summary card, details form, and password card.
+ * [APIs]:    GET /auth/me, PATCH /auth/change-password, POST /auth/forgot-password.
+ *
+ * [STEP-BY-STEP IMPLEMENTATION PLAN]:
+ * 1. Imports: Import PageHeader from ui.jsx and profile cards from ProfileSections.
+ * 2. Header: Render PageHeader with title="My Profile" and descriptive subtitle.
+ * 3. Content Wrapper: Enclose all sub-components inside <div className="content">.
+ * 4. Profile Summary: Render ProfileSummary with user avatar, name, email & role.
+ * 5. Personal Details: Render PersonalInfoForm bound to account.profile & onSave.
+ * 6. Security Card: Render ChangePasswordCard configured with userType="seller".
+ * ============================================================================
  */
-import { PageHeader } from '../../../components/common/ui.jsx';
-import { ChangePasswordCard, PersonalInfoForm, ProfileSummary } from '../../../components/profile/ProfileSections.jsx';
-
 export default function SellerProfileSection({ account }) {
   return (
-    <>
-      <PageHeader title="My Profile" subtitle="View and manage your personal information" />
-      <div className="content">
-        <ProfileSummary fullName={account.fullName} email={account.profile.email} accountLabel="Seller Account" account={account.account} />
-        <PersonalInfoForm profile={account.profile} onSave={account.save} />
-        <ChangePasswordCard idPrefix="seller" userType="seller" />
-      </div>
-    </>
+    <div className="content" data-plan="seller-profile" data-user={account?.fullName}>
+      {/* Planned components: PageHeader, ProfileSummary, PersonalInfoForm, ChangePasswordCard */}
+    </div>
   );
 }
