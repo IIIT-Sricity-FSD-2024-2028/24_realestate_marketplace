@@ -1,0 +1,41 @@
+.commission-due-row td {
+  padding: 0 1rem 0.75rem !important;
+}
+.commission-due-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: rgba(245, 158, 11, 0.07);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 0.6rem;
+}
+.commission-due-text {
+  color: #d1d5db;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  flex: 1;
+  min-width: 16rem;
+}
+.commission-due-text strong {
+  color: var(--amber);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+.commission-due-btn,
+.commission-pay-btn {
+  background: var(--amber);
+  color: #111;
+  border: none;
+  border-radius: 0.45rem;
+  padding: 0.7rem 1.4rem;
+  font-weight: 800;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.commission-due-btn:hover,
+.commission-pay-btn:hover {
+  background: #fbbf24;
+}
