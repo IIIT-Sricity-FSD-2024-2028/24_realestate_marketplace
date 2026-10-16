@@ -9,6 +9,7 @@
 import { Badge, EmptyState, PageHeader } from '../../../components/common/ui.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { savedMatches } from '../useBuyerData.js';
+import './UnderConsiderationSection.css';
 
 export default function UnderConsiderationSection({ data, actions }) {
   const { showToast } = useToast();

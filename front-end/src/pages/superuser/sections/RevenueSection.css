@@ -1,0 +1,128 @@
+.split-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+}
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  min-width: 0;
+}
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.15rem;
+}
+.panel-head h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.panel-note {
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+
+/* Revenue charts (plain divs, no chart library) */
+.rev-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  height: 11rem;
+  padding-top: 1.5rem;
+}
+.rev-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.rev-bar-track {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+.rev-bar {
+  position: relative;
+  width: 100%;
+  min-height: 0.15rem;
+  border-radius: 0.3rem 0.3rem 0 0;
+  background: linear-gradient(180deg, var(--brand) 0%, rgba(29, 185, 84, 0.45) 100%);
+  transition: height 0.5s ease;
+}
+.rev-bar.empty {
+  background: var(--bg-highlight);
+}
+.rev-bar-value {
+  position: absolute;
+  top: -1.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.rev-bar-label {
+  font-size: 0.68rem;
+  color: var(--text-3);
+}
+.rev-row {
+  margin-bottom: 1rem;
+}
+.rev-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+.rev-row-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.rev-row-meta {
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+.rev-row-value {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.rev-track {
+  height: 0.375rem;
+  background: var(--bg-highlight);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.rev-track-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+.rev-track-fill.subscription {
+  background: var(--brand);
+}
+.rev-track-fill.featured_listing {
+  background: var(--warning);
+}
+.rev-track-fill.commission {
+  background: var(--info);
+}
+.rev-empty {
+  color: var(--text-2);
+  font-size: 0.8125rem;
+  padding: 0.5rem 0;
+}
+
+@media (max-width: 1100px) {
+  .split-grid {
+    grid-template-columns: 1fr;
+  }
+}

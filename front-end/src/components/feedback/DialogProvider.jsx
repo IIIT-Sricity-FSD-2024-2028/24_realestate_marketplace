@@ -9,6 +9,7 @@
  */
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import Modal from '../common/Modal.jsx';
+import './DialogProvider.css';
 
 const DialogContext = createContext(null);
 

@@ -14,6 +14,7 @@ import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { billingApi } from '../../../api/services.js';
 import { formatINR, shortDate } from '../../../utils/format.js';
 import { STREAM_LABELS } from '../../../utils/constants.js';
+import './RevenueSection.css';
 
 /** One labelled horizontal bar (name · meta · value + track). */
 function BarRow({ name, meta, value, percent, tone }) {

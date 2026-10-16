@@ -10,6 +10,7 @@
 import Icon from '../common/Icon.jsx';
 import { capitalize, formatINR, joinPlace } from '../../utils/format.js';
 import { FALLBACK_PROPERTY_IMAGE } from '../../utils/constants.js';
+import './PropertyCard.css';
 
 /** Listing price, with "/ mo" for rentals. */
 export function listingPrice(property) {

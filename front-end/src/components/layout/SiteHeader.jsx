@@ -7,6 +7,7 @@
  */
 import { Link } from 'react-router-dom';
 import Icon from '../common/Icon.jsx';
+import './SiteHeader.css';
 
 export default function SiteHeader({ onLogin }) {
   return (

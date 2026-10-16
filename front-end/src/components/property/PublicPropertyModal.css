@@ -1,0 +1,52 @@
+.property-modal {
+  padding: 0;
+  overflow: hidden;
+}
+.property-modal-hero {
+  width: 100%;
+  height: clamp(14rem, 40vw, 22rem);
+  object-fit: cover;
+}
+.property-modal-body {
+  padding: 1.75rem;
+}
+.property-modal-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  padding-right: 1rem;
+}
+.spec-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  background: var(--bg-highlight);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.spec-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-2);
+}
+.spec-strip strong {
+  color: var(--text);
+}
+.property-modal-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .property-modal-body {
+    padding: 1.25rem;
+  }
+}

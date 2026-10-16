@@ -12,6 +12,7 @@ import Modal from '../common/Modal.jsx';
 import Icon from '../common/Icon.jsx';
 import { joinPlace } from '../../utils/format.js';
 import { listingImage, listingPrice } from './PropertyCard.jsx';
+import './PublicPropertyModal.css';
 
 export default function PublicPropertyModal({ property, onClose, onBuy }) {
   return (

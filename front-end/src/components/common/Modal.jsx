@@ -14,6 +14,7 @@
  */
 import { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import './Modal.css';
 
 export default function Modal({ open, onClose, title, size = 'md', hideClose = false, className = '', children }) {
   const titleId = useId(); // links the heading to the dialog for screen readers
