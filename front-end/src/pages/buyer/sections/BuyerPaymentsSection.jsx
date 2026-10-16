@@ -11,6 +11,7 @@ import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
 import { formatINR, shortDate } from '../../../utils/format.js';
 import { gatewayBadge } from '../../../utils/billing.js';
+import './BuyerPaymentsSection.css';
 
 const STATUS_LABEL = { accrued: 'Payment due', paid: 'Paid', waived: 'Waived by truEstate' };
 

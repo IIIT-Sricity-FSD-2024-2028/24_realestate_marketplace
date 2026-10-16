@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import Icon from '../common/Icon.jsx';
 import { Avatar } from '../common/ui.jsx';
 import SessionChangedOverlay from './SessionChangedOverlay.jsx';
+import './DashboardLayout.css';
 
 export default function DashboardLayout({ badge, logoIcon = 'home', nav, active, onNavigate, user, onLogout, sessionChanged, role, children }) {
   const [menuOpen, setMenuOpen] = useState(false); // mobile sidebar visibility

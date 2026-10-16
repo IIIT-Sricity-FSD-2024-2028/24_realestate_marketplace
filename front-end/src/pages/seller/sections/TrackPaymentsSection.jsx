@@ -15,6 +15,7 @@ import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
 import { formatCompactINR, formatINR, shortDate } from '../../../utils/format.js';
 import { DEAL_STEPS } from '../../../utils/constants.js';
+import './TrackPaymentsSection.css';
 
 /** dealStatus → filter bucket used by the pills. */
 const bucketOf = (p) => (p.dealStatus === 'completed' ? 'completed' : p.dealStatus === 'cancelled' ? 'rejected' : 'ongoing');

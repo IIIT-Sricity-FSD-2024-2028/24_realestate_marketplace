@@ -1,0 +1,84 @@
+/* Test-mode checkout */
+.checkout-box {
+  padding: 0;
+  overflow: hidden;
+}
+.checkout-banner {
+  background: var(--amber);
+  color: #111;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 0.4rem;
+}
+.checkout-body {
+  padding: 1.5rem;
+}
+.checkout-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+.checkout-logo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: var(--brand);
+  color: #000;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.checkout-brand-name {
+  font-weight: 700;
+}
+.checkout-desc {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.25rem 0 1.25rem;
+  line-height: 1.4;
+}
+.checkout-lines {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.25rem;
+}
+.checkout-lines div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--text-2);
+  margin-bottom: 0.4rem;
+}
+.checkout-lines dd {
+  color: #d1d5db;
+}
+.checkout-total {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.6rem;
+  margin: 0 !important;
+  align-items: baseline;
+}
+.checkout-total dt {
+  color: var(--text);
+  font-weight: 600;
+}
+.checkout-total dd {
+  color: var(--brand);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.checkout-note {
+  color: var(--text-3);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.checkout-note span {
+  color: var(--text-2);
+}
