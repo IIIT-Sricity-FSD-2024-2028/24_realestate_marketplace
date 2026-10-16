@@ -229,6 +229,10 @@ export class UsersService implements OnModuleInit {
       throw new NotFoundException(`User with ID "${id}" not found`);
     }
     this.assertCanModifyTarget(user, actor);
+    // Admins cannot edit their own profile; only a superuser can change an admin's details.
+    if (actor.role === Role.ADMIN && String(user._id) === actor.id) {
+      throw new ForbiddenException('Admins cannot modify their own profile');
+    }
     // Also block *promoting* someone to superuser unless the actor already is one.
     if (dto.role === Role.SUPERUSER && actor.role !== Role.SUPERUSER) {
       throw new ForbiddenException('Only a superuser can grant the superuser role');

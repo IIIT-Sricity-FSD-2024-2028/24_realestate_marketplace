@@ -181,6 +181,9 @@ let UsersService = UsersService_1 = class UsersService {
             throw new common_1.NotFoundException(`User with ID "${id}" not found`);
         }
         this.assertCanModifyTarget(user, actor);
+        if (actor.role === role_enum_js_1.Role.ADMIN && String(user._id) === actor.id) {
+            throw new common_1.ForbiddenException('Admins cannot modify their own profile');
+        }
         if (dto.role === role_enum_js_1.Role.SUPERUSER && actor.role !== role_enum_js_1.Role.SUPERUSER) {
             throw new common_1.ForbiddenException('Only a superuser can grant the superuser role');
         }

@@ -13,15 +13,17 @@ import { fileLogger } from './common/logging/file-logger.js';
 import { errorHandlerMiddleware } from './common/middlewares/error-handler.middleware.js';
 import { HttpLoggerMiddleware } from './common/middlewares/http-logger.middleware.js';
 import { RequestContextMiddleware } from './common/middlewares/request-context.middleware.js';
+import { createSpaFallback } from './common/middlewares/spa-fallback.middleware.js';
 import {
   STATIC_RATE_LIMIT,
   StaticRateLimitMiddleware,
 } from './common/middlewares/static-rate-limit.middleware.js';
 
 const INSECURE_DEFAULT_JWT_SECRET = 'dev-only-insecure-secret-change-me';
-// Keep the UI as an independently maintainable frontend while serving it from
-// the Nest app exactly as before. `__dirname` is stable for both src/ and dist/.
-const FRONTEND_DIR = join(__dirname, '..', '..', 'front-end');
+// The React frontend's production build (`npm run build:frontend` writes it).
+// Served from the Nest app on every port, as the static pages were before.
+// `__dirname` is stable for both src/ and dist/.
+const FRONTEND_DIR = join(__dirname, '..', '..', 'front-end', 'dist');
 
 async function bootstrap() {
   // Start the file logger before anything else can fail, so a crash during
@@ -96,6 +98,9 @@ async function bootstrap() {
   app.useStaticAssets(FRONTEND_DIR);
   // Uploaded property verification documents (see PropertiesController#uploadDocuments).
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
+  // React routes (/admin/login, /seller/billing, old *.html links) are not files:
+  // answer browser page loads with index.html so React Router can draw them.
+  app.use(createSpaFallback(FRONTEND_DIR));
 
   const corsOrigins = (process.env.CORS_ORIGINS ?? [
     'http://localhost:3000',
@@ -251,15 +256,15 @@ async function bootstrap() {
   // answerable at a glance — a stale node process holding the port is otherwise
   // indistinguishable from a limiter that isn't working.
   logger.log(
-    `🚦 Rate limits: API ${API_RATE_LIMIT}/min (/api/v1/*), static ${STATIC_RATE_LIMIT}/min (front-end/, uploads/), /health exempt`,
+    `🚦 Rate limits: API ${API_RATE_LIMIT}/min (/api/v1/*), static ${STATIC_RATE_LIMIT}/min (front-end/dist, uploads/), /health exempt`,
   );
 
   // ─── Frontend entry points, per role — each on its own port ──────────────
   console.log('');
   console.log('🔗 App URLs:');
-  console.log(`   👤 Buyer / Seller Login : ${baseUrl}/index.html`);
-  console.log(`   🛡️  Admin Login          : ${urlFor(adminPort)}/admin-login.html`);
-  console.log(`   👑 Superuser Login       : ${urlFor(superuserPort)}/superuser-login.html`);
+  console.log(`   👤 Buyer / Seller Login : ${baseUrl}/login`);
+  console.log(`   🛡️  Admin Login          : ${urlFor(adminPort)}/admin/login`);
+  console.log(`   👑 Superuser Login       : ${urlFor(superuserPort)}/superuser/login`);
   console.log('');
   console.log(`📝 Logs are written to: ${fileLogger.getLogDir()}`);
   console.log('   http/ · error/ · app/ · audit/  (rotated daily, flushed every few seconds)');

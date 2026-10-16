@@ -2,29 +2,31 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-// The frontend is a sibling package, separate from the NestJS backend.
-const FRONTEND_DIR = path.join(__dirname, '..', '..', 'front-end');
+// The React frontend's production build (run `npm run build:frontend` first).
+const FRONTEND_DIR = path.join(__dirname, '..', '..', 'front-end', 'dist');
+// Client-side routes (no file extension, or an old *.html page) get index.html.
+const ASSET_EXTENSION = /\.(js|mjs|css|map|json|png|jpe?g|gif|svg|webp|ico|txt|woff2?|ttf|pdf)$/i;
 
 const APPS = {
   admin: {
     name: 'Admin App',
     port: 3001,
-    entry: 'admin-login.html',
+    entry: 'admin/login',
   },
   superuser: {
     name: 'Superuser App',
     port: 3002,
-    entry: 'superuser-login.html',
+    entry: 'superuser/login',
   },
   agent: {
     name: 'Agent/Seller App',
     port: 3003,
-    entry: 'seller-dashboard.html',
+    entry: 'seller',
   },
   buyer: {
     name: 'Buyer/Customer App',
     port: 3004,
-    entry: 'index.html',
+    entry: '',
   }
 };
 

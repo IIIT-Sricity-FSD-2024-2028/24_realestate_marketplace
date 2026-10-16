@@ -20,6 +20,7 @@ __exportStar(require("./error-handler.middleware.js"), exports);
 __exportStar(require("./http-logger.middleware.js"), exports);
 __exportStar(require("./request-context.middleware.js"), exports);
 __exportStar(require("./security.middleware.js"), exports);
+__exportStar(require("./spa-fallback.middleware.js"), exports);
 __exportStar(require("./static-rate-limit.middleware.js"), exports);
 __exportStar(require("./upload-validation.middleware.js"), exports);
 //# sourceMappingURL=index.js.map

@@ -4,5 +4,6 @@ export * from './error-handler.middleware.js';
 export * from './http-logger.middleware.js';
 export * from './request-context.middleware.js';
 export * from './security.middleware.js';
+export * from './spa-fallback.middleware.js';
 export * from './static-rate-limit.middleware.js';
 export * from './upload-validation.middleware.js';

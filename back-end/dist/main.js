@@ -17,9 +17,10 @@ const file_logger_js_1 = require("./common/logging/file-logger.js");
 const error_handler_middleware_js_1 = require("./common/middlewares/error-handler.middleware.js");
 const http_logger_middleware_js_1 = require("./common/middlewares/http-logger.middleware.js");
 const request_context_middleware_js_1 = require("./common/middlewares/request-context.middleware.js");
+const spa_fallback_middleware_js_1 = require("./common/middlewares/spa-fallback.middleware.js");
 const static_rate_limit_middleware_js_1 = require("./common/middlewares/static-rate-limit.middleware.js");
 const INSECURE_DEFAULT_JWT_SECRET = 'dev-only-insecure-secret-change-me';
-const FRONTEND_DIR = (0, path_1.join)(__dirname, '..', '..', 'front-end');
+const FRONTEND_DIR = (0, path_1.join)(__dirname, '..', '..', 'front-end', 'dist');
 async function bootstrap() {
     file_logger_js_1.fileLogger.start();
     installCrashHandlers();
@@ -50,6 +51,7 @@ async function bootstrap() {
     app.use((req, res, next) => staticRateLimit.use(req, res, next));
     app.useStaticAssets(FRONTEND_DIR);
     app.useStaticAssets((0, path_1.join)(process.cwd(), 'uploads'), { prefix: '/uploads' });
+    app.use((0, spa_fallback_middleware_js_1.createSpaFallback)(FRONTEND_DIR));
     const corsOrigins = (process.env.CORS_ORIGINS ?? [
         'http://localhost:3000',
         'http://127.0.0.1:3000',
@@ -148,12 +150,12 @@ async function bootstrap() {
     const baseUrl = urlFor(port);
     logger.log(`🚀 Application running on: ${baseUrl}/api/v1`);
     logger.log(`📚 Swagger docs available at: ${baseUrl}/api/docs`);
-    logger.log(`🚦 Rate limits: API ${app_module_js_1.API_RATE_LIMIT}/min (/api/v1/*), static ${static_rate_limit_middleware_js_1.STATIC_RATE_LIMIT}/min (front-end/, uploads/), /health exempt`);
+    logger.log(`🚦 Rate limits: API ${app_module_js_1.API_RATE_LIMIT}/min (/api/v1/*), static ${static_rate_limit_middleware_js_1.STATIC_RATE_LIMIT}/min (front-end/dist, uploads/), /health exempt`);
     console.log('');
     console.log('🔗 App URLs:');
-    console.log(`   👤 Buyer / Seller Login : ${baseUrl}/index.html`);
-    console.log(`   🛡️  Admin Login          : ${urlFor(adminPort)}/admin-login.html`);
-    console.log(`   👑 Superuser Login       : ${urlFor(superuserPort)}/superuser-login.html`);
+    console.log(`   👤 Buyer / Seller Login : ${baseUrl}/login`);
+    console.log(`   🛡️  Admin Login          : ${urlFor(adminPort)}/admin/login`);
+    console.log(`   👑 Superuser Login       : ${urlFor(superuserPort)}/superuser/login`);
     console.log('');
     console.log(`📝 Logs are written to: ${file_logger_js_1.fileLogger.getLogDir()}`);
     console.log('   http/ · error/ · app/ · audit/  (rotated daily, flushed every few seconds)');
