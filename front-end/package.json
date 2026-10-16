@@ -1,21 +1,32 @@
 {
-  "name": "truestate-unified-frontend",
+  "name": "sasidhar-reddy-kalluru-front-end",
   "version": "1.0.0",
+  "description": "truEstate React frontend (Vite + React Router) for the NestJS backend",
   "private": true,
-  "description": "truEstate Unified Frontend — Integrates Buyer, Seller, Admin, and Superuser into a single React application on port 5173",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-router-dom": "6.26.2"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "4.3.1",
-    "vite": "5.4.8"
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@vitejs/plugin-react": "^5.2.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "jsdom": "^30.1.2",
+    "vite": "^7.3.7",
+    "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.4"
   }
 }

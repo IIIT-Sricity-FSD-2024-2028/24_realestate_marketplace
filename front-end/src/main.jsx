@@ -1,35 +1,24 @@
-import { StrictMode, useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
-import App from './App.jsx';
-import './styles/unified.css';
-
 /**
- * LegacyHashSync:
- * Smoothly synchronizes any legacy hash-based links/bookmarks (e.g., #/seller/dashboard, #/buyer/explore)
- * directly into the unified BrowserRouter path structure without full page reloads.
+ * main.jsx
+ * Purpose: Entry point — mounts the React app into <div id="root">.
+ * Inputs:  none.
+ * Outputs: renders <App /> wrapped in the browser router.
+ * API calls: none.
  */
-function LegacyHashSync() {
-  const navigate = useNavigate();
-  const location = useLocation();
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App.jsx';
+// Global design tokens, layout and component styles (shared by every page).
+import './styles/global.css';
 
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash && hash.startsWith('#/')) {
-      const targetPath = hash.slice(1);
-      window.history.replaceState(null, '', targetPath);
-      navigate(targetPath, { replace: true });
-    }
-  }, [navigate, location]);
-
-  return null;
-}
-
+// Find the empty div from index.html and hand it to React.
 createRoot(document.getElementById('root')).render(
+  // StrictMode surfaces unsafe patterns during development only.
   <StrictMode>
+    {/* BrowserRouter keeps the URL in sync with the page being shown. */}
     <BrowserRouter>
-      <LegacyHashSync />
       <App />
     </BrowserRouter>
-  </StrictMode>
+  </StrictMode>,
 );
