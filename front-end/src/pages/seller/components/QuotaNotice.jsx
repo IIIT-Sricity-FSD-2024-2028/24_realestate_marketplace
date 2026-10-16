@@ -13,6 +13,7 @@
  * what the API will allow. Sold/rented listings still occupy a slot.
  */
 import Modal from '../../../components/common/Modal.jsx';
+import './QuotaNotice.css';
 
 export function QuotaNotice({ billing, listings, onUpgrade }) {
   const plan = billing && billing.plan;

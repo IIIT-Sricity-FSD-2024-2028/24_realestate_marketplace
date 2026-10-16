@@ -16,6 +16,7 @@ import { propertiesApi } from '../../../api/services.js';
 import { formatINR } from '../../../utils/format.js';
 import { VERIFICATION_DISPLAY } from '../../../utils/constants.js';
 import { QuotaNotice } from '../components/QuotaNotice.jsx';
+import './MyListingsSection.css';
 
 export default function MyListingsSection({ data, goTo }) {
   const { showToast } = useToast();

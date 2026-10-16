@@ -9,6 +9,7 @@
  * API calls: none.
  */
 import { DEAL_STEPS } from '../../utils/constants.js';
+import './DealProgress.css';
 
 export default function DealProgress({ step, status, title = 'DEAL PROGRESS' }) {
   const current = Math.min(DEAL_STEPS.length, Number(step) || 1); // clamp to 1..5

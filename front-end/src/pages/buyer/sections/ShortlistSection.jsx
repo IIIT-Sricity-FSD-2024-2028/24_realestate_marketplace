@@ -8,6 +8,7 @@
  */
 import { EmptyState, PageHeader } from '../../../components/common/ui.jsx';
 import { savedMatches } from '../useBuyerData.js';
+import './ShortlistSection.css';
 
 export default function ShortlistSection({ data, actions }) {
   // Only listings that are still in the live catalogue are shown.

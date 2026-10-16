@@ -17,6 +17,7 @@ import { useToast } from '../feedback/ToastProvider.jsx';
 import { authApi } from '../../api/services.js';
 import { DASHBOARD_BY_ROLE, setUser } from '../../auth/session.js';
 import { isEmail } from '../../utils/validation.js';
+import './StaffLoginForm.css';
 
 export default function StaffLoginForm({ role, title, subtitle, icon, emailPlaceholder }) {
   const navigate = useNavigate();

@@ -17,6 +17,7 @@ import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
 import { visitsApi } from '../../../api/services.js';
 import { joinPlace } from '../../../utils/format.js';
 import { VISIT_SLOTS } from '../../../utils/constants.js';
+import './ScheduledVisitsSection.css';
 
 // Tab → which visit statuses it shows.
 const TABS = [
