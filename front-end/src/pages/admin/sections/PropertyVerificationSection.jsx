@@ -15,7 +15,6 @@ import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
 import { propertiesApi } from '../../../api/services.js';
 import { formatINR, joinPlace, shortDate } from '../../../utils/format.js';
-import './PropertyVerificationSection.css';
 
 // verificationStatus → badge colour + text.
 const STATUS_META = {

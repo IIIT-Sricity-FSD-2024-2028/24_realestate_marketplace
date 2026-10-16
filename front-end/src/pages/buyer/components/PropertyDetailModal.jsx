@@ -12,7 +12,6 @@
 import { useEffect, useState } from 'react';
 import Modal from '../../../components/common/Modal.jsx';
 import Icon from '../../../components/common/Icon.jsx';
-import './PropertyDetailModal.css';
 
 export default function PropertyDetailModal({ card, actions }) {
   const [photo, setPhoto] = useState(0); // index of the large photo

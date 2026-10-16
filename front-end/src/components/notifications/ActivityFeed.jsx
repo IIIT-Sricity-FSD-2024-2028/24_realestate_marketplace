@@ -12,7 +12,6 @@
 import Icon from '../common/Icon.jsx';
 import { Badge, EmptyState } from '../common/ui.jsx';
 import { timeAgo } from '../../utils/format.js';
-import './ActivityFeed.css';
 
 export default function ActivityFeed({ items, emptyText }) {
   if (!items.length) {

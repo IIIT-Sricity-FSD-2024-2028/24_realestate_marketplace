@@ -12,7 +12,6 @@ import Modal from '../../../components/common/Modal.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { visitsApi } from '../../../api/services.js';
 import { VISIT_SLOTS } from '../../../utils/constants.js';
-import './ScheduleVisitModal.css';
 
 const WEEKDAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 

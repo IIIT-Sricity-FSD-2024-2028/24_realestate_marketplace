@@ -11,7 +11,6 @@ import { useMemo, useRef, useState } from 'react';
 import { EmptyState, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import Icon from '../../../components/common/Icon.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
-import './ExploreSection.css';
 
 const EMPTY = { listingType: '', location: '', price: '', beds: '', ptype: '' };
 

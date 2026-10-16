@@ -21,7 +21,6 @@ import { billingApi } from '../../api/services.js';
 import { getUser } from '../../auth/session.js';
 import { formatINR } from '../../utils/format.js';
 import { useToast } from '../feedback/ToastProvider.jsx';
-import './PaymentProvider.css';
 
 const PaymentContext = createContext(null);
 

@@ -7,7 +7,6 @@
  * API calls: none.
  */
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import './ToastProvider.css';
 
 const ToastContext = createContext(null);
 

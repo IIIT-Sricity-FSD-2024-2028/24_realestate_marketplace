@@ -17,7 +17,6 @@ import { useToast } from '../components/feedback/ToastProvider.jsx';
 import { authApi } from '../api/services.js';
 import { DASHBOARD_BY_ROLE, setUser } from '../auth/session.js';
 import { validateAuthForm } from '../utils/validation.js';
-import './AuthPage.css';
 
 // The two account types a member of the public can sign in as.
 const ROLES = [

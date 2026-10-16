@@ -23,7 +23,6 @@ import { isValid, validateDob, validatePasswordChange, validateRules } from '../
 import { Avatar, Card } from '../common/ui.jsx';
 import Icon from '../common/Icon.jsx';
 import { FormField, PasswordInput, PasswordMatchHint, TextInput, todayIso } from '../forms/FormControls.jsx';
-import './ProfileSections.css';
 import { useToast } from '../feedback/ToastProvider.jsx';
 import ForgotPasswordModal from '../auth/ForgotPasswordModal.jsx';
 

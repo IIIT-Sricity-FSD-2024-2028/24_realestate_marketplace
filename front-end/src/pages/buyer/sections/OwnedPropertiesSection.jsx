@@ -11,7 +11,6 @@
 import { Badge, EmptyState, PageHeader } from '../../../components/common/ui.jsx';
 import { formatCompactINR, joinPlace, shortDate } from '../../../utils/format.js';
 import { FALLBACK_PROPERTY_IMAGE } from '../../../utils/constants.js';
-import './OwnedPropertiesSection.css';
 
 export default function OwnedPropertiesSection({ data, mode }) {
   const rent = mode === 'rent';

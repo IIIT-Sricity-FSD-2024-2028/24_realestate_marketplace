@@ -19,7 +19,6 @@ import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
 import { billingApi } from '../../../api/services.js';
 import { formatINR, shortDate } from '../../../utils/format.js';
 import { gatewayBadge } from '../../../utils/billing.js';
-import './BillingSection.css';
 
 export default function BillingSection({ data }) {
   const { showToast } = useToast();

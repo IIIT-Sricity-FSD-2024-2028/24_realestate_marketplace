@@ -8,7 +8,6 @@
  * API calls: none.
  */
 import { getUser } from '../../auth/session.js';
-import './SessionChangedOverlay.css';
 
 export default function SessionChangedOverlay({ role }) {
   const user = getUser(); // whoever is signed in on this tab now (maybe nobody)

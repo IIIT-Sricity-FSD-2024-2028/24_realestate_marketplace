@@ -24,7 +24,6 @@ import { EmptyState, Pager, StatusLine } from '../components/common/ui.jsx';
 import { propertiesApi } from '../api/services.js';
 import { capitalize } from '../utils/format.js';
 import { PROPERTY_TYPES, SERVICE_CITIES } from '../utils/constants.js';
-import './LandingPage.css';
 
 // Hero "Budget" choices → price range in rupees (1 Cr = 1,00,00,000).
 const BUDGETS = {
