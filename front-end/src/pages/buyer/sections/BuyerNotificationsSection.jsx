@@ -1,15 +1,16 @@
 /**
  * BuyerNotificationsSection.jsx
  * Purpose: Buyer "Notifications" — real events from my visits, offers and
- *          deals (the old page showed four invented messages with a fixed
- *          "3 unread" badge).
- * Inputs (props): data – useBuyerData()
+ *          deals.
+ * Inputs (props): data (optional)
  * Outputs: ActivityFeed.
- * API calls: none (uses shared data, refreshed every 15 s).
+ * API calls: none directly (all state managed via Redux).
  */
+import { useSelector } from 'react-redux';
 import { PageHeader } from '../../../components/common/ui.jsx';
 import ActivityFeed from '../../../components/notifications/ActivityFeed.jsx';
 import { formatCompactINR, formatINR } from '../../../utils/format.js';
+import { selectBuyerVisits, selectBuyerNegotiations, selectBuyerPurchases } from '../../../store/slices/buyerSlice.js';
 
 const VISIT_TEXT = {
   pending: {
@@ -58,7 +59,7 @@ const OFFER_TEXT = {
 };
 
 /** Builds feed items from visits, offers and deals (exported for tests). */
-export function buildBuyerFeed({ visits, negotiations, purchases }) {
+export function buildBuyerFeed({ visits = [], negotiations = [], purchases = [] } = {}) {
   const items = [];
   visits.forEach((v) => {
     const meta = VISIT_TEXT[v.status];
@@ -119,7 +120,16 @@ export function buildBuyerFeed({ visits, negotiations, purchases }) {
 }
 
 export default function BuyerNotificationsSection({ data }) {
-  const items = buildBuyerFeed(data);
+  const reduxVisits = useSelector(selectBuyerVisits);
+  const reduxNegotiations = useSelector(selectBuyerNegotiations);
+  const reduxPurchases = useSelector(selectBuyerPurchases);
+
+  const visits = data?.visits || reduxVisits;
+  const negotiations = data?.negotiations || reduxNegotiations;
+  const purchases = data?.purchases || reduxPurchases;
+
+  const items = buildBuyerFeed({ visits, negotiations, purchases });
+
   return (
     <>
       <PageHeader
