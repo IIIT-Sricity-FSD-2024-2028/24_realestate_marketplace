@@ -2,22 +2,32 @@
  * sellerSlice.js
  * Purpose: Central Redux slice for the Seller module.
  * State:
- *   listings        – seller's submitted properties (GET /properties/mine)
- *   negotiations    – buyer offers on seller's properties (GET /negotiations/seller-queue)
- *   purchases       – deals / purchases involving seller's properties (GET /purchases/seller-queue)
- *   catalog         – billing catalog (plans, pricing, payment gateway config)
- *   billing         – seller's billing summary (plan, listing quota, commissions, payments)
- *   loading         – loading status per resource { listings, negotiations, purchases, billing }
- *   errors          – error messages per resource { listings, negotiations, purchases, billing }
- *   selectedListing – currently selected listing object (or null)
+ *   listings              – seller's submitted properties (GET /properties/mine)
+ *   negotiations          – buyer offers on seller's properties (GET /negotiations/seller-queue)
+ *   purchases             – deals / purchases involving seller's properties (GET /purchases/seller-queue)
+ *   catalog               – billing catalog (plans, pricing, payment gateway config)
+ *   billing               – seller's billing summary (plan, listing quota, commissions, payments)
+ *   loading               – loading status per resource { listings, negotiations, purchases, billing }
+ *   errors                – error messages per resource { listings, negotiations, purchases, billing }
+ *   selectedListing       – currently selected listing object (or null)
+ *   listingsFilter        – active filter on My Listings ('all' | 'approved' | 'pending' | 'rejected')
+ *   negotiationsFilter    – active filter on Negotiate ('all' | 'ongoing' | 'completed' | 'rejected')
+ *   paymentsFilter        – active filter on Track Payments ('all' | 'ongoing' | 'completed' | 'rejected')
+ *   billingCycle          – selected cycle on Billing & Plans ('monthly' | 'quarterly' | 'yearly')
+ *   counteringNegotiation – active negotiation object for counter offer modal (or null)
+ *   quotaMessage          – error message for 402 plan limit modal (or '')
  * Thunks:
- *   fetchSellerListings     – GET /properties/mine
- *   fetchSellerNegotiations – GET /negotiations/seller-queue?limit=100
- *   fetchSellerPurchases    – GET /purchases/seller-queue?limit=100
- *   fetchSellerBilling      – GET /billing/catalog & GET /billing/summary
- *   reloadSellerResource    – re-fetches a single seller resource by name
- *   reloadAllSellerData     – re-fetches all seller resources in parallel
- *   deleteSellerListing     – DELETE /properties/:id and refreshes listings & billing quota
+ *   fetchSellerListings        – GET /properties/mine
+ *   fetchSellerNegotiations    – GET /negotiations/seller-queue?limit=100
+ *   fetchSellerPurchases       – GET /purchases/seller-queue?limit=100
+ *   fetchSellerBilling         – GET /billing/catalog & GET /billing/summary
+ *   reloadSellerResource       – re-fetches a single seller resource by name
+ *   reloadAllSellerData        – re-fetches all seller resources in parallel
+ *   deleteSellerListing        – DELETE /properties/:id and refreshes listings & billing quota
+ *   acceptSellerOffer          – PATCH /negotiations/:id/accept and refreshes offers & deals
+ *   counterSellerOffer         – PATCH /negotiations/:id/counter and refreshes offers
+ *   rejectSellerOffer          – PATCH /negotiations/:id/reject and refreshes offers
+ *   cancelSellerSubscription   – PATCH /billing/subscription/cancel and refreshes billing & listings
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { billingApi, negotiationsApi, propertiesApi, purchasesApi } from '../../api/services.js';
@@ -101,6 +111,69 @@ export const deleteSellerListing = createAsyncThunk(
   },
 );
 
+/** Accept an offer on seller's listing (creates a purchase deal). */
+export const acceptSellerOffer = createAsyncThunk(
+  'seller/acceptOffer',
+  async (id, { dispatch, rejectWithValue }) => {
+    try {
+      await negotiationsApi.accept(id);
+      await Promise.all([
+        dispatch(fetchSellerNegotiations()),
+        dispatch(fetchSellerPurchases()),
+      ]);
+      return id;
+    } catch (err) {
+      return rejectWithValue(err.message || 'Failed to accept offer');
+    }
+  },
+);
+
+/** Make a counter offer on a buyer's offer. */
+export const counterSellerOffer = createAsyncThunk(
+  'seller/counterOffer',
+  async ({ id, amount }, { dispatch, rejectWithValue }) => {
+    try {
+      await negotiationsApi.counter(id, amount);
+      await dispatch(fetchSellerNegotiations());
+      return { id, amount };
+    } catch (err) {
+      return rejectWithValue(err.message || 'Failed to submit counter offer');
+    }
+  },
+);
+
+/** Reject a buyer's offer with an optional reason. */
+export const rejectSellerOffer = createAsyncThunk(
+  'seller/rejectOffer',
+  async ({ id, reason }, { dispatch, rejectWithValue }) => {
+    try {
+      await negotiationsApi.reject(id, reason);
+      await dispatch(fetchSellerNegotiations());
+      return { id, reason };
+    } catch (err) {
+      return rejectWithValue(err.message || 'Failed to reject offer');
+    }
+  },
+);
+
+/** Cancel the seller's active subscription plan. */
+export const cancelSellerSubscription = createAsyncThunk(
+  'seller/cancelSubscription',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await billingApi.cancelSubscription();
+      await Promise.all([
+        dispatch(fetchSellerBilling()),
+        dispatch(fetchSellerListings()),
+        dispatch(fetchSellerPurchases()),
+      ]);
+      return res.message;
+    } catch (err) {
+      return rejectWithValue(err.message || 'Could not cancel the plan');
+    }
+  },
+);
+
 /** Re-fetch a specific seller resource by key: 'listings' | 'negotiations' | 'purchases' | 'billing'. */
 export const reloadSellerResource = createAsyncThunk(
   'seller/reloadResource',
@@ -156,6 +229,12 @@ const sellerSlice = createSlice({
       billing: null,
     },
     selectedListing: null,
+    listingsFilter: 'all',
+    negotiationsFilter: 'all',
+    paymentsFilter: 'all',
+    billingCycle: 'monthly',
+    counteringNegotiation: null,
+    quotaMessage: '',
   },
   reducers: {
     setListings(state, action) {
@@ -182,6 +261,33 @@ const sellerSlice = createSlice({
     clearSelectedListing(state) {
       state.selectedListing = null;
     },
+    setListingsFilter(state, action) {
+      state.listingsFilter = action.payload;
+    },
+    setNegotiationsFilter(state, action) {
+      state.negotiationsFilter = action.payload;
+    },
+    setPaymentsFilter(state, action) {
+      state.paymentsFilter = action.payload;
+    },
+    setBillingCycle(state, action) {
+      state.billingCycle = action.payload;
+    },
+    setCounteringNegotiation(state, action) {
+      state.counteringNegotiation = action.payload;
+    },
+    openCounterModal(state, action) {
+      state.counteringNegotiation = action.payload;
+    },
+    closeCounterModal(state) {
+      state.counteringNegotiation = null;
+    },
+    setQuotaMessage(state, action) {
+      state.quotaMessage = action.payload;
+    },
+    clearQuotaMessage(state) {
+      state.quotaMessage = '';
+    },
     resetSellerState(state) {
       state.listings = [];
       state.negotiations = [];
@@ -201,6 +307,12 @@ const sellerSlice = createSlice({
         billing: null,
       };
       state.selectedListing = null;
+      state.listingsFilter = 'all';
+      state.negotiationsFilter = 'all';
+      state.paymentsFilter = 'all';
+      state.billingCycle = 'monthly';
+      state.counteringNegotiation = null;
+      state.quotaMessage = '';
     },
   },
   extraReducers: (builder) => {
@@ -280,6 +392,15 @@ export const {
   removeListing,
   setSelectedListing,
   clearSelectedListing,
+  setListingsFilter,
+  setNegotiationsFilter,
+  setPaymentsFilter,
+  setBillingCycle,
+  setCounteringNegotiation,
+  openCounterModal,
+  closeCounterModal,
+  setQuotaMessage,
+  clearQuotaMessage,
   resetSellerState,
 } = sellerSlice.actions;
 
@@ -294,6 +415,13 @@ export const selectSellerLoading = (state) =>
   state.seller?.loading || { listings: false, negotiations: false, purchases: false, billing: false };
 export const selectSellerErrors = (state) => state.seller?.errors || {};
 export const selectSelectedListing = (state) => state.seller?.selectedListing || null;
+
+export const selectSellerListingsFilter = (state) => state.seller?.listingsFilter || 'all';
+export const selectSellerNegotiationsFilter = (state) => state.seller?.negotiationsFilter || 'all';
+export const selectSellerPaymentsFilter = (state) => state.seller?.paymentsFilter || 'all';
+export const selectSellerBillingCycle = (state) => state.seller?.billingCycle || 'monthly';
+export const selectCounteringNegotiation = (state) => state.seller?.counteringNegotiation || null;
+export const selectSellerQuotaMessage = (state) => state.seller?.quotaMessage || '';
 
 /** Derived selector: computes overview statistics for the seller dashboard. */
 export const selectSellerStats = (state) => {
