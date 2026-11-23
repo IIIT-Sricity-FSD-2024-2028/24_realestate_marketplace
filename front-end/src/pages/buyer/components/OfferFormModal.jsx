@@ -2,18 +2,28 @@
  * OfferFormModal.jsx
  * Purpose: "Make an Offer" dialog — amount (with a live comparison against
  *          the listed price), payment mode and an optional message.
- * Inputs (props): card – listing (null = closed); onClose;
+ * Inputs (props): card – listing (optional; falls back to Redux offerCard);
+ *                 onClose – callback (optional; falls back to Redux closeOfferModal);
  *                 onSubmitted(card, amount) – called after the API accepts it
  * Outputs: the form; inline validation; toast on API errors.
  * API calls: POST /negotiations { propertyId, offerAmount, paymentMode, message? }
  */
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../../components/common/Modal.jsx';
 import { FormField, TextInput } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { negotiationsApi } from '../../../api/services.js';
 import { errorText } from '../../../api/client.js';
 import { isPositiveNumber, toNumber } from '../../../utils/validation.js';
+import { formatCompactINR } from '../../../utils/format.js';
+import {
+  selectOfferCard,
+  closeOfferModal,
+  addConsidering,
+  setOfferDoneMessage,
+  fetchBuyerDeals,
+} from '../../../store/slices/buyerSlice.js';
 
 const PAY_MODES = ['Cash', 'Loan', 'Mixed'];
 
@@ -31,33 +41,51 @@ export function offerDifference(amount, listed) {
 }
 
 export default function OfferFormModal({ card, onClose, onSubmitted }) {
+  const dispatch = useDispatch();
   const { showToast } = useToast();
+  const reduxCard = useSelector(selectOfferCard);
+  const activeCard = card !== undefined ? card : reduxCard;
+
   const [amount, setAmount] = useState('');
   const [mode, setMode] = useState('Cash');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
 
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      dispatch(closeOfferModal());
+    }
+  };
+
   // Fresh form every time it opens.
   useEffect(() => {
-    if (card) {
+    if (activeCard) {
       setAmount('');
       setMode('Cash');
       setMessage('');
       setError('');
     }
-  }, [card]);
+  }, [activeCard]);
 
   const submit = async (event) => {
     event.preventDefault();
-    // Old tvValidateBuyerOffer: required + positive number.
     if (!amount.trim()) return setError('Please enter your offer amount');
     if (!isPositiveNumber(amount)) return setError('Please enter a valid offer amount');
     const value = toNumber(amount);
     setSending(true);
     try {
-      await negotiationsApi.create({ propertyId: card.id, offerAmount: value, paymentMode: mode, message: message.trim() || undefined });
-      onSubmitted(card, value);
+      await negotiationsApi.create({ propertyId: activeCard.id, offerAmount: value, paymentMode: mode, message: message.trim() || undefined });
+      if (onSubmitted) {
+        onSubmitted(activeCard, value);
+      } else {
+        dispatch(addConsidering(activeCard));
+        dispatch(closeOfferModal());
+        dispatch(setOfferDoneMessage('Your offer of ' + formatCompactINR(value) + ' for ' + activeCard.title + ' has been submitted!'));
+        dispatch(fetchBuyerDeals());
+      }
     } catch (err) {
       showToast('⚠️ ' + errorText(err, 'Failed to submit offer'), 'error');
     } finally {
@@ -65,17 +93,17 @@ export default function OfferFormModal({ card, onClose, onSubmitted }) {
     }
   };
 
-  const diff = card ? offerDifference(toNumber(amount), card.price) : null;
+  const diff = activeCard ? offerDifference(toNumber(amount), activeCard.price) : null;
   return (
-    <Modal open={!!card} onClose={onClose} title="Make an Offer">
-      {card && (
+    <Modal open={!!activeCard} onClose={handleClose} title="Make an Offer">
+      {activeCard && (
         <form onSubmit={submit} noValidate>
           <p className="text-secondary small mb-3">
-            {card.title} · {card.area}
+            {activeCard.title} · {activeCard.area}
           </p>
           <div className="price-strip">
             <span className="text-secondary">Listed Price</span>
-            <strong>{card.priceFmt}</strong>
+            <strong>{activeCard.priceFmt}</strong>
           </div>
           <FormField id="offer-amount" label="Your Offer Amount (₹)" error={error}>
             <TextInput
@@ -116,7 +144,7 @@ export default function OfferFormModal({ card, onClose, onSubmitted }) {
             />
           </FormField>
           <div className="button-row">
-            <button type="button" className="btn btn-secondary grow" onClick={onClose}>
+            <button type="button" className="btn btn-secondary grow" onClick={handleClose}>
               Cancel
             </button>
             <button type="submit" className="btn btn-primary grow-2" disabled={sending}>
