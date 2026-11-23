@@ -3,15 +3,19 @@
  * Purpose: "Choose Visit Date & Time" — a month calendar (Monday first, past
  *          days disabled), six time slots and an optional message to the admin
  *          team who will accompany the buyer.
- * Inputs (props): card – listing (null = closed); onClose; onRequested()
+ * Inputs (props): card – listing (optional; falls back to Redux visitCard);
+ *                 onClose – callback (optional; falls back to Redux closeVisitModal);
+ *                 onRequested() – callback (optional; falls back to Redux fetchBuyerVisits)
  * Outputs: the dialog; toasts on validation / API errors.
  * API calls: POST /visits { propertyId, requestedDate: 'YYYY-MM-DD', requestedSlot, message? }
  */
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../../components/common/Modal.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { visitsApi } from '../../../api/services.js';
 import { VISIT_SLOTS } from '../../../utils/constants.js';
+import { selectVisitCard, closeVisitModal, fetchBuyerVisits } from '../../../store/slices/buyerSlice.js';
 import './ScheduleVisitModal.css';
 
 const WEEKDAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -30,22 +34,34 @@ export function isoDate(year, month, day) {
 }
 
 export default function ScheduleVisitModal({ card, onClose, onRequested }) {
+  const dispatch = useDispatch();
   const { showToast } = useToast();
+  const reduxCard = useSelector(selectVisitCard);
+  const activeCard = card !== undefined ? card : reduxCard;
+
   const [view, setView] = useState(() => new Date()); // month on screen
   const [day, setDay] = useState(null);
   const [slot, setSlot] = useState(null);
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
 
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      dispatch(closeVisitModal());
+    }
+  };
+
   // Reset each time the dialog opens.
   useEffect(() => {
-    if (card) {
+    if (activeCard) {
       setView(new Date());
       setDay(null);
       setSlot(null);
       setMessage('');
     }
-  }, [card]);
+  }, [activeCard]);
 
   const year = view.getFullYear();
   const month = view.getMonth();
@@ -62,9 +78,14 @@ export default function ScheduleVisitModal({ card, onClose, onRequested }) {
     if (!slot) return showToast('⚠️ Please pick a time slot for the visit.', 'error');
     setSending(true);
     try {
-      await visitsApi.create({ propertyId: card.id, requestedDate: isoDate(year, month, day), requestedSlot: slot, message: message.trim() || undefined });
-      showToast('📅 Visit requested for ' + card.title + '! An admin will confirm shortly.');
-      onRequested();
+      await visitsApi.create({ propertyId: activeCard.id, requestedDate: isoDate(year, month, day), requestedSlot: slot, message: message.trim() || undefined });
+      showToast('📅 Visit requested for ' + activeCard.title + '! An admin will confirm shortly.');
+      if (onRequested) {
+        onRequested();
+      } else {
+        dispatch(closeVisitModal());
+        dispatch(fetchBuyerVisits());
+      }
     } catch (err) {
       showToast(err.message || 'Failed to schedule the visit', 'error');
     } finally {
@@ -73,10 +94,10 @@ export default function ScheduleVisitModal({ card, onClose, onRequested }) {
   };
 
   return (
-    <Modal open={!!card} onClose={onClose} title="Choose Visit Date & Time">
-      {card && (
+    <Modal open={!!activeCard} onClose={handleClose} title="Choose Visit Date & Time">
+      {activeCard && (
         <>
-          <p className="text-secondary small mb-3">{card.title} — an admin from our team will accompany you on the visit.</p>
+          <p className="text-secondary small mb-3">{activeCard.title} — an admin from our team will accompany you on the visit.</p>
           <div className="calendar">
             <div className="calendar-head">
               <button type="button" className="icon-btn" onClick={() => changeMonth(-1)} aria-label="Previous month">
@@ -139,7 +160,7 @@ export default function ScheduleVisitModal({ card, onClose, onRequested }) {
             />
           </div>
           <div className="button-row">
-            <button type="button" className="btn btn-secondary grow" onClick={onClose}>
+            <button type="button" className="btn btn-secondary grow" onClick={handleClose}>
               Cancel
             </button>
             <button type="button" className="btn btn-primary grow-2" onClick={confirm} disabled={sending}>
