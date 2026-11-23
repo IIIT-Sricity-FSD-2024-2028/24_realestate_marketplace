@@ -35,10 +35,14 @@ export default function MyListingsSection({ data, goTo }) {
   const remove = async (p) => {
     if (!(await confirm({ message: 'Delete this property listing? This cannot be undone.', confirmText: 'Delete', danger: true }))) return;
     try {
-      await propertiesApi.remove(p.id);
+      if (data.deleteListing) {
+        await data.deleteListing(p.id);
+      } else {
+        await propertiesApi.remove(p.id);
+        data.reload('listings');
+        data.reload('billing'); // frees a quota slot
+      }
       showToast('Property deleted');
-      data.reload('listings');
-      data.reload('billing'); // frees a quota slot
     } catch (err) {
       showToast(err.message || 'Failed to delete property', 'error');
     }

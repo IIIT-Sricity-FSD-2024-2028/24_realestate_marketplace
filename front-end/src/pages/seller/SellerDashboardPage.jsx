@@ -5,8 +5,8 @@
  *          notifications and profile.
  * Inputs:  URL section (/seller/:section), the signed-in seller session.
  * Outputs: DashboardLayout + the active section.
- * API calls: shared data in useSellerData (refreshed every 15 s, like before)
- *            plus each section's own calls (see their headers).
+ * State & API: Redux-connected seller state via useSellerData (refreshed every 15 s)
+ *              plus each section's own actions (see their headers).
  */
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
