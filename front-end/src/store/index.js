@@ -15,6 +15,7 @@ import revenueReducer from './slices/revenueSlice.js';
 import logsReducer from './slices/logsSlice.js';
 import overviewReducer from './slices/overviewSlice.js';
 import settingsReducer from './slices/settingsSlice.js';
+import buyerReducer from './slices/buyerSlice.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -27,6 +28,7 @@ export const store = configureStore({
     logs: logsReducer,
     overview: overviewReducer,
     settings: settingsReducer,
+    buyer: buyerReducer,
   },
   // Redux Thunk middleware is included by default via configureStore.
   // devTools is enabled automatically in development by RTK.
