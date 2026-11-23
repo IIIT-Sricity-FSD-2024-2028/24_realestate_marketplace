@@ -4,12 +4,13 @@
  *          Countered → accept the counter or withdraw; pending → withdraw;
  *          accepted → "Initiate Purchase" moves it to Purchase Initiation
  *          and removes it from this list.
- * Inputs (props): data – useBuyerData(); goTo(section)
+ * Inputs (props): data (optional), goTo(section)
  * Outputs: offer cards.
  * API calls: PATCH /negotiations/:id/accept-counter, PATCH /negotiations/:id/withdraw,
- *            GET /negotiations/mine + /purchases/mine (via data.reload('deals'))
+ *            GET /negotiations/mine + /purchases/mine (via Redux fetchBuyerDeals)
  */
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge, EmptyState, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
@@ -17,6 +18,7 @@ import { negotiationsApi } from '../../../api/services.js';
 import { readUserData, writeUserData } from '../../../auth/session.js';
 import { formatCompactINR, joinPlace, shortDate } from '../../../utils/format.js';
 import { FALLBACK_PROPERTY_IMAGE } from '../../../utils/constants.js';
+import { selectBuyerNegotiations, selectBuyerLoading, selectBuyerErrors, fetchBuyerDeals } from '../../../store/slices/buyerSlice.js';
 
 const STATUS = {
   pending: {
@@ -30,20 +32,31 @@ const STATUS = {
 };
 
 export default function BuyerNegotiationsSection({ data, goTo }) {
+  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { confirm } = useDialog();
+
+  const reduxNegotiations = useSelector(selectBuyerNegotiations);
+  const reduxLoading = useSelector(selectBuyerLoading);
+  const reduxErrors = useSelector(selectBuyerErrors);
+
+  const negotiations = data?.negotiations || reduxNegotiations;
+  const loading = data?.loading || reduxLoading;
+  const errors = data?.errors || reduxErrors;
+
+  // Local component-specific state
   const [busyId, setBusyId] = useState(null);
-  // Accepted offers the buyer has already moved to Purchase Initiation.
   const [initiated, setInitiated] = useState(() => readUserData('initiatedOffers', []));
+
   // Withdrawn and already-initiated offers are hidden.
-  const offers = data.negotiations.filter((n) => n.status !== 'withdrawn' && !initiated.includes(n.id));
+  const offers = negotiations.filter((n) => n.status !== 'withdrawn' && !initiated.includes(n.id));
 
   /** Moves an accepted offer out of Negotiate and into Purchase Initiation. */
   const initiatePurchase = (o) => {
     const next = [...initiated, o.id];
     writeUserData('initiatedOffers', next);
     setInitiated(next);
-    goTo('purchase-initiation');
+    if (goTo) goTo('purchase-initiation');
   };
 
   const acceptCounter = async (o) => {
@@ -51,8 +64,14 @@ export default function BuyerNegotiationsSection({ data, goTo }) {
     try {
       await negotiationsApi.acceptCounter(o.id);
       showToast('🎉 Offer accepted! Moving to Purchase Initiation...');
-      await data.reload('deals');
-      window.setTimeout(() => goTo('purchase-initiation'), 1200);
+      if (data?.reload) {
+        await data.reload('deals');
+      } else {
+        await dispatch(fetchBuyerDeals());
+      }
+      window.setTimeout(() => {
+        if (goTo) goTo('purchase-initiation');
+      }, 1200);
     } catch (err) {
       showToast(err.message || 'Failed to accept offer', 'error');
     } finally {
@@ -74,7 +93,11 @@ export default function BuyerNegotiationsSection({ data, goTo }) {
     try {
       await negotiationsApi.withdraw(o.id);
       showToast('Offer withdrawn');
-      await data.reload('deals');
+      if (data?.reload) {
+        await data.reload('deals');
+      } else {
+        await dispatch(fetchBuyerDeals());
+      }
     } catch (err) {
       showToast(err.message || 'Failed to withdraw offer', 'error');
     } finally {
@@ -86,8 +109,8 @@ export default function BuyerNegotiationsSection({ data, goTo }) {
     <>
       <PageHeader title="Negotiate" subtitle="Active price negotiations with sellers" icon="chat" />
       <div className="content">
-        <StatusLine loading={data.loading.deals && !offers.length} error={data.errors.deals} />
-        {!data.loading.deals && offers.length === 0 && (
+        <StatusLine loading={loading.deals && !offers.length} error={errors.deals} />
+        {!loading.deals && offers.length === 0 && (
           <EmptyState icon="💬" title="No negotiations yet">
             Make an offer on a property to start negotiating with its seller.
           </EmptyState>
