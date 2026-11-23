@@ -2,63 +2,93 @@
  * PropertyOperationsSection.jsx
  * Purpose: Global property catalogue for the superuser — search, status
  *          filter (server-side), edit and delete. No "Add": sellers create listings.
- * Inputs:  none.
+ * Inputs:  Redux store (propertiesSlice — items, status, error, activeStatus,
+ *          searchQuery). All filter state persists across tab-switches.
  * Outputs: properties table + edit dialog.
- * API calls: GET /properties?limit=50[&status=…], PATCH /properties/:id,
- *            DELETE /properties/:id
+ * API calls (via Redux thunks): GET /properties?limit=50[&status=…],
+ *            PATCH /properties/:id, DELETE /properties/:id
+ * Local React state: editing (which property is open in the modal — ephemeral).
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Badge, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import PropertyEditModal from '../../../components/property/PropertyEditModal.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { propertiesApi } from '../../../api/services.js';
+import { useAppDispatch, useAppSelector } from '../../../store/index.js';
+import {
+  deleteProperty,
+  fetchProperties,
+  selectSuProperties,
+  selectSuPropertiesActiveStatus,
+  selectSuPropertiesError,
+  selectSuPropertiesSearchQuery,
+  selectSuPropertiesStatus,
+  setActiveStatus,
+  setPropertySearchQuery,
+} from '../../../store/slices/propertiesSlice.js';
 import { formatINR, joinPlace } from '../../../utils/format.js';
 import { PROPERTY_STATUSES } from '../../../utils/constants.js';
 
 export default function PropertyOperationsSection() {
   const { showToast } = useToast();
   const { confirm } = useDialog();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [status, setStatus] = useState('all'); // server-side filter
-  const [query, setQuery] = useState(''); // client-side search
-  const [editing, setEditing] = useState(null); // listing in the edit dialog
+  const dispatch = useAppDispatch();
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await propertiesApi.list({ limit: 50, status: status === 'all' ? undefined : status });
-      setItems(res.data.items);
-      setError('');
-    } catch (err) {
-      setError(err.message || 'Failed to load properties');
-    } finally {
-      setLoading(false);
-    }
-  }, [status]);
+  // ── Redux state ────────────────────────────────────────────────────────
+  const items = useAppSelector(selectSuProperties);
+  const status = useAppSelector(selectSuPropertiesStatus);
+  const error = useAppSelector(selectSuPropertiesError);
+  const activeStatus = useAppSelector(selectSuPropertiesActiveStatus); // server-side filter (persisted)
+  const query = useAppSelector(selectSuPropertiesSearchQuery);         // client-side search (persisted)
 
+  // ── Local state: modal only (ephemeral open/close — not shared) ────────
+  const [editing, setEditing] = useState(null);
+
+  // Fetch when the section mounts or the status filter changes.
   useEffect(() => {
-    load();
-  }, [load]);
+    if (status === 'idle') {
+      dispatch(fetchProperties({ status: activeStatus }));
+    }
+  }, [dispatch, status, activeStatus]);
 
+  // Client-side text search over what was already fetched.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return items.filter((p) => !q || p.title.toLowerCase().includes(q) || p.city.toLowerCase().includes(q) || (p.address || '').toLowerCase().includes(q));
+    return items.filter(
+      (p) =>
+        !q ||
+        p.title.toLowerCase().includes(q) ||
+        p.city.toLowerCase().includes(q) ||
+        (p.address || '').toLowerCase().includes(q),
+    );
   }, [items, query]);
 
+  // Status filter change → dispatch to Redux (which resets status to 'idle') → triggers re-fetch.
+  const handleStatusChange = (e) => {
+    dispatch(setActiveStatus(e.target.value));
+  };
+
   const remove = async (p) => {
-    const ok = await confirm({ message: 'Delete "' + p.title + '"? This cannot be undone.', confirmText: 'Delete', danger: true });
+    const ok = await confirm({
+      message: 'Delete "' + p.title + '"? This cannot be undone.',
+      confirmText: 'Delete',
+      danger: true,
+    });
     if (!ok) return;
     try {
-      await propertiesApi.remove(p.id);
+      await dispatch(deleteProperty(p.id)).unwrap();
       showToast('Property deleted');
-      load();
     } catch (err) {
-      showToast(err.message || 'Failed to delete property', 'error');
+      showToast(err || 'Failed to delete property', 'error');
     }
   };
+
+  // After a successful edit in the modal, re-fetch the full list.
+  const handleSaved = () => {
+    dispatch(fetchProperties({ status: activeStatus }));
+  };
+
+  const loading = status === 'loading';
 
   return (
     <>
@@ -69,11 +99,17 @@ export default function PropertyOperationsSection() {
             <label className="sr-only" htmlFor="su-prop-search">
               Search properties
             </label>
-            <input id="su-prop-search" className="form-control" placeholder="Search properties..." value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input
+              id="su-prop-search"
+              className="form-control"
+              placeholder="Search properties..."
+              value={query}
+              onChange={(e) => dispatch(setPropertySearchQuery(e.target.value))}
+            />
             <label className="sr-only" htmlFor="su-prop-status">
               Filter by status
             </label>
-            <select id="su-prop-status" className="form-control toolbar-select" value={status} onChange={(e) => setStatus(e.target.value)}>
+            <select id="su-prop-status" className="form-control toolbar-select" value={activeStatus} onChange={handleStatusChange}>
               <option value="all">All Statuses</option>
               {PROPERTY_STATUSES.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -136,7 +172,7 @@ export default function PropertyOperationsSection() {
           </div>
         </div>
       </div>
-      <PropertyEditModal property={editing} onClose={() => setEditing(null)} onSaved={load} />
+      <PropertyEditModal property={editing} onClose={() => setEditing(null)} onSaved={handleSaved} />
     </>
   );
 }

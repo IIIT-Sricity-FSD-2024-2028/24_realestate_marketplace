@@ -3,13 +3,29 @@
  * Purpose: Read-only viewer for the log files the backend writes to disk
  *          (logs/{http,error,app,audit}/*.log), with channel/level/line-count
  *          filters and an optional 5-second auto-refresh.
- * Inputs:  none.
+ * Inputs:  Redux store (logsSlice — channels, entries, filters, autoRefresh).
+ *          All filter state persists across tab-switches.
  * Outputs: channel summary cards + newest-first log table.
- * API calls: GET /logs, GET /logs/:channel?lines=…&level=…
+ * API calls (via Redux thunks): GET /logs, GET /logs/:channel?lines=…&level=…
+ * Local React state: none — everything is in Redux.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { PageHeader, StatusLine } from '../../../components/common/ui.jsx';
-import { logsApi } from '../../../api/services.js';
+import { useAppDispatch, useAppSelector } from '../../../store/index.js';
+import {
+  fetchLogChannels,
+  fetchLogEntries,
+  selectAutoRefresh,
+  selectLogChannels,
+  selectLogChannelsError,
+  selectLogEntries,
+  selectLogEntriesError,
+  selectLogEntriesFile,
+  selectLogEntriesStatus,
+  selectLogFilters,
+  setAutoRefresh,
+  setLogFilters,
+} from '../../../store/slices/logsSlice.js';
 import { formatBytes, formatLogTime } from '../../../utils/format.js';
 
 // Colour per log level (unknown levels fall back to grey).
@@ -26,48 +42,41 @@ export function summariseLogEntry(entry) {
 }
 
 export default function SystemLogsSection() {
-  const [channels, setChannels] = useState([]);
-  const [channelsError, setChannelsError] = useState('');
-  const [filters, setFilters] = useState({ channel: 'http', level: '', lines: '100' });
-  const [result, setResult] = useState({ file: '', entries: [], loading: true, error: '' });
-  const [autoRefresh, setAutoRefresh] = useState(false);
+  const dispatch = useAppDispatch();
 
-  const loadChannels = useCallback(async () => {
-    try {
-      setChannels((await logsApi.channels()).data);
-      setChannelsError('');
-    } catch (err) {
-      setChannelsError(err.message || 'Failed to load log files');
-    }
-  }, []);
-
-  const loadEntries = useCallback(async () => {
-    try {
-      const res = await logsApi.entries(filters.channel, { lines: filters.lines, level: filters.level });
-      setResult({ file: res.data.file, entries: res.data.entries, loading: false, error: '' });
-    } catch (err) {
-      setResult({ file: '', entries: [], loading: false, error: err.message || 'Failed to load log entries' });
-    }
-  }, [filters]);
+  // ── Redux state (all state — including filters — lives in the store) ───
+  const channels = useAppSelector(selectLogChannels);
+  const channelsError = useAppSelector(selectLogChannelsError);
+  const entries = useAppSelector(selectLogEntries);
+  const entriesFile = useAppSelector(selectLogEntriesFile);
+  const entriesStatus = useAppSelector(selectLogEntriesStatus);
+  const entriesError = useAppSelector(selectLogEntriesError);
+  const filters = useAppSelector(selectLogFilters);       // { channel, level, lines }
+  const autoRefresh = useAppSelector(selectAutoRefresh);  // boolean
 
   const refresh = useCallback(() => {
-    loadChannels();
-    loadEntries();
-  }, [loadChannels, loadEntries]);
+    dispatch(fetchLogChannels());
+    dispatch(fetchLogEntries({ channel: filters.channel, lines: filters.lines, level: filters.level }));
+  }, [dispatch, filters]);
 
-  // Load on open and whenever a filter changes.
+  // Load on open and whenever filters change (entriesStatus resets to 'idle' on filter change).
   useEffect(() => {
     refresh();
   }, [refresh]);
 
-  // Optional 5-second auto-refresh (stops when unticked or the section closes).
+  // Optional 5-second auto-refresh (stops when unticked or the section unmounts).
   useEffect(() => {
     if (!autoRefresh) return undefined;
     const timer = window.setInterval(refresh, 5000);
     return () => window.clearInterval(timer);
   }, [autoRefresh, refresh]);
 
-  const setFilter = (field) => (event) => setFilters((f) => ({ ...f, [field]: event.target.value }));
+  /** Update a single filter field in Redux (triggers re-fetch via useEffect). */
+  const setFilter = (field) => (event) => {
+    dispatch(setLogFilters({ [field]: event.target.value }));
+  };
+
+  const entriesLoading = entriesStatus === 'loading' || entriesStatus === 'idle';
 
   return (
     <>
@@ -77,7 +86,12 @@ export default function SystemLogsSection() {
         actions={
           <>
             <label className="checkbox">
-              <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} /> Auto-refresh
+              <input
+                type="checkbox"
+                checked={autoRefresh}
+                onChange={(e) => dispatch(setAutoRefresh(e.target.checked))}
+              />{' '}
+              Auto-refresh
             </label>
             <button type="button" className="btn btn-primary" onClick={refresh}>
               Refresh
@@ -128,9 +142,9 @@ export default function SystemLogsSection() {
               <option value="250">Last 250</option>
             </select>
           </div>
-          {result.file && (
+          {entriesFile && (
             <p className="toolbar-note">
-              Reading {result.file} — {result.entries.length} entries (newest first)
+              Reading {entriesFile} — {entries.length} entries (newest first)
             </p>
           )}
           <div className="table-scroll">
@@ -144,13 +158,13 @@ export default function SystemLogsSection() {
                 </tr>
               </thead>
               <tbody>
-                {result.loading || result.error ? (
+                {entriesLoading || entriesError ? (
                   <tr>
                     <td colSpan={4}>
-                      <StatusLine loading={result.loading} error={result.error} />
+                      <StatusLine loading={entriesLoading} error={entriesError} />
                     </td>
                   </tr>
-                ) : result.entries.length === 0 ? (
+                ) : entries.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="table-empty">
                       Nothing logged to this channel yet.
@@ -158,7 +172,7 @@ export default function SystemLogsSection() {
                   </tr>
                 ) : (
                   // The API returns oldest→newest; show newest first.
-                  [...result.entries].reverse().map((entry, i) => (
+                  [...entries].reverse().map((entry, i) => (
                     <tr key={entry.timestamp + '-' + i}>
                       <td className="nowrap small">{formatLogTime(entry.timestamp)}</td>
                       <td className={'strong small ' + (LEVEL_CLASS[entry.level] || 'text-secondary')}>{String(entry.level || '').toUpperCase()}</td>

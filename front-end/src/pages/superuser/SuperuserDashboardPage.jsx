@@ -9,7 +9,9 @@
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import { useDashboardSection } from '../../hooks/useDashboardSection.js';
-import { clearUser, getUser, logoutPathForRole } from '../../auth/session.js';
+import { logoutPathForRole } from '../../auth/session.js';
+import { useAppDispatch, useAppSelector } from '../../store/index.js';
+import { clearUser, selectAuthUser } from '../../store/slices/authSlice.js';
 import SuperuserOverview from './sections/SuperuserOverview.jsx';
 import UserManagementSection from './sections/UserManagementSection.jsx';
 import PropertyOperationsSection from './sections/PropertyOperationsSection.jsx';
@@ -40,12 +42,13 @@ const SECTIONS = {
 
 export default function SuperuserDashboardPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [active, goTo] = useDashboardSection('/superuser', 'superuser', KEYS, 'dashboard');
-  const user = getUser() || {};
+  const user = useAppSelector(selectAuthUser) || {};
   const Section = SECTIONS[active];
 
   const logout = () => {
-    clearUser(); // forget the token
+    dispatch(clearUser()); // clears Redux state + session storage
     navigate(logoutPathForRole('superuser'));
   };
 

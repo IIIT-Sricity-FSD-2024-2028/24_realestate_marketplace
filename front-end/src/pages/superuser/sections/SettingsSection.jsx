@@ -2,29 +2,42 @@
  * SettingsSection.jsx
  * Purpose: "System Configurations" form. The backend has no settings
  *          endpoint, so — exactly as on the old page — saving only validates
- *          and confirms; nothing is persisted (the toast says so honestly).
- * Inputs:  none.
+ *          and confirms; nothing is persisted to the server (the toast says
+ *          so honestly). All form state is now held in Redux so that tab
+ *          selections and entered values survive navigation between sections.
+ * Inputs:  Redux store (settingsSlice).
  * Outputs: settings tabs + form with validation.
  * API calls: none.
  */
-import { useState } from 'react';
 import { PageHeader } from '../../../components/common/ui.jsx';
 import { FormField, TextInput } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { isPositiveNumber } from '../../../utils/validation.js';
+import { useAppDispatch, useAppSelector } from '../../../store/index.js';
+import {
+  TABS,
+  clearErrors,
+  selectSettingsErrors,
+  selectSettingsForm,
+  selectSettingsTab,
+  setActiveTab,
+  setErrors,
+  setField,
+} from '../../../store/slices/settingsSlice.js';
 import './SettingsSection.css';
-
-const TABS = ['General Constants', 'Database Configs', 'Security Policies', 'API Keys'];
 
 export default function SettingsSection() {
   const { showToast } = useToast();
-  const [tab, setTab] = useState(TABS[0]);
-  const [form, setForm] = useState({ platformName: 'truEstate', maintenance: 'false', uploadSize: '25' });
-  const [errors, setErrors] = useState({});
+  const dispatch = useAppDispatch();
 
+  // ── Redux state (all settings state lives in the store) ────────────────
+  const tab = useAppSelector(selectSettingsTab);
+  const form = useAppSelector(selectSettingsForm);
+  const errors = useAppSelector(selectSettingsErrors);
+
+  /** Update a form field value in Redux (clears that field's error too). */
   const set = (field) => (value) => {
-    setForm((f) => ({ ...f, [field]: value }));
-    setErrors((e) => ({ ...e, [field]: undefined }));
+    dispatch(setField({ field, value }));
   };
 
   const save = () => {
@@ -32,11 +45,12 @@ export default function SettingsSection() {
     const found = {};
     if (!form.platformName.trim()) found.platformName = 'Platform Name is required';
     if (!isPositiveNumber(form.uploadSize)) found.uploadSize = 'Upload Size must be a valid positive number';
-    setErrors(found);
+    dispatch(setErrors(found));
     if (Object.keys(found).length) {
       showToast('Platform Name and Upload Size are required.', 'error');
       return;
     }
+    dispatch(clearErrors());
     showToast('Settings saved (demo only — not persisted to the backend)');
   };
 
@@ -61,7 +75,7 @@ export default function SettingsSection() {
                 role="tab"
                 aria-selected={tab === t}
                 className={'settings-nav-item' + (tab === t ? ' active' : '')}
-                onClick={() => setTab(t)}
+                onClick={() => dispatch(setActiveTab(t))}
               >
                 {t}
               </button>
