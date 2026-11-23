@@ -3,31 +3,44 @@
  * Purpose: Seller "Dashboard" — counts derived from this seller's own
  *          listings and completed deals (a brand-new account correctly shows 0),
  *          plus the four most recent listings.
- * Inputs (props): data – useSellerData(); account – profile (for the name)
+ * Inputs (props): data (optional, falls back to Redux); account – profile (for the name)
  * Outputs: welcome header, stat cards, recent listings table.
- * API calls: none (uses shared data).
+ * API calls: none (uses Redux state).
  */
+import { useSelector } from 'react-redux';
 import { Avatar, Badge, PageHeader, StatCard } from '../../../components/common/ui.jsx';
 import { formatCompactINR, formatINR } from '../../../utils/format.js';
 import { VERIFICATION_DISPLAY } from '../../../utils/constants.js';
-import { completedDeals } from '../useSellerData.js';
+import {
+  completedDeals,
+  selectSellerListings,
+  selectSellerPurchases,
+  selectSellerLoading,
+} from '../../../store/slices/sellerSlice.js';
 
-export default function SellerOverview({ data, account }) {
-  const { listings, purchases } = data;
+export default function SellerOverview({ data, account = {} }) {
+  const reduxListings = useSelector(selectSellerListings);
+  const reduxPurchases = useSelector(selectSellerPurchases);
+  const reduxLoading = useSelector(selectSellerLoading);
+
+  const listings = data?.listings || reduxListings;
+  const purchases = data?.purchases || reduxPurchases;
+  const loading = data?.loading?.listings !== undefined ? data.loading.listings : reduxLoading.listings;
+
   const sold = completedDeals(purchases, 'sale');
   const closedIds = new Set([...sold, ...completedDeals(purchases, 'rent')].map((d) => String(d.propertyId)));
   // "Active" = approved and still on the market.
   const active = listings.filter((p) => p.verificationStatus === 'verified' && !closedIds.has(String(p.id)));
   const pending = listings.filter((p) => p.verificationStatus === 'pending');
   const revenue = sold.reduce((sum, d) => sum + (d.agreedPrice || 0), 0);
-  const loading = data.loading.listings;
+  const fullName = account?.fullName || 'Seller';
 
   return (
     <>
       <PageHeader
         title="Seller Dashboard"
-        subtitle={'Welcome back, ' + account.fullName + "! Here's your overview"}
-        actions={<Avatar name={account.fullName} color="var(--brand)" textColor="#000" />}
+        subtitle={'Welcome back, ' + fullName + "! Here's your overview"}
+        actions={<Avatar name={fullName} color="var(--brand)" textColor="#000" />}
       />
       <div className="content">
         <div className="stats-grid">
