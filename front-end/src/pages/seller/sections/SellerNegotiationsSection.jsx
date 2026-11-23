@@ -3,21 +3,35 @@
  * Purpose: "Negotiate" — buyer offers on this seller's approved listings.
  *          The seller can accept (creates a purchase), counter, or reject
  *          with an optional reason. An empty list explains *why* it is empty.
- * Inputs (props): data – useSellerData()
+ * Inputs (props): data (optional, falls back to Redux)
  * Outputs: filter pills, offer cards and the counter-offer dialog.
- * API calls: PATCH /negotiations/:id/accept | /counter | /reject,
- *            GET /negotiations/seller-queue (via data.reload)
+ * API calls: PATCH /negotiations/:id/accept | /counter | /reject (via Redux thunks)
  */
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge, Card, FilterPills, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import Modal from '../../../components/common/Modal.jsx';
 import Icon from '../../../components/common/Icon.jsx';
 import { FormField, TextInput } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { negotiationsApi } from '../../../api/services.js';
 import { formatCompactINR, joinPlace } from '../../../utils/format.js';
 import { isPositiveNumber, toNumber } from '../../../utils/validation.js';
+import {
+  selectSellerNegotiations,
+  selectSellerListings,
+  selectSellerLoading,
+  selectSellerErrors,
+  selectSellerNegotiationsFilter,
+  selectCounteringNegotiation,
+  setNegotiationsFilter,
+  openCounterModal,
+  closeCounterModal,
+  acceptSellerOffer,
+  counterSellerOffer,
+  rejectSellerOffer,
+  reloadSellerResource,
+} from '../../../store/slices/sellerSlice.js';
 
 const STATUS_META = {
   pending: { tone: 'orange', text: '⏳ Pending — awaiting your response' },
@@ -73,27 +87,55 @@ function EmptyExplanation({ total, filter, listings }) {
 }
 
 export default function SellerNegotiationsSection({ data }) {
+  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { prompt } = useDialog();
-  const [filter, setFilter] = useState('all');
-  const [countering, setCountering] = useState(null); // negotiation in the counter dialog
+
+  const reduxNegotiations = useSelector(selectSellerNegotiations);
+  const reduxListings = useSelector(selectSellerListings);
+  const reduxLoading = useSelector(selectSellerLoading);
+  const reduxErrors = useSelector(selectSellerErrors);
+  const reduxFilter = useSelector(selectSellerNegotiationsFilter);
+  const reduxCountering = useSelector(selectCounteringNegotiation);
+
+  const negotiations = data?.negotiations || reduxNegotiations;
+  const listings = data?.listings || reduxListings;
+  const loading = data?.loading || reduxLoading;
+  const errors = data?.errors || reduxErrors;
+  const filter = reduxFilter || 'all';
+  const countering = reduxCountering;
+
   const [amount, setAmount] = useState('');
   const [amountError, setAmountError] = useState('');
   const [busyId, setBusyId] = useState(null);
-  const list = filter === 'all' ? data.negotiations : data.negotiations.filter((n) => negBucket(n.status) === filter);
+  const list = filter === 'all' ? negotiations : negotiations.filter((n) => negBucket(n.status) === filter);
 
   /** Runs an action then refreshes offers (and deals, since accept creates one). */
-  const run = async (id, call, success, failure) => {
+  const run = async (id, thunkAction, success, failure) => {
     setBusyId(id);
     try {
-      await call();
-      showToast(success);
-      await Promise.all([data.reload('negotiations'), data.reload('purchases')]);
+      if (data?.reload) {
+        await thunkAction();
+        showToast(success);
+        await Promise.all([data.reload('negotiations'), data.reload('purchases')]);
+      } else {
+        await dispatch(thunkAction()).unwrap();
+        showToast(success);
+      }
     } catch (err) {
       showToast(err.message || failure, 'error');
     } finally {
       setBusyId(null);
     }
+  };
+
+  const accept = (n) => {
+    run(
+      n.id,
+      () => acceptSellerOffer(n.id),
+      'Offer accepted — purchase created',
+      'Failed to accept offer',
+    );
   };
 
   const reject = async (n) => {
@@ -105,22 +147,26 @@ export default function SellerNegotiationsSection({ data }) {
       danger: true,
     });
     if (reason === null) return;
-    run(n.id, () => negotiationsApi.reject(n.id, reason.trim()), 'Offer rejected', 'Failed to reject offer');
+    run(
+      n.id,
+      () => rejectSellerOffer({ id: n.id, reason: reason.trim() }),
+      'Offer rejected',
+      'Failed to reject offer',
+    );
   };
 
   const submitCounter = (event) => {
     event.preventDefault();
-    // Old tvValidateCounterOffer: required, positive number.
     if (!isPositiveNumber(amount)) {
       setAmountError('Counter Offer Amount must be a valid positive number');
       return;
     }
     const value = toNumber(amount);
     const n = countering;
-    setCountering(null);
+    dispatch(closeCounterModal());
     run(
       n.id,
-      () => negotiationsApi.counter(n.id, value),
+      () => counterSellerOffer({ id: n.id, amount: value }),
       'Counter offer of ' + formatCompactINR(value) + ' submitted successfully!',
       'Failed to submit counter offer',
     );
@@ -134,7 +180,7 @@ export default function SellerNegotiationsSection({ data }) {
         <FilterPills
           label="Negotiation status"
           value={filter}
-          onChange={setFilter}
+          onChange={(val) => dispatch(setNegotiationsFilter(val))}
           options={[
             { key: 'all', label: 'All' },
             { key: 'ongoing', label: 'Ongoing' },
@@ -142,10 +188,10 @@ export default function SellerNegotiationsSection({ data }) {
             { key: 'rejected', label: 'Rejected' },
           ]}
         />
-        <StatusLine loading={data.loading.negotiations} error={data.errors.negotiations} />
-        {!data.loading.negotiations && !data.errors.negotiations && list.length === 0 && (
+        <StatusLine loading={loading.negotiations} error={errors.negotiations} />
+        {!loading.negotiations && !errors.negotiations && list.length === 0 && (
           <Card className="center text-secondary">
-            <EmptyExplanation total={data.negotiations.length} filter={filter} listings={data.listings} />
+            <EmptyExplanation total={negotiations.length} filter={filter} listings={listings} />
           </Card>
         )}
         {list.map((n) => {
@@ -191,7 +237,7 @@ export default function SellerNegotiationsSection({ data }) {
                     className="btn btn-outline-green"
                     disabled={busyId === n.id}
                     onClick={() => {
-                      setCountering(n);
+                      dispatch(openCounterModal(n));
                       setAmount('');
                       setAmountError('');
                     }}
@@ -203,7 +249,7 @@ export default function SellerNegotiationsSection({ data }) {
                       type="button"
                       className="btn btn-primary"
                       disabled={busyId === n.id}
-                      onClick={() => run(n.id, () => negotiationsApi.accept(n.id), 'Offer accepted — purchase created', 'Failed to accept offer')}
+                      onClick={() => accept(n)}
                     >
                       Accept Offer
                     </button>
@@ -218,7 +264,7 @@ export default function SellerNegotiationsSection({ data }) {
         })}
       </div>
 
-      <Modal open={!!countering} onClose={() => setCountering(null)} title="Make Counter Offer">
+      <Modal open={!!countering} onClose={() => dispatch(closeCounterModal())} title="Make Counter Offer">
         {countering && (
           <form onSubmit={submitCounter} noValidate>
             <div className="inset-box mb-3">

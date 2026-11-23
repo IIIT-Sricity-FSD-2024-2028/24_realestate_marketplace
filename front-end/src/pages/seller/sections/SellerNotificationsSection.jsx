@@ -2,19 +2,25 @@
  * SellerNotificationsSection.jsx
  * Purpose: Seller "Notifications" — real events from this seller's data:
  *          listing approved / pending / rejected, new offers, deal progress,
- *          commission due. (The old page showed five invented messages.)
- * Inputs (props): data – useSellerData()
+ *          commission due.
+ * Inputs (props): data (optional, falls back to Redux)
  * Outputs: ActivityFeed.
- * API calls: none (uses shared data, refreshed every 15 s).
+ * API calls: none (uses Redux state).
  */
+import { useSelector } from 'react-redux';
 import { PageHeader } from '../../../components/common/ui.jsx';
 import ActivityFeed from '../../../components/notifications/ActivityFeed.jsx';
 import { formatCompactINR, formatINR } from '../../../utils/format.js';
+import {
+  selectSellerListings,
+  selectSellerNegotiations,
+  selectSellerPurchases,
+} from '../../../store/slices/sellerSlice.js';
 
 /** Builds feed items from listings, offers and deals (exported for tests). */
-export function buildSellerFeed({ listings, negotiations, purchases }) {
+export function buildSellerFeed({ listings = [], negotiations = [], purchases = [] } = {}) {
   const items = [];
-  listings.forEach((l) => {
+  (listings || []).forEach((l) => {
     if (l.verificationStatus === 'verified')
       items.push({
         id: 'l-' + l.id,
@@ -43,7 +49,7 @@ export function buildSellerFeed({ listings, negotiations, purchases }) {
         time: l.updatedAt || l.createdAt,
       });
   });
-  negotiations.forEach((n) => {
+  (negotiations || []).forEach((n) => {
     if (n.status === 'pending')
       items.push({
         id: 'n-' + n.id,
@@ -64,7 +70,7 @@ export function buildSellerFeed({ listings, negotiations, purchases }) {
         time: n.updatedAt,
       });
   });
-  purchases.forEach((p) => {
+  (purchases || []).forEach((p) => {
     if (p.awaitingCommission)
       items.push({
         id: 'p-' + p.id,
@@ -98,11 +104,19 @@ export function buildSellerFeed({ listings, negotiations, purchases }) {
 }
 
 export default function SellerNotificationsSection({ data }) {
+  const reduxListings = useSelector(selectSellerListings);
+  const reduxNegotiations = useSelector(selectSellerNegotiations);
+  const reduxPurchases = useSelector(selectSellerPurchases);
+
+  const listings = data?.listings || reduxListings;
+  const negotiations = data?.negotiations || reduxNegotiations;
+  const purchases = data?.purchases || reduxPurchases;
+
   return (
     <>
       <PageHeader title="Notifications" />
       <div className="content">
-        <ActivityFeed items={buildSellerFeed(data)} emptyText="Listing reviews, buyer offers and deal updates will appear here." />
+        <ActivityFeed items={buildSellerFeed({ listings, negotiations, purchases })} emptyText="Listing reviews, buyer offers and deal updates will appear here." />
       </div>
     </>
   );

@@ -9,12 +9,25 @@ import sellerReducer, {
   removeListing,
   setSelectedListing,
   clearSelectedListing,
+  setListingsFilter,
+  setNegotiationsFilter,
+  setPaymentsFilter,
+  setBillingCycle,
+  setCounteringNegotiation,
+  openCounterModal,
+  closeCounterModal,
+  setQuotaMessage,
+  clearQuotaMessage,
   resetSellerState,
   fetchSellerListings,
   fetchSellerNegotiations,
   fetchSellerPurchases,
   fetchSellerBilling,
   deleteSellerListing,
+  acceptSellerOffer,
+  counterSellerOffer,
+  rejectSellerOffer,
+  cancelSellerSubscription,
   reloadSellerResource,
   reloadAllSellerData,
   completedDeals,
@@ -26,6 +39,12 @@ import sellerReducer, {
   selectSellerLoading,
   selectSellerErrors,
   selectSelectedListing,
+  selectSellerListingsFilter,
+  selectSellerNegotiationsFilter,
+  selectSellerPaymentsFilter,
+  selectSellerBillingCycle,
+  selectCounteringNegotiation,
+  selectSellerQuotaMessage,
   selectSellerStats,
 } from '../store/slices/sellerSlice.js';
 import * as sellerActions from '../store/actions/sellerActions.js';
@@ -42,6 +61,9 @@ vi.mock('../api/services.js', () => ({
   },
   negotiationsApi: {
     sellerQueue: vi.fn(),
+    accept: vi.fn(),
+    counter: vi.fn(),
+    reject: vi.fn(),
   },
   purchasesApi: {
     sellerQueue: vi.fn(),
@@ -49,6 +71,7 @@ vi.mock('../api/services.js', () => ({
   billingApi: {
     catalog: vi.fn(),
     summary: vi.fn(),
+    cancelSubscription: vi.fn(),
   },
 }));
 
@@ -83,6 +106,12 @@ describe('sellerSlice reducers and actions', () => {
         billing: null,
       },
       selectedListing: null,
+      listingsFilter: 'all',
+      negotiationsFilter: 'all',
+      paymentsFilter: 'all',
+      billingCycle: 'monthly',
+      counteringNegotiation: null,
+      quotaMessage: '',
     });
   });
 
@@ -109,12 +138,37 @@ describe('sellerSlice reducers and actions', () => {
     state = sellerReducer(state, clearSelectedListing());
     expect(state.selectedListing).toBeNull();
 
+    state = sellerReducer(state, setListingsFilter('approved'));
+    expect(state.listingsFilter).toBe('approved');
+
+    state = sellerReducer(state, setNegotiationsFilter('ongoing'));
+    expect(state.negotiationsFilter).toBe('ongoing');
+
+    state = sellerReducer(state, setPaymentsFilter('completed'));
+    expect(state.paymentsFilter).toBe('completed');
+
+    state = sellerReducer(state, setBillingCycle('quarterly'));
+    expect(state.billingCycle).toBe('quarterly');
+
+    state = sellerReducer(state, openCounterModal({ id: 'n1', offerAmount: 5000 }));
+    expect(state.counteringNegotiation).toEqual({ id: 'n1', offerAmount: 5000 });
+
+    state = sellerReducer(state, closeCounterModal());
+    expect(state.counteringNegotiation).toBeNull();
+
+    state = sellerReducer(state, setQuotaMessage('Limit reached'));
+    expect(state.quotaMessage).toBe('Limit reached');
+
+    state = sellerReducer(state, clearQuotaMessage());
+    expect(state.quotaMessage).toBe('');
+
     state = sellerReducer(state, removeListing('prop-1'));
     expect(state.listings).toHaveLength(0);
 
     state = sellerReducer(state, resetSellerState());
     expect(state.negotiations).toHaveLength(0);
     expect(state.purchases).toHaveLength(0);
+    expect(state.listingsFilter).toBe('all');
   });
 
   it('selectors read values accurately from root state', () => {
@@ -128,6 +182,12 @@ describe('sellerSlice reducers and actions', () => {
         loading: { listings: false, negotiations: false, purchases: false, billing: false },
         errors: { listings: 'err1', negotiations: null, purchases: null, billing: null },
         selectedListing: { id: 'l1' },
+        listingsFilter: 'pending',
+        negotiationsFilter: 'completed',
+        paymentsFilter: 'ongoing',
+        billingCycle: 'yearly',
+        counteringNegotiation: { id: 'n1' },
+        quotaMessage: 'Quota full',
       },
     };
 
@@ -139,6 +199,12 @@ describe('sellerSlice reducers and actions', () => {
     expect(selectSellerLoading(rootState).listings).toBe(false);
     expect(selectSellerErrors(rootState).listings).toBe('err1');
     expect(selectSelectedListing(rootState)).toEqual({ id: 'l1' });
+    expect(selectSellerListingsFilter(rootState)).toBe('pending');
+    expect(selectSellerNegotiationsFilter(rootState)).toBe('completed');
+    expect(selectSellerPaymentsFilter(rootState)).toBe('ongoing');
+    expect(selectSellerBillingCycle(rootState)).toBe('yearly');
+    expect(selectCounteringNegotiation(rootState)).toEqual({ id: 'n1' });
+    expect(selectSellerQuotaMessage(rootState)).toBe('Quota full');
   });
 });
 
@@ -276,6 +342,55 @@ describe('sellerSlice async thunks and extraReducers', () => {
     expect(state.listings[0].id).toBe('p2');
   });
 
+  it('accepts seller offer and updates negotiations and purchases', async () => {
+    negotiationsApi.accept.mockResolvedValueOnce({ data: { status: 'accepted' } });
+    negotiationsApi.sellerQueue.mockResolvedValue({ data: { items: [] } });
+    purchasesApi.sellerQueue.mockResolvedValue({ data: { items: [{ id: 'pur1' }] } });
+
+    const store = createTestStore();
+    await store.dispatch(acceptSellerOffer('n1'));
+
+    expect(negotiationsApi.accept).toHaveBeenCalledWith('n1');
+    const state = store.getState().seller;
+    expect(state.purchases).toEqual([{ id: 'pur1' }]);
+  });
+
+  it('counters seller offer and updates negotiations', async () => {
+    negotiationsApi.counter.mockResolvedValueOnce({ data: { status: 'countered' } });
+    negotiationsApi.sellerQueue.mockResolvedValue({ data: { items: [{ id: 'n1', counterAmount: 5000000 }] } });
+
+    const store = createTestStore();
+    await store.dispatch(counterSellerOffer({ id: 'n1', amount: 5000000 }));
+
+    expect(negotiationsApi.counter).toHaveBeenCalledWith('n1', 5000000);
+    const state = store.getState().seller;
+    expect(state.negotiations[0].counterAmount).toBe(5000000);
+  });
+
+  it('rejects seller offer and refreshes negotiations', async () => {
+    negotiationsApi.reject.mockResolvedValueOnce({ data: { status: 'rejected' } });
+    negotiationsApi.sellerQueue.mockResolvedValue({ data: { items: [] } });
+
+    const store = createTestStore();
+    await store.dispatch(rejectSellerOffer({ id: 'n1', reason: 'Too low' }));
+
+    expect(negotiationsApi.reject).toHaveBeenCalledWith('n1', 'Too low');
+  });
+
+  it('cancels seller subscription and updates billing', async () => {
+    billingApi.cancelSubscription.mockResolvedValueOnce({ message: 'Cancelled' });
+    billingApi.catalog.mockResolvedValue({ data: {} });
+    billingApi.summary.mockResolvedValue({ data: { plan: { tier: 'free' } } });
+    propertiesApi.mine.mockResolvedValue({ data: [] });
+    purchasesApi.sellerQueue.mockResolvedValue({ data: { items: [] } });
+
+    const store = createTestStore();
+    const result = await store.dispatch(cancelSellerSubscription());
+
+    expect(billingApi.cancelSubscription).toHaveBeenCalled();
+    expect(result.payload).toBe('Cancelled');
+  });
+
   it('reloadSellerResource and reloadAllSellerData dispatch correctly', async () => {
     propertiesApi.mine.mockResolvedValue({ data: [{ id: 'p1' }] });
     negotiationsApi.sellerQueue.mockResolvedValue({ data: { items: [] } });
@@ -310,6 +425,10 @@ describe('sellerActions exports', () => {
     expect(sellerActions.fetchSellerPurchases).toBeDefined();
     expect(sellerActions.fetchSellerBilling).toBeDefined();
     expect(sellerActions.deleteSellerListing).toBeDefined();
+    expect(sellerActions.acceptSellerOffer).toBeDefined();
+    expect(sellerActions.counterSellerOffer).toBeDefined();
+    expect(sellerActions.rejectSellerOffer).toBeDefined();
+    expect(sellerActions.cancelSellerSubscription).toBeDefined();
     expect(sellerActions.reloadSellerResource).toBeDefined();
     expect(sellerActions.reloadAllSellerData).toBeDefined();
     expect(sellerActions.setListings).toBeDefined();
@@ -320,6 +439,15 @@ describe('sellerActions exports', () => {
     expect(sellerActions.removeListing).toBeDefined();
     expect(sellerActions.setSelectedListing).toBeDefined();
     expect(sellerActions.clearSelectedListing).toBeDefined();
+    expect(sellerActions.setListingsFilter).toBeDefined();
+    expect(sellerActions.setNegotiationsFilter).toBeDefined();
+    expect(sellerActions.setPaymentsFilter).toBeDefined();
+    expect(sellerActions.setBillingCycle).toBeDefined();
+    expect(sellerActions.setCounteringNegotiation).toBeDefined();
+    expect(sellerActions.openCounterModal).toBeDefined();
+    expect(sellerActions.closeCounterModal).toBeDefined();
+    expect(sellerActions.setQuotaMessage).toBeDefined();
+    expect(sellerActions.clearQuotaMessage).toBeDefined();
     expect(sellerActions.resetSellerState).toBeDefined();
   });
 });

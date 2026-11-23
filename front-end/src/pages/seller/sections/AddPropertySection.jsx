@@ -5,12 +5,13 @@
  *          uploads the chosen photos (public) and ownership documents
  *          (private, admins only). A full plan (HTTP 402) opens the upgrade
  *          dialog while keeping the form filled in.
- * Inputs (props): data – useSellerData(); goTo(section)
+ * Inputs (props): data (optional, falls back to Redux); goTo(section)
  * Outputs: the multi-card form.
  * API calls: POST /properties, POST /properties/:id/images (multipart),
  *            POST /properties/:id/documents (multipart)
  */
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card } from '../../../components/common/ui.jsx';
 import { FormField, TextInput } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
@@ -20,6 +21,14 @@ import { isPositiveNumber, toNumber } from '../../../utils/validation.js';
 import { PROPERTY_TYPES, SERVICE_CITIES, SERVICE_CITY_STATE } from '../../../utils/constants.js';
 import { capitalize } from '../../../utils/format.js';
 import { QuotaNotice, QuotaUpgradeModal } from '../components/QuotaNotice.jsx';
+import {
+  selectSellerBilling,
+  selectSellerListings,
+  selectSellerQuotaMessage,
+  setQuotaMessage,
+  clearQuotaMessage,
+  reloadSellerResource,
+} from '../../../store/slices/sellerSlice.js';
 
 const EMPTY = {
   title: '',
@@ -70,14 +79,23 @@ export function validateNewProperty(f) {
 }
 
 export default function AddPropertySection({ data, goTo }) {
+  const dispatch = useDispatch();
   const { showToast } = useToast();
+
+  const reduxBilling = useSelector(selectSellerBilling);
+  const reduxListings = useSelector(selectSellerListings);
+  const reduxQuotaMessage = useSelector(selectSellerQuotaMessage);
+
+  const billing = data?.billing || reduxBilling;
+  const listings = data?.listings || reduxListings;
+  const quotaMessage = reduxQuotaMessage;
+
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [images, setImages] = useState(null); // FileList of photos
   const [documents, setDocuments] = useState(null); // FileList of documents
   const [fileInputsKey, setFileInputsKey] = useState(0); // bump to clear <input type=file>
   const [submitting, setSubmitting] = useState(false);
-  const [quotaMessage, setQuotaMessage] = useState(''); // 402 dialog text
 
   const set = (field) => (value) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -143,30 +161,36 @@ export default function AddPropertySection({ data, goTo }) {
       setImages(null);
       setDocuments(null);
       setFileInputsKey((k) => k + 1);
-      data.reload('listings');
-      data.reload('billing');
-      goTo('my-listings');
+
+      if (data?.reload) {
+        data.reload('listings');
+        data.reload('billing');
+      } else {
+        dispatch(reloadSellerResource('listings'));
+        dispatch(reloadSellerResource('billing'));
+      }
+      if (goTo) goTo('my-listings');
     } catch (err) {
       // 402 = valid submission, but the plan is full → actionable dialog.
-      if (err.status === 402) setQuotaMessage(err.message);
+      if (err.status === 402) dispatch(setQuotaMessage(err.message));
       else showToast('⚠️ ' + errorText(err, 'Failed to submit property'), 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const plan = data.billing && data.billing.plan;
+  const plan = billing && billing.plan;
   return (
     <div className="content">
       <div className="row-center gap-sm">
-        <button type="button" className="icon-btn" onClick={() => goTo('my-listings')} aria-label="Back to My Listings">
+        <button type="button" className="icon-btn" onClick={() => goTo && goTo('my-listings')} aria-label="Back to My Listings">
           ←
         </button>
         <h1 className="page-title mb-0">Add New Property</h1>
       </div>
       <p className="page-subtitle mb-4">Fill in the details to create a new listing</p>
       {/* Plan quota shown before the form, not only after a rejection. */}
-      <QuotaNotice billing={data.billing} listings={data.listings} onUpgrade={() => goTo('billing')} />
+      <QuotaNotice billing={billing} listings={listings} onUpgrade={() => goTo && goTo('billing')} />
 
       <form onSubmit={submit} noValidate>
         <Card>
@@ -356,7 +380,7 @@ export default function AddPropertySection({ data, goTo }) {
         </Card>
 
         <div className="button-row">
-          <button type="button" className="btn btn-outline" onClick={() => goTo('my-listings')}>
+          <button type="button" className="btn btn-outline" onClick={() => goTo && goTo('my-listings')}>
             Cancel
           </button>
           <button type="submit" className="btn btn-primary" disabled={submitting}>
@@ -369,10 +393,10 @@ export default function AddPropertySection({ data, goTo }) {
         open={!!quotaMessage}
         message={quotaMessage}
         planName={plan && plan.planName}
-        onClose={() => setQuotaMessage('')}
+        onClose={() => dispatch(clearQuotaMessage())}
         onUpgrade={() => {
-          setQuotaMessage('');
-          goTo('billing');
+          dispatch(clearQuotaMessage());
+          if (goTo) goTo('billing');
         }}
       />
     </div>
