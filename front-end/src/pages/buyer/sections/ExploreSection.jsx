@@ -2,15 +2,26 @@
  * ExploreSection.jsx
  * Purpose: Buyer "Explore" — search filters, real category counts, the
  *          "Popular Owner Properties" strip and the full recommendations list
- *          (promoted listings first). Everything comes from GET /properties.
- * Inputs (props): data – useBuyerData(); actions – listing actions
+ *          (promoted listings first). Data sourced directly from Redux store.
+ * Inputs (props): data (optional), actions (optional)
  * Outputs: the browse page.
- * API calls: none directly (catalogue loaded by useBuyerData).
+ * API calls: none directly (catalogue loaded via Redux fetchBuyerCatalog).
  */
 import { useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { EmptyState, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import Icon from '../../../components/common/Icon.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
+import {
+  selectBuyerCatalog,
+  selectBuyerLoading,
+  selectBuyerErrors,
+  selectBuyerShortlist,
+  setDetailCard,
+  openContactModal,
+  toggleShortlist as toggleShortlistAction,
+  savedMatches,
+} from '../../../store/slices/buyerSlice.js';
 import './ExploreSection.css';
 
 const EMPTY = { listingType: '', location: '', price: '', beds: '', ptype: '' };
@@ -38,8 +49,17 @@ export function filterCatalog(catalog, f) {
 
 /** Small card for the horizontal "popular" strip. */
 function PopularCard({ card, onOpen, showType }) {
+  const dispatch = useDispatch();
+  const handleOpen = () => {
+    if (onOpen) {
+      onOpen(card);
+    } else {
+      dispatch(setDetailCard(card));
+    }
+  };
+
   return (
-    <button type="button" className="popular-card" onClick={() => onOpen(card)}>
+    <button type="button" className="popular-card" onClick={handleOpen}>
       <div className="popular-media">
         <img src={card.img} alt={card.title} loading="lazy" />
         <span className="popular-photos">
@@ -61,10 +81,50 @@ function PopularCard({ card, onOpen, showType }) {
 
 /** Wide recommendation row with price, specs and quick actions. */
 export function ListingRow({ card, actions }) {
-  const shortlisted = actions.isShortlisted(card);
+  const dispatch = useDispatch();
+  const { showToast } = useToast();
+  const shortlist = useSelector(selectBuyerShortlist);
+
+  const shortlisted = actions?.isShortlisted
+    ? actions.isShortlisted(card)
+    : shortlist.some((e) => savedMatches(e, card));
+
+  const handleShortlist = () => {
+    if (actions?.shortlist) {
+      actions.shortlist(card);
+    } else {
+      dispatch(toggleShortlistAction(card));
+      showToast(shortlisted ? 'Removed from Shortlist' : '♡ ' + card.title + ' added to Shortlist!');
+    }
+  };
+
+  const handleOpen = () => {
+    if (actions?.open) {
+      actions.open(card);
+    } else {
+      dispatch(setDetailCard(card));
+    }
+  };
+
+  const handlePhone = () => {
+    if (actions?.phone) {
+      actions.phone(card);
+    } else {
+      showToast("Phone numbers aren't shared publicly — request a site visit and the admin team will connect you.");
+    }
+  };
+
+  const handleContact = () => {
+    if (actions?.contact) {
+      actions.contact(card);
+    } else {
+      dispatch(openContactModal(card));
+    }
+  };
+
   return (
     <article className="listing-row">
-      <button type="button" className="listing-row-media" onClick={() => actions.open(card)} aria-label={'View ' + card.title}>
+      <button type="button" className="listing-row-media" onClick={handleOpen} aria-label={'View ' + card.title}>
         <img src={card.img} alt="" loading="lazy" />
         {card.isFeatured && <span className="listing-tag listing-tag-featured">★ {String(card.featuredTier || 'featured').toUpperCase()}</span>}
         {card.popular && <span className="popular-flag">✓ POPULAR</span>}
@@ -74,7 +134,7 @@ export function ListingRow({ card, actions }) {
           <button
             type="button"
             className={'heart-btn' + (shortlisted ? ' on' : '')}
-            onClick={() => actions.shortlist(card)}
+            onClick={handleShortlist}
             aria-pressed={shortlisted}
             aria-label={(shortlisted ? 'Remove ' : 'Add ') + card.title + (shortlisted ? ' from' : ' to') + ' shortlist'}
           >
@@ -82,7 +142,7 @@ export function ListingRow({ card, actions }) {
           </button>
           <div>
             <h3 className="listing-row-title">
-              <button type="button" className="link-button" onClick={() => actions.open(card)}>
+              <button type="button" className="link-button" onClick={handleOpen}>
                 {card.title}
               </button>
             </h3>
@@ -121,10 +181,10 @@ export function ListingRow({ card, actions }) {
           <div className="text-secondary tiny">{card.perSqft}</div>
         </div>
         <div className="stack-sm">
-          <button type="button" className="btn btn-outline-green btn-sm" onClick={() => actions.phone(card)}>
+          <button type="button" className="btn btn-outline-green btn-sm" onClick={handlePhone}>
             <Icon name="phone" size="0.9rem" /> Get Phone No.
           </button>
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => actions.contact(card)}>
+          <button type="button" className="btn btn-primary btn-sm" onClick={handleContact}>
             <Icon name="chat" size="0.9rem" /> Contact Property Manager
           </button>
         </div>
@@ -135,12 +195,20 @@ export function ListingRow({ card, actions }) {
 
 export default function ExploreSection({ data, actions }) {
   const { showToast } = useToast();
-  const [form, setForm] = useState(EMPTY); // dropdown values
-  const [applied, setApplied] = useState(EMPTY); // filters in effect
-  const [category, setCategory] = useState(null); // 'budget' quick filter
-  const [showAll, setShowAll] = useState(false); // "See all Properties" in the strip
+  const reduxCatalog = useSelector(selectBuyerCatalog);
+  const reduxLoading = useSelector(selectBuyerLoading);
+  const reduxErrors = useSelector(selectBuyerErrors);
+
+  const catalog = data?.catalog || reduxCatalog;
+  const loading = data?.loading || reduxLoading;
+  const errors = data?.errors || reduxErrors;
+
+  // Local component-specific filter state (not shared globally)
+  const [form, setForm] = useState(EMPTY);
+  const [applied, setApplied] = useState(EMPTY);
+  const [category, setCategory] = useState(null);
+  const [showAll, setShowAll] = useState(false);
   const stripRef = useRef(null);
-  const catalog = data.catalog;
 
   // Location / type options come from what is actually listed.
   const locations = useMemo(() => [...new Set(catalog.map((c) => c.location).filter(Boolean))].sort(), [catalog]);
@@ -151,6 +219,7 @@ export default function ExploreSection({ data, actions }) {
     if (category === 'budget') list = list.filter((p) => p.price / 100000 < 50); // under ₹50 Lac
     return list;
   }, [catalog, applied, category]);
+
   // Promoted listings first (what the seller paid for); ties keep API order.
   const ordered = useMemo(() => [...visible].sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured)), [visible]);
   const strip = showAll ? catalog : visible.filter((p) => p.popular);
@@ -290,18 +359,18 @@ export default function ExploreSection({ data, actions }) {
             See all Properties →
           </button>
         </div>
-        <StatusLine loading={data.loading.catalog && !catalog.length} loadingText="Loading listings…" error={!catalog.length ? data.errors.catalog : ''} />
+        <StatusLine loading={loading.catalog && !catalog.length} loadingText="Loading listings…" error={!catalog.length ? errors.catalog : ''} />
         <div className="popular-strip">
           {strip.length
-            ? strip.map((card) => <PopularCard key={card.id} card={card} onOpen={actions.open} showType={showAll} />)
-            : !data.loading.catalog && <p className="text-secondary">No popular properties match the current filters.</p>}
+            ? strip.map((card) => <PopularCard key={card.id} card={card} onOpen={actions?.open} showType={showAll} />)
+            : !loading.catalog && <p className="text-secondary">No popular properties match the current filters.</p>}
         </div>
 
         <div className="space-between mb-3">
           <h2 className="section-title-sm mb-0">Recommendations</h2>
           <span className="text-secondary small">Promoted listings first, then newest</span>
         </div>
-        {!data.loading.catalog && ordered.length === 0 ? (
+        {!loading.catalog && ordered.length === 0 ? (
           <EmptyState
             icon="🔍"
             title="No properties found"
