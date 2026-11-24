@@ -1,26 +1,21 @@
 /**
  * OwnedPropertiesSection.jsx
  * Purpose: "Purchased Properties" (mode="sale") and "Rented Properties"
- *          (mode="rent") — the buyer's completed deals.
- * Inputs (props): data (optional), mode – 'sale' | 'rent'
+ *          (mode="rent") — the buyer's completed deals. (The old Rented page
+ *          showed two invented leases; both pages now use real deals, and the
+ *          deal reference is the real purchase id instead of a made-up number.)
+ * Inputs (props): data – useBuyerData(); mode – 'sale' | 'rent'
  * Outputs: header with total + one card per completed deal.
- * API calls: none directly (all state managed via Redux).
+ * API calls: none (uses GET /purchases/mine via shared data).
  */
-import { useSelector } from 'react-redux';
 import { Badge, EmptyState, PageHeader } from '../../../components/common/ui.jsx';
 import { formatCompactINR, joinPlace, shortDate } from '../../../utils/format.js';
 import { FALLBACK_PROPERTY_IMAGE } from '../../../utils/constants.js';
-import { selectBuyerPurchases } from '../../../store/slices/buyerSlice.js';
-import './OwnedPropertiesSection.css';
 
 export default function OwnedPropertiesSection({ data, mode }) {
   const rent = mode === 'rent';
-  const reduxPurchases = useSelector(selectBuyerPurchases);
-  const purchases = data?.purchases || reduxPurchases;
-
   // Older deals may not carry propertyListingType; those count as purchases.
-  const deals = purchases.filter((p) => p.dealStatus === 'completed' && (rent ? p.propertyListingType === 'rent' : p.propertyListingType !== 'rent'));
-
+  const deals = data.purchases.filter((p) => p.dealStatus === 'completed' && (rent ? p.propertyListingType === 'rent' : p.propertyListingType !== 'rent'));
   return (
     <>
       <PageHeader

@@ -10,14 +10,14 @@
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Icon from '../components/common/Icon.jsx';
 import { FormField, PasswordInput, PasswordMatchHint, TextInput } from '../components/forms/FormControls.jsx';
 import ForgotPasswordModal from '../components/auth/ForgotPasswordModal.jsx';
 import { useToast } from '../components/feedback/ToastProvider.jsx';
-import { authApi } from '../api/services.js';
-import { DASHBOARD_BY_ROLE, setUser } from '../auth/session.js';
+import { DASHBOARD_BY_ROLE } from '../auth/session.js';
+import { login, register } from '../store/actions/apiActions.js';
 import { validateAuthForm } from '../utils/validation.js';
-import './AuthPage.css';
 
 // The two account types a member of the public can sign in as.
 const ROLES = [
@@ -27,11 +27,11 @@ const ROLES = [
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { showToast } = useToast();
   const [tab, setTab] = useState('login'); // 'login' | 'signup'
   const [role, setRole] = useState('buyer'); // selected account type
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
-  const [remember, setRemember] = useState(true); // seed new tabs with this login
   const [submitting, setSubmitting] = useState(false);
   const [problem, setProblem] = useState(''); // inline message under the form
   const [forgotOpen, setForgotOpen] = useState(false);
@@ -56,22 +56,23 @@ export default function AuthPage() {
       // 2) Real backend auth — returns { accessToken, user }.
       const email = form.email.trim();
       const result = isSignup
-        ? await authApi.register({ name: form.name.trim(), email, password: form.password, userType: role })
-        : await authApi.login({ email, password: form.password, userType: role });
-      const account = result.data.user;
+        ? await dispatch(register({ name: form.name.trim(), email, password: form.password, userType: role })).unwrap()
+        : await dispatch(login({ email, password: form.password, userType: role })).unwrap();
+      const account = result.user;
       // Staff accounts keep their role; buyer/seller dashboards follow the account's own userType.
       const uiRole = account.role === 'admin' || account.role === 'superuser' ? account.role : account.userType || role;
-      setUser(
-        { id: account.id, name: account.name, email: account.email, role: uiRole, city: account.city || null, token: result.data.accessToken },
-        { remember },
-      );
       showToast((isSignup ? 'Account created' : 'Login successful') + '! Redirecting...');
       // Short pause so the toast is readable, as before.
       window.setTimeout(() => navigate(DASHBOARD_BY_ROLE[uiRole] || '/'), 800);
     } catch (err) {
-      const detail = err.errors && err.errors.length ? ': ' + err.errors[0] : '';
+      const detail = '';
       // The server is deliberately vague on bad logins; hint at the chosen tab.
-      const text = !isSignup && err.status === 401 ? 'No ' + role + ' account found for that email, or the password is wrong.' : err.message + detail;
+      const text =
+        typeof err === 'string'
+          ? err
+          : !isSignup && err.status === 401
+            ? 'No ' + role + ' account found for that email, or the password is wrong.'
+            : err.message + detail;
       setProblem('⚠️ ' + text);
       showToast('⚠️ ' + text, 'error');
       setSubmitting(false);
@@ -198,10 +199,6 @@ export default function AuthPage() {
             </fieldset>
 
             <div className="auth-row">
-              <label className="checkbox">
-                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                <span>Remember me</span>
-              </label>
               {!isSignup && (
                 <button type="button" className="btn btn-link" onClick={() => setForgotOpen(true)}>
                   Forgot password?

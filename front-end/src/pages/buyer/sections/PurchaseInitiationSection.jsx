@@ -4,12 +4,11 @@
  *          deals. At Registration, the buyer's share of the platform
  *          commission is shown right on the card with a Pay button; once the
  *          buyer has paid, the card explains it is waiting on the seller.
- * Inputs (props): data (optional)
+ * Inputs (props): data – useBuyerData()
  * Outputs: info banner + one tracking card per active/completed deal.
  * API calls: payment flow via usePayment (POST /billing/checkout → verify),
- *            GET /purchases/mine + /billing/summary (via Redux fetchBuyerDeals & fetchBuyerBilling)
+ *            GET /purchases/mine + /billing/summary (via data.reload)
  */
-import { useDispatch, useSelector } from 'react-redux';
 import { Badge, EmptyState, PageHeader } from '../../../components/common/ui.jsx';
 import Icon from '../../../components/common/Icon.jsx';
 import DealProgress from '../../../components/deals/DealProgress.jsx';
@@ -17,7 +16,6 @@ import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
 import { formatCompactINR, formatINR, joinPlace } from '../../../utils/format.js';
 import { DEAL_STEPS } from '../../../utils/constants.js';
-import { selectBuyerPurchases, fetchBuyerDeals, fetchBuyerBilling } from '../../../store/slices/buyerSlice.js';
 
 /** The "Registration is waiting on commission" panel. */
 function CommissionPanel({ purchase, onPay }) {
@@ -58,15 +56,10 @@ function CommissionPanel({ purchase, onPay }) {
 }
 
 export default function PurchaseInitiationSection({ data }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { pay } = usePayment();
-
-  const reduxPurchases = useSelector(selectBuyerPurchases);
-  const purchases = data?.purchases || reduxPurchases;
-
   // Newest first; cancelled deals are not shown here (as before).
-  const deals = purchases
+  const deals = data.purchases
     .filter((p) => p.dealStatus !== 'cancelled')
     .slice()
     .reverse();
@@ -76,11 +69,7 @@ export default function PurchaseInitiationSection({ data }) {
       const result = await pay({ purpose: 'commission', commissionId });
       if (!result) return;
       showToast(result.message);
-      if (data?.reload) {
-        await Promise.all([data.reload('deals'), data.reload('billing')]);
-      } else {
-        await Promise.all([dispatch(fetchBuyerDeals()), dispatch(fetchBuyerBilling())]);
-      }
+      await Promise.all([data.reload('deals'), data.reload('billing')]);
     } catch (err) {
       showToast(err.message || 'Payment failed', 'error');
     }

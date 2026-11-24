@@ -1,8 +1,22 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException, OnModuleInit, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+  OnModuleInit,
+  Logger,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Negotiation, NegotiationDocument } from './schemas/negotiation.schema.js';
-import { CreateNegotiationDto, CounterNegotiationDto, RejectNegotiationDto } from './dto/create-negotiation.dto.js';
+import {
+  Negotiation,
+  NegotiationDocument,
+} from './schemas/negotiation.schema.js';
+import {
+  CreateNegotiationDto,
+  CounterNegotiationDto,
+  RejectNegotiationDto,
+} from './dto/create-negotiation.dto.js';
 import { NegotiationResponseDto } from './dto/negotiation-response.dto.js';
 import { NegotiationFilterDto } from './dto/negotiation-filter.dto.js';
 import { NegotiationStatus } from '../../shared/enums/negotiation.enum.js';
@@ -37,13 +51,18 @@ export class NegotiationsService implements OnModuleInit {
   private readonly logger = new Logger(NegotiationsService.name);
 
   constructor(
-    @InjectModel(Negotiation.name) private readonly negotiationModel: Model<NegotiationDocument>,
+    @InjectModel(Negotiation.name)
+    private readonly negotiationModel: Model<NegotiationDocument>,
     private readonly propertiesService: PropertiesService,
     private readonly purchasesService: PurchasesService,
   ) {}
 
   async onModuleInit(): Promise<void> {
-    await backfillObjectIdStrings(this.negotiationModel, ['propertyId', 'buyerId'], this.logger);
+    await backfillObjectIdStrings(
+      this.negotiationModel,
+      ['propertyId', 'buyerId'],
+      this.logger,
+    );
   }
 
   /**
@@ -53,7 +72,10 @@ export class NegotiationsService implements OnModuleInit {
    * property: the price is the seller's call alone, so the admin oversight
    * queue is strictly read-only (see assertCanRespond).
    */
-  private toResponse(n: NegotiationDocument, actor?: AuthenticatedUser): NegotiationResponseDto {
+  private toResponse(
+    n: NegotiationDocument,
+    actor?: AuthenticatedUser,
+  ): NegotiationResponseDto {
     const property = n.propertyId as unknown;
     const buyer = n.buyerId as unknown;
     const propertyPopulated = isPopulated(property);
@@ -66,7 +88,10 @@ export class NegotiationsService implements OnModuleInit {
       // No admin/superuser branch on purpose — nobody but the owning seller
       // may move the price. A listing with no seller therefore has no
       // responder at all, and `canRespond` is false for everyone.
-      canRespond = !!sellerId && actor.userType === UserType.SELLER && actor.id === sellerId;
+      canRespond =
+        !!sellerId &&
+        actor.userType === UserType.SELLER &&
+        actor.id === sellerId;
       propertyHasSeller = !!sellerId;
     }
 
@@ -112,10 +137,15 @@ export class NegotiationsService implements OnModuleInit {
     return negotiation;
   }
 
-  private assertOwnsOrElevated(negotiation: NegotiationDocument, actor: AuthenticatedUser): void {
+  private assertOwnsOrElevated(
+    negotiation: NegotiationDocument,
+    actor: AuthenticatedUser,
+  ): void {
     if (actor.role === Role.ADMIN || actor.role === Role.SUPERUSER) return;
     if (referenceId(negotiation.buyerId) === actor.id) return;
-    throw new ForbiddenException('You do not have permission to access this negotiation');
+    throw new ForbiddenException(
+      'You do not have permission to access this negotiation',
+    );
   }
 
   /**
@@ -123,17 +153,23 @@ export class NegotiationsService implements OnModuleInit {
    * seller who owns the property (they are the counterparty — they must be
    * able to read the negotiation they are expected to respond to).
    */
-  private async assertCanView(negotiation: NegotiationDocument, actor: AuthenticatedUser): Promise<void> {
+  private async assertCanView(
+    negotiation: NegotiationDocument,
+    actor: AuthenticatedUser,
+  ): Promise<void> {
     if (actor.role === Role.ADMIN || actor.role === Role.SUPERUSER) return;
     if (referenceId(negotiation.buyerId) === actor.id) return;
     if (actor.userType === UserType.SELLER) {
       const propertyId = referenceId(negotiation.propertyId);
       if (propertyId) {
-        const { sellerId } = await this.propertiesService.getOwnershipInfo(propertyId);
+        const { sellerId } =
+          await this.propertiesService.getOwnershipInfo(propertyId);
         if (sellerId && sellerId === actor.id) return;
       }
     }
-    throw new ForbiddenException('You do not have permission to access this negotiation');
+    throw new ForbiddenException(
+      'You do not have permission to access this negotiation',
+    );
   }
 
   /**
@@ -155,10 +191,14 @@ export class NegotiationsService implements OnModuleInit {
    * seller's queue as PENDING, and accepting one would mint a second purchase
    * for a property that is no longer theirs to sell.
    */
-  private async assertStillOnTheMarket(negotiation: NegotiationDocument): Promise<void> {
+  private async assertStillOnTheMarket(
+    negotiation: NegotiationDocument,
+  ): Promise<void> {
     const propertyId = referenceId(negotiation.propertyId);
     if (!propertyId) {
-      throw new NotFoundException('The property for this negotiation no longer exists');
+      throw new NotFoundException(
+        'The property for this negotiation no longer exists',
+      );
     }
     if (await this.propertiesService.isDealClosed(propertyId)) {
       throw new BadRequestException(
@@ -167,13 +207,20 @@ export class NegotiationsService implements OnModuleInit {
     }
   }
 
-  private async assertCanRespond(negotiation: NegotiationDocument, actor: AuthenticatedUser): Promise<void> {
+  private async assertCanRespond(
+    negotiation: NegotiationDocument,
+    actor: AuthenticatedUser,
+  ): Promise<void> {
     const propertyId = referenceId(negotiation.propertyId);
     if (!propertyId) {
-      throw new NotFoundException('The property for this negotiation no longer exists');
+      throw new NotFoundException(
+        'The property for this negotiation no longer exists',
+      );
     }
-    const { sellerId } = await this.propertiesService.getOwnershipInfo(propertyId);
-    if (sellerId && actor.userType === UserType.SELLER && actor.id === sellerId) return;
+    const { sellerId } =
+      await this.propertiesService.getOwnershipInfo(propertyId);
+    if (sellerId && actor.userType === UserType.SELLER && actor.id === sellerId)
+      return;
     throw new ForbiddenException(
       'Only the seller who listed this property can respond to an offer on it. ' +
         'Admins do not negotiate price — they take over once the seller accepts.',
@@ -181,30 +228,36 @@ export class NegotiationsService implements OnModuleInit {
   }
 
   /** Buyers only — submits an offer on a property. */
-  async create(dto: CreateNegotiationDto, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async create(
+    dto: CreateNegotiationDto,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     if (actor.userType !== UserType.BUYER) {
       throw new ForbiddenException('Only buyer accounts can submit offers');
     }
-    // Throws NotFoundException if the property doesn't exist.
-    const property = await this.propertiesService.findOne(dto.propertyId);
-    // Hiding a sold listing from search is not enough on its own: a buyer who
-    // still has the page open (or the id) could otherwise offer on a property
-    // somebody else has already bought.
-    if (await this.propertiesService.isDealClosed(dto.propertyId)) {
-      throw new BadRequestException(
-        `"${property.title}" is no longer on the market — it has already been ${property.status}.`,
-      );
-    }
+    // Reserving is an atomic AVAILABLE -> UNDER_OFFER transition. It both
+    // removes the listing from public search and checks the offer amount
+    // against the current asking price, even if the client bypasses the form.
+    await this.propertiesService.reserveForOffer(
+      dto.propertyId,
+      dto.offerAmount,
+    );
 
-    const negotiation = await this.negotiationModel.create({
-      propertyId: dto.propertyId,
-      buyerId: actor.id,
-      offerAmount: dto.offerAmount,
-      message: dto.message ?? null,
-      paymentMode: dto.paymentMode ?? null,
-      status: NegotiationStatus.PENDING,
-    });
-    return this.toResponse(negotiation);
+    try {
+      const negotiation = await this.negotiationModel.create({
+        propertyId: dto.propertyId,
+        buyerId: actor.id,
+        offerAmount: dto.offerAmount,
+        message: dto.message ?? null,
+        paymentMode: dto.paymentMode ?? null,
+        status: NegotiationStatus.PENDING,
+      });
+      return this.toResponse(negotiation);
+    } catch (error) {
+      // Do not leave a property invisible if persisting the offer failed.
+      await this.propertiesService.releaseOfferHold(dto.propertyId);
+      throw error;
+    }
   }
 
   async findByOwner(buyerId: string): Promise<NegotiationResponseDto[]> {
@@ -223,7 +276,10 @@ export class NegotiationsService implements OnModuleInit {
    * buyer and the owning seller (see assertCanRespond), so the admin watches
    * rather than acts. The superuser sees all four cities.
    */
-  async findForReview(filters: NegotiationFilterDto, actor: AuthenticatedUser): Promise<PaginatedResult<NegotiationResponseDto>> {
+  async findForReview(
+    filters: NegotiationFilterDto,
+    actor: AuthenticatedUser,
+  ): Promise<PaginatedResult<NegotiationResponseDto>> {
     const query: Record<string, unknown> = {};
     if (filters.status) query.status = filters.status;
     const propertyIds = await this.propertiesService.propertyIdsForAdmin(actor);
@@ -254,11 +310,18 @@ export class NegotiationsService implements OnModuleInit {
   }
 
   /** Seller only — every negotiation on a property this seller submitted. */
-  async findForSeller(actor: AuthenticatedUser, filters: NegotiationFilterDto): Promise<PaginatedResult<NegotiationResponseDto>> {
+  async findForSeller(
+    actor: AuthenticatedUser,
+    filters: NegotiationFilterDto,
+  ): Promise<PaginatedResult<NegotiationResponseDto>> {
     if (actor.userType !== UserType.SELLER) {
-      throw new ForbiddenException('Only seller accounts have a negotiation queue');
+      throw new ForbiddenException(
+        'Only seller accounts have a negotiation queue',
+      );
     }
-    const propertyIds = await this.propertiesService.propertyIdsForSeller(actor.id);
+    const propertyIds = await this.propertiesService.propertyIdsForSeller(
+      actor.id,
+    );
     const query: Record<string, unknown> = { propertyId: { $in: propertyIds } };
     if (filters.status) query.status = filters.status;
 
@@ -286,7 +349,10 @@ export class NegotiationsService implements OnModuleInit {
     };
   }
 
-  async findOne(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async findOne(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     const negotiation = await this.loadOrThrow(id);
     await this.assertCanView(negotiation, actor);
     await negotiation.populate([
@@ -297,11 +363,34 @@ export class NegotiationsService implements OnModuleInit {
   }
 
   /** Seller (property owner) only — see assertCanRespond. */
-  async counter(id: string, dto: CounterNegotiationDto, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async counter(
+    id: string,
+    dto: CounterNegotiationDto,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     const negotiation = await this.loadOrThrow(id);
     await this.assertCanRespond(negotiation, actor);
-    if (![NegotiationStatus.PENDING, NegotiationStatus.COUNTERED].includes(negotiation.status)) {
-      throw new BadRequestException(`Cannot counter a negotiation that is ${negotiation.status}`);
+    if (
+      ![NegotiationStatus.PENDING, NegotiationStatus.COUNTERED].includes(
+        negotiation.status,
+      )
+    ) {
+      throw new BadRequestException(
+        `Cannot counter a negotiation that is ${negotiation.status}`,
+      );
+    }
+    const propertyId = referenceId(negotiation.propertyId);
+    if (!propertyId)
+      throw new NotFoundException(
+        'The property for this negotiation no longer exists',
+      );
+    // Keep every negotiated amount within the advertised price, including
+    // seller counter-offers sent directly to the API.
+    const property = await this.propertiesService.findOne(propertyId, actor);
+    if (dto.counterAmount > property.price) {
+      throw new BadRequestException(
+        `A counter-offer cannot exceed the listed price of ₹${property.price.toLocaleString('en-IN')}.`,
+      );
     }
     negotiation.counterAmount = dto.counterAmount;
     negotiation.status = NegotiationStatus.COUNTERED;
@@ -310,7 +399,10 @@ export class NegotiationsService implements OnModuleInit {
   }
 
   /** Seller (property owner) only — accepts the buyer's current offer as-is. See assertCanRespond. */
-  async acceptOffer(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async acceptOffer(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     const negotiation = await this.loadOrThrow(id);
     await this.assertCanRespond(negotiation, actor);
     await this.assertStillOnTheMarket(negotiation);
@@ -321,46 +413,83 @@ export class NegotiationsService implements OnModuleInit {
     }
     negotiation.status = NegotiationStatus.ACCEPTED;
     await negotiation.save();
-    await this.purchasesService.createFromNegotiation(negotiation, negotiation.offerAmount);
+    await this.purchasesService.createFromNegotiation(
+      negotiation,
+      negotiation.offerAmount,
+    );
     return this.toResponse(negotiation);
   }
 
   /** Seller (property owner) only. See assertCanRespond. */
-  async reject(id: string, dto: RejectNegotiationDto, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async reject(
+    id: string,
+    dto: RejectNegotiationDto,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     const negotiation = await this.loadOrThrow(id);
     await this.assertCanRespond(negotiation, actor);
-    if (![NegotiationStatus.PENDING, NegotiationStatus.COUNTERED].includes(negotiation.status)) {
-      throw new BadRequestException(`Cannot reject a negotiation that is already ${negotiation.status}`);
+    if (
+      ![NegotiationStatus.PENDING, NegotiationStatus.COUNTERED].includes(
+        negotiation.status,
+      )
+    ) {
+      throw new BadRequestException(
+        `Cannot reject a negotiation that is already ${negotiation.status}`,
+      );
     }
     negotiation.status = NegotiationStatus.REJECTED;
     negotiation.rejectionReason = dto.reason ?? null;
     await negotiation.save();
+    const propertyId = referenceId(negotiation.propertyId);
+    if (propertyId) await this.propertiesService.releaseOfferHold(propertyId);
     return this.toResponse(negotiation);
   }
 
   /** Buyer (owner) only — accepts the seller's counter-offer. */
-  async acceptCounterByBuyer(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async acceptCounterByBuyer(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     const negotiation = await this.loadOrThrow(id);
     this.assertOwnsOrElevated(negotiation, actor);
     await this.assertStillOnTheMarket(negotiation);
-    if (negotiation.status !== NegotiationStatus.COUNTERED || negotiation.counterAmount == null) {
-      throw new BadRequestException('There is no counter-offer to accept on this negotiation');
+    if (
+      negotiation.status !== NegotiationStatus.COUNTERED ||
+      negotiation.counterAmount == null
+    ) {
+      throw new BadRequestException(
+        'There is no counter-offer to accept on this negotiation',
+      );
     }
     negotiation.status = NegotiationStatus.ACCEPTED;
     await negotiation.save();
-    await this.purchasesService.createFromNegotiation(negotiation, negotiation.counterAmount);
+    await this.purchasesService.createFromNegotiation(
+      negotiation,
+      negotiation.counterAmount,
+    );
     return this.toResponse(negotiation);
   }
 
   /** Buyer (owner) only. */
-  async withdraw(id: string, actor: AuthenticatedUser): Promise<NegotiationResponseDto> {
+  async withdraw(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<NegotiationResponseDto> {
     const negotiation = await this.loadOrThrow(id);
     this.assertOwnsOrElevated(negotiation, actor);
-    if (![NegotiationStatus.PENDING, NegotiationStatus.COUNTERED].includes(negotiation.status)) {
-      throw new BadRequestException(`Cannot withdraw a negotiation that is already ${negotiation.status}`);
+    if (
+      ![NegotiationStatus.PENDING, NegotiationStatus.COUNTERED].includes(
+        negotiation.status,
+      )
+    ) {
+      throw new BadRequestException(
+        `Cannot withdraw a negotiation that is already ${negotiation.status}`,
+      );
     }
     negotiation.status = NegotiationStatus.WITHDRAWN;
     await negotiation.save();
+    const propertyId = referenceId(negotiation.propertyId);
+    if (propertyId) await this.propertiesService.releaseOfferHold(propertyId);
     return this.toResponse(negotiation);
   }
 }

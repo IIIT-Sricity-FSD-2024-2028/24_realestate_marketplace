@@ -2,28 +2,18 @@
  * OfferFormModal.jsx
  * Purpose: "Make an Offer" dialog — amount (with a live comparison against
  *          the listed price), payment mode and an optional message.
- * Inputs (props): card – listing (optional; falls back to Redux offerCard);
- *                 onClose – callback (optional; falls back to Redux closeOfferModal);
+ * Inputs (props): card – listing (null = closed); onClose;
  *                 onSubmitted(card, amount) – called after the API accepts it
  * Outputs: the form; inline validation; toast on API errors.
  * API calls: POST /negotiations { propertyId, offerAmount, paymentMode, message? }
  */
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Modal from '../../../components/common/Modal.jsx';
 import { FormField, TextInput } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
-import { negotiationsApi } from '../../../api/services.js';
-import { errorText } from '../../../api/client.js';
+import { createNegotiation } from '../../../store/actions/apiActions.js';
 import { isPositiveNumber, toNumber } from '../../../utils/validation.js';
-import { formatCompactINR } from '../../../utils/format.js';
-import {
-  selectOfferCard,
-  closeOfferModal,
-  addConsidering,
-  setOfferDoneMessage,
-  fetchBuyerDeals,
-} from '../../../store/slices/buyerSlice.js';
 
 const PAY_MODES = ['Cash', 'Loan', 'Mixed'];
 
@@ -41,81 +31,66 @@ export function offerDifference(amount, listed) {
 }
 
 export default function OfferFormModal({ card, onClose, onSubmitted }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
-  const reduxCard = useSelector(selectOfferCard);
-  const activeCard = card !== undefined ? card : reduxCard;
-
+  const dispatch = useDispatch();
   const [amount, setAmount] = useState('');
   const [mode, setMode] = useState('Cash');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
 
-  const handleClose = () => {
-    if (onClose) {
-      onClose();
-    } else {
-      dispatch(closeOfferModal());
-    }
-  };
-
   // Fresh form every time it opens.
   useEffect(() => {
-    if (activeCard) {
+    if (card) {
       setAmount('');
       setMode('Cash');
       setMessage('');
       setError('');
     }
-  }, [activeCard]);
+  }, [card]);
 
   const submit = async (event) => {
     event.preventDefault();
+    // Old tvValidateBuyerOffer: required + positive number.
     if (!amount.trim()) return setError('Please enter your offer amount');
     if (!isPositiveNumber(amount)) return setError('Please enter a valid offer amount');
     const value = toNumber(amount);
+    if (value > card.price) return setError('Your offer cannot exceed the listed price of ' + card.priceFmt);
     setSending(true);
     try {
-      await negotiationsApi.create({ propertyId: activeCard.id, offerAmount: value, paymentMode: mode, message: message.trim() || undefined });
-      if (onSubmitted) {
-        onSubmitted(activeCard, value);
-      } else {
-        dispatch(addConsidering(activeCard));
-        dispatch(closeOfferModal());
-        dispatch(setOfferDoneMessage('Your offer of ' + formatCompactINR(value) + ' for ' + activeCard.title + ' has been submitted!'));
-        dispatch(fetchBuyerDeals());
-      }
+      await dispatch(createNegotiation({ propertyId: card.id, offerAmount: value, paymentMode: mode, message: message.trim() || undefined })).unwrap();
+      onSubmitted(card, value);
     } catch (err) {
-      showToast('⚠️ ' + errorText(err, 'Failed to submit offer'), 'error');
+      showToast('⚠️ ' + (typeof err === 'string' ? err : err.message || 'Failed to submit offer'), 'error');
     } finally {
       setSending(false);
     }
   };
 
-  const diff = activeCard ? offerDifference(toNumber(amount), activeCard.price) : null;
+  const diff = card ? offerDifference(toNumber(amount), card.price) : null;
   return (
-    <Modal open={!!activeCard} onClose={handleClose} title="Make an Offer">
-      {activeCard && (
+    <Modal open={!!card} onClose={onClose} title="Make an Offer">
+      {card && (
         <form onSubmit={submit} noValidate>
           <p className="text-secondary small mb-3">
-            {activeCard.title} · {activeCard.area}
+            {card.title} · {card.area}
           </p>
           <div className="price-strip">
             <span className="text-secondary">Listed Price</span>
-            <strong>{activeCard.priceFmt}</strong>
+            <strong>{card.priceFmt}</strong>
           </div>
           <FormField id="offer-amount" label="Your Offer Amount (₹)" error={error}>
             <TextInput
               id="offer-amount"
               restrict="number"
               inputMode="numeric"
+              max={card.price}
               placeholder="Enter your offer amount"
               value={amount}
               error={error}
               onValueChange={(v) => {
                 setAmount(v);
-                setError('');
+                setError(toNumber(v) > card.price ? 'Your offer cannot exceed the listed price of ' + card.priceFmt : '');
               }}
             />
             {diff && (
@@ -123,6 +98,7 @@ export default function OfferFormModal({ card, onClose, onSubmitted }) {
                 {diff.text}
               </div>
             )}
+            <div className="field-hint">Maximum offer: {card.priceFmt}</div>
           </FormField>
           <fieldset className="segmented segmented-3 mb-3">
             <legend className="form-label">Payment Mode</legend>
@@ -144,7 +120,7 @@ export default function OfferFormModal({ card, onClose, onSubmitted }) {
             />
           </FormField>
           <div className="button-row">
-            <button type="button" className="btn btn-secondary grow" onClick={handleClose}>
+            <button type="button" className="btn btn-secondary grow" onClick={onClose}>
               Cancel
             </button>
             <button type="submit" className="btn btn-primary grow-2" disabled={sending}>

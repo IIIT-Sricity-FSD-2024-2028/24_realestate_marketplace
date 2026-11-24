@@ -9,10 +9,11 @@
  *            before) plus each section's own calls (see their headers).
  */
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import { useDashboardSection } from '../../hooks/useDashboardSection.js';
 import { useLiveRefresh } from '../../hooks/useLiveRefresh.js';
-import { clearUser, getUser, logoutPathForRole } from '../../auth/session.js';
+import { clearUser, logoutPathForRole } from '../../auth/session.js';
 import { useAdminDesk } from './useAdminDesk.js';
 import { useAdminProfile } from './sections/AdminProfileSection.jsx';
 import AdminOverview from './sections/AdminOverview.jsx';
@@ -73,8 +74,7 @@ export default function AdminDashboardPage() {
   const [active, goTo] = useDashboardSection('/admin', 'admin', KEYS, 'dashboard');
   const desk = useAdminDesk(); // shared, city-scoped queues
   const profile = useAdminProfile(); // name shown in the sidebar
-  const user = getUser() || {};
-
+  const user = useSelector((state) => state.auth.user || {});
   // New visit requests / offers / seller responses arrive on their own.
   const { sessionChanged } = useLiveRefresh(desk.reloadAll, { role: 'admin', intervalMs: 15000 });
 

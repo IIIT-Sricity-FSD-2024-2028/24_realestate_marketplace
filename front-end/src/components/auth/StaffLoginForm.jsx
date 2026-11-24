@@ -10,17 +10,19 @@
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Icon from '../common/Icon.jsx';
 import { FormField, PasswordInput, TextInput } from '../forms/FormControls.jsx';
 import ForgotPasswordModal from './ForgotPasswordModal.jsx';
 import { useToast } from '../feedback/ToastProvider.jsx';
-import { authApi } from '../../api/services.js';
-import { DASHBOARD_BY_ROLE, setUser } from '../../auth/session.js';
+import { DASHBOARD_BY_ROLE } from '../../auth/session.js';
+import { login } from '../../store/actions/apiActions.js';
+import { clearApplicationState } from '../../store/index.js';
 import { isEmail } from '../../utils/validation.js';
-import './StaffLoginForm.css';
 
 export default function StaffLoginForm({ role, title, subtitle, icon, emailPlaceholder }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,20 +45,19 @@ export default function StaffLoginForm({ role, title, subtitle, icon, emailPlace
     }
     setSubmitting(true);
     try {
-      const result = await authApi.login({ email: cleanEmail, password });
-      const account = result.data.user;
+      const result = await dispatch(login({ email: cleanEmail, password })).unwrap();
+      const account = result.user;
       // A valid account with the wrong role must not get into this portal.
       if (account.role !== role) {
+        dispatch(clearApplicationState());
         showToast('This account does not have ' + role + ' access', 'error');
         setSubmitting(false);
         return;
       }
-      // city is kept so the admin desk can scope "Manage Listings" to its city.
-      setUser({ id: account.id, name: account.name, email: account.email, role, city: account.city || null, token: result.data.accessToken });
       showToast('Login successful! Redirecting...');
       window.setTimeout(() => navigate(DASHBOARD_BY_ROLE[role]), 600);
     } catch (err) {
-      showToast(err.message || 'Invalid ' + role + ' credentials', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Invalid ' + role + ' credentials', 'error');
       setInvalid(true);
       setSubmitting(false);
     }

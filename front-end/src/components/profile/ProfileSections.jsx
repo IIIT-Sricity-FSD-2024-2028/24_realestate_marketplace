@@ -2,7 +2,7 @@
  * ProfileSections.jsx
  * Purpose: Buyer & seller "My Profile" building blocks:
  *   useAccountProfile – loads the profile (name/email from the real account,
- *                       extra fields kept per-account in localStorage as before)
+ *                       extra fields kept in Redux for the active session)
  *   ProfileSummary    – avatar, name, email, "member since" (from /auth/me)
  *   PersonalInfoForm  – editable personal details with validation
  *   ChangePasswordCard – real password change + "forgot current password?"
@@ -14,16 +14,15 @@
  * Note: the backend has no endpoint for phone/DOB/gender/location edits, so —
  * exactly like the original pages — those are stored in this browser only.
  */
-import { useCallback, useEffect, useState } from 'react';
-import { authApi } from '../../api/services.js';
-import { errorText } from '../../api/client.js';
-import { getUser, readUserData, writeUserData } from '../../auth/session.js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePassword, loadCurrentUser } from '../../store/actions/apiActions.js';
+import { profileSaved } from '../../store/slices/profileSlice.js';
 import { monthYear } from '../../utils/format.js';
 import { isValid, validateDob, validatePasswordChange, validateRules } from '../../utils/validation.js';
 import { Avatar, Card } from '../common/ui.jsx';
 import Icon from '../common/Icon.jsx';
 import { FormField, PasswordInput, PasswordMatchHint, TextInput, todayIso } from '../forms/FormControls.jsx';
-import './ProfileSections.css';
 import { useToast } from '../feedback/ToastProvider.jsx';
 import ForgotPasswordModal from '../auth/ForgotPasswordModal.jsx';
 
@@ -52,45 +51,22 @@ function splitName(name) {
  * Returns { profile, fullName, account (from /auth/me), save(profile) }.
  */
 export function useAccountProfile(storageBase) {
-  const user = getUser();
-  // Start from what this browser saved, seeded with the real account name/email.
-  const [profile, setProfile] = useState(() => {
-    const saved = readUserData(storageBase, {});
-    const seeded = { ...saved };
-    if (!seeded.fname && !seeded.lname && user && user.name) Object.assign(seeded, splitName(user.name));
-    if (!seeded.email && user && user.email) seeded.email = user.email;
-    return seeded;
-  });
-  const [account, setAccount] = useState(null); // real profile from the API
-
-  // GET /auth/me — real createdAt ("member since") and phone if on file.
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const account = useSelector((state) => state.profile.account);
+  const saved = useSelector((state) => state.profile.profiles[storageBase] || {});
   useEffect(() => {
-    let alive = true;
-    authApi
-      .me()
-      .then((res) => {
-        if (!alive) return;
-        setAccount(res.data);
-        // Fill the phone from the account if this browser hasn't stored one.
-        setProfile((p) => (p.phone || !res.data?.phone ? p : { ...p, phone: res.data.phone }));
-      })
-      .catch(() => {
-        /* the profile still works from local data */
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const save = useCallback(
-    (next) => {
-      writeUserData(storageBase, next); // per-account browser storage
-      setProfile(next);
-    },
-    [storageBase],
-  );
-
-  const fullName = [profile.fname, profile.lname].filter(Boolean).join(' ').trim() || (user && user.name) || 'User';
+    dispatch(loadCurrentUser());
+  }, [dispatch]);
+  const profile = useMemo(() => {
+    const seeded = { ...saved };
+    if (!seeded.fname && !seeded.lname && user?.name) Object.assign(seeded, splitName(user.name));
+    if (!seeded.email && user?.email) seeded.email = user.email;
+    if (!seeded.phone && account?.phone) seeded.phone = account.phone;
+    return seeded;
+  }, [saved, user, account]);
+  const save = useCallback((next) => dispatch(profileSaved({ key: storageBase, value: next })), [dispatch, storageBase]);
+  const fullName = [profile.fname, profile.lname].filter(Boolean).join(' ').trim() || user?.name || 'User';
   return { profile, fullName, account, save };
 }
 
@@ -199,7 +175,7 @@ export function PersonalInfoForm({ profile, onSave }) {
             />
           </FormField>
         </div>
-        <p className="field-hint">Phone, date of birth, gender and location are saved in this browser only.</p>
+        <p className="field-hint">Phone, date of birth, gender and location are kept for this active session only.</p>
         <div className="button-row">
           <button type="submit" className="btn btn-primary">
             Save Changes
@@ -217,6 +193,7 @@ export function PersonalInfoForm({ profile, onSave }) {
  * Real password change. Props: idPrefix ('buyer' | 'seller'), userType (for forgot-password).
  */
 export function ChangePasswordCard({ idPrefix, userType }) {
+  const dispatch = useDispatch();
   const { showToast } = useToast();
   const empty = { currentPassword: '', newPassword: '', confirmPassword: '' };
   const [values, setValues] = useState(empty);
@@ -234,12 +211,11 @@ export function ChangePasswordCard({ idPrefix, userType }) {
     }
     setSaving(true);
     try {
-      // PATCH /auth/change-password — the server checks the current password.
-      await authApi.changePassword({ currentPassword: values.currentPassword, newPassword: values.newPassword });
+      await dispatch(changePassword({ currentPassword: values.currentPassword, newPassword: values.newPassword })).unwrap();
       setValues(empty);
       showToast('✅ Password updated successfully!');
     } catch (err) {
-      showToast('⚠️ ' + errorText(err, 'Failed to update password'), 'error');
+      showToast('⚠️ ' + (err || 'Failed to update password'), 'error');
     } finally {
       setSaving(false);
     }

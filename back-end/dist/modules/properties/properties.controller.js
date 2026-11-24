@@ -100,7 +100,7 @@ __decorate([
     (0, swagger_1.ApiOperation)({
         summary: 'Create a new property listing (seller accounts only)',
         description: 'ONLY a seller account may list a property — admins and superusers cannot, and neither can ' +
-            'buyers. An admin\'s authority over the catalogue is verify / reject / delete. The listing ' +
+            "buyers. An admin's authority over the catalogue is verify / reject / delete. The listing " +
             'starts `verificationStatus: pending` and stays hidden from public search until an admin ' +
             'verifies it. Price must be positive, bedrooms 0–20, bathrooms 1–20.',
     }),
@@ -116,7 +116,7 @@ __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({
         summary: 'List and filter verified properties (paginated)',
-        description: 'Public search endpoint — only returns `verificationStatus: verified` listings. ' +
+        description: 'Public search endpoint — only returns verified, available listings. Listings under offer, sold, or rented are hidden. ' +
             'Supports filtering by city, state, type, listing type, status, price range, bedrooms, ' +
             'and area. Results are paginated (max 50 per page). If minPrice > maxPrice, a 400 error is returned.',
     }),
@@ -126,10 +126,16 @@ __decorate([
             properties: {
                 success: { type: 'boolean', example: true },
                 statusCode: { type: 'number', example: 200 },
-                message: { type: 'string', example: 'Properties retrieved successfully' },
+                message: {
+                    type: 'string',
+                    example: 'Properties retrieved successfully',
+                },
                 data: {
                     properties: {
-                        items: { type: 'array', items: { $ref: '#/components/schemas/PropertyResponseDto' } },
+                        items: {
+                            type: 'array',
+                            items: { $ref: '#/components/schemas/PropertyResponseDto' },
+                        },
                         total: { type: 'number', example: 42 },
                         page: { type: 'number', example: 1 },
                         limit: { type: 'number', example: 10 },
@@ -163,7 +169,7 @@ __decorate([
     (0, api_role_decorator_js_1.ApiRole)(role_enum_js_1.Role.ADMIN),
     (0, swagger_1.ApiOperation)({
         summary: 'Admin/superuser property review queue',
-        description: 'Every listing regardless of verification state, with the submitting seller\'s name/email ' +
+        description: "Every listing regardless of verification state, with the submitting seller's name/email " +
             'populated where applicable. Filter by `verificationStatus` to see just pending submissions. ' +
             'Every admin sees the same full queue — no per-admin scoping.',
     }),
@@ -179,11 +185,15 @@ __decorate([
     (0, common_1.UseGuards)(optional_jwt_auth_guard_js_1.OptionalJwtAuthGuard),
     (0, swagger_1.ApiOperation)({
         summary: 'Get property by ID',
-        description: 'Returns a single property. Public endpoint — an optional bearer token is honored if present, ' +
+        description: 'Returns a public, available property. An optional bearer token is honored if present; staff and the owning seller may also inspect non-public listings, ' +
             'so the private `documents` array is included only when the caller is the admin/superuser or ' +
             'the seller who owns this listing; everyone else gets `images` only.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiSuccessResponse)(property_response_dto_js_1.PropertyResponseDto),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     __param(0, (0, common_1.Param)('id')),
@@ -198,10 +208,14 @@ __decorate([
     (0, swagger_1.ApiOperation)({
         summary: 'Update a property',
         description: 'Partially updates a property. Only send fields to change. Admins/superusers can update ' +
-            "any property; sellers may only update their own submissions, which resets them to " +
+            'any property; sellers may only update their own submissions, which resets them to ' +
             '`verificationStatus: pending` for re-review.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiSuccessResponse)(property_response_dto_js_1.PropertyResponseDto),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     (0, api_response_decorator_js_1.ApiValidationError)(),
@@ -220,7 +234,11 @@ __decorate([
         description: 'Marks the listing verified so it appears in public search. Any admin/superuser may verify — ' +
             'no per-admin restriction — see PropertiesService.assertCanVerify.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiSuccessResponse)(property_response_dto_js_1.PropertyResponseDto),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     __param(0, (0, common_1.Param)('id')),
@@ -237,7 +255,11 @@ __decorate([
         description: 'Marks the listing rejected, optionally with a reason. Any admin/superuser may act — no ' +
             'per-admin restriction.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiSuccessResponse)(property_response_dto_js_1.PropertyResponseDto),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     __param(0, (0, common_1.Param)('id')),
@@ -254,15 +276,21 @@ __decorate([
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
-            properties: { files: { type: 'array', items: { type: 'string', format: 'binary' } } },
+            properties: {
+                files: { type: 'array', items: { type: 'string', format: 'binary' } },
+            },
         },
     }),
     (0, swagger_1.ApiOperation)({
         summary: 'Upload verification documents for a property',
-        description: 'Up to 10 files (PDF/JPEG/PNG/WEBP, 10MB each). The property\'s owning seller, or any ' +
+        description: "Up to 10 files (PDF/JPEG/PNG/WEBP, 10MB each). The property's owning seller, or any " +
             'admin/superuser, may upload. Files are stored under /uploads and served statically.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiSuccessResponse)(property_response_dto_js_1.PropertyResponseDto),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files', upload_config_js_1.MAX_FILES_PER_REQUEST, (0, upload_config_js_1.buildUploadOptions)({
@@ -283,17 +311,23 @@ __decorate([
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
-            properties: { files: { type: 'array', items: { type: 'string', format: 'binary' } } },
+            properties: {
+                files: { type: 'array', items: { type: 'string', format: 'binary' } },
+            },
         },
     }),
     (0, swagger_1.ApiOperation)({
         summary: 'Upload photos for a property',
         description: 'Up to 10 files (JPEG/PNG/WEBP, 10MB each). These are the public, buyer-facing photos ' +
-            "(shown in listings) — separate from /documents, which are private verification files only " +
+            '(shown in listings) — separate from /documents, which are private verification files only ' +
             "the admin/superuser or owning seller can see. The property's owning seller, or any " +
             'admin/superuser, may upload.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiSuccessResponse)(property_response_dto_js_1.PropertyResponseDto),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files', upload_config_js_1.MAX_FILES_PER_REQUEST, (0, upload_config_js_1.buildUploadOptions)({
@@ -317,7 +351,11 @@ __decorate([
             'remove a listing from the catalogue (they cannot create one) and they may delete any ' +
             'property; a seller may delete only their own submissions.',
     }),
-    (0, swagger_1.ApiParam)({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        description: 'Property ID',
+        example: '65f1b2c3d4e5f6a7b8c9d0e1',
+    }),
     (0, api_response_decorator_js_1.ApiNotFound)('Property'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, current_user_decorator_js_1.CurrentUser)()),

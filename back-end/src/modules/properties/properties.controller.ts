@@ -61,13 +61,16 @@ export class PropertiesController {
     summary: 'Create a new property listing (seller accounts only)',
     description:
       'ONLY a seller account may list a property — admins and superusers cannot, and neither can ' +
-      'buyers. An admin\'s authority over the catalogue is verify / reject / delete. The listing ' +
+      "buyers. An admin's authority over the catalogue is verify / reject / delete. The listing " +
       'starts `verificationStatus: pending` and stays hidden from public search until an admin ' +
       'verifies it. Price must be positive, bedrooms 0–20, bathrooms 1–20.',
   })
   @ApiSuccessResponse(PropertyResponseDto, 201)
   @ApiValidationError()
-  async create(@Body() dto: CreatePropertyDto, @CurrentUser() user: AuthenticatedUser) {
+  async create(
+    @Body() dto: CreatePropertyDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     const data = await this.propertiesService.create(dto, user);
     return { message: 'Property created successfully', data };
   }
@@ -76,7 +79,7 @@ export class PropertiesController {
   @ApiOperation({
     summary: 'List and filter verified properties (paginated)',
     description:
-      'Public search endpoint — only returns `verificationStatus: verified` listings. ' +
+      'Public search endpoint — only returns verified, available listings. Listings under offer, sold, or rented are hidden. ' +
       'Supports filtering by city, state, type, listing type, status, price range, bedrooms, ' +
       'and area. Results are paginated (max 50 per page). If minPrice > maxPrice, a 400 error is returned.',
   })
@@ -86,10 +89,16 @@ export class PropertiesController {
       properties: {
         success: { type: 'boolean', example: true },
         statusCode: { type: 'number', example: 200 },
-        message: { type: 'string', example: 'Properties retrieved successfully' },
+        message: {
+          type: 'string',
+          example: 'Properties retrieved successfully',
+        },
         data: {
           properties: {
-            items: { type: 'array', items: { $ref: '#/components/schemas/PropertyResponseDto' } },
+            items: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/PropertyResponseDto' },
+            },
             total: { type: 'number', example: 42 },
             page: { type: 'number', example: 1 },
             limit: { type: 'number', example: 10 },
@@ -123,12 +132,15 @@ export class PropertiesController {
   @ApiOperation({
     summary: 'Admin/superuser property review queue',
     description:
-      'Every listing regardless of verification state, with the submitting seller\'s name/email ' +
+      "Every listing regardless of verification state, with the submitting seller's name/email " +
       'populated where applicable. Filter by `verificationStatus` to see just pending submissions. ' +
       'Every admin sees the same full queue — no per-admin scoping.',
   })
   @ApiSuccessResponse(PropertyResponseDto, 200, true)
-  async findForReview(@Query() filters: ReviewQueueFilterDto, @CurrentUser() user: AuthenticatedUser) {
+  async findForReview(
+    @Query() filters: ReviewQueueFilterDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     const data = await this.propertiesService.findForReview(filters, user);
     return { message: 'Review queue retrieved successfully', data };
   }
@@ -138,14 +150,21 @@ export class PropertiesController {
   @ApiOperation({
     summary: 'Get property by ID',
     description:
-      'Returns a single property. Public endpoint — an optional bearer token is honored if present, ' +
+      'Returns a public, available property. An optional bearer token is honored if present; staff and the owning seller may also inspect non-public listings, ' +
       'so the private `documents` array is included only when the caller is the admin/superuser or ' +
       'the seller who owns this listing; everyone else gets `images` only.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiSuccessResponse(PropertyResponseDto)
   @ApiNotFound('Property')
-  async findOne(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser | undefined) {
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser | undefined,
+  ) {
     const data = await this.propertiesService.findOne(id, user);
     return { message: 'Property retrieved successfully', data };
   }
@@ -156,14 +175,22 @@ export class PropertiesController {
     summary: 'Update a property',
     description:
       'Partially updates a property. Only send fields to change. Admins/superusers can update ' +
-      "any property; sellers may only update their own submissions, which resets them to " +
+      'any property; sellers may only update their own submissions, which resets them to ' +
       '`verificationStatus: pending` for re-review.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiSuccessResponse(PropertyResponseDto)
   @ApiNotFound('Property')
   @ApiValidationError()
-  async update(@Param('id') id: string, @Body() dto: UpdatePropertyDto, @CurrentUser() user: AuthenticatedUser) {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdatePropertyDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     const data = await this.propertiesService.update(id, dto, user);
     return { message: 'Property updated successfully', data };
   }
@@ -176,10 +203,17 @@ export class PropertiesController {
       'Marks the listing verified so it appears in public search. Any admin/superuser may verify — ' +
       'no per-admin restriction — see PropertiesService.assertCanVerify.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiSuccessResponse(PropertyResponseDto)
   @ApiNotFound('Property')
-  async verify(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+  async verify(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     const data = await this.propertiesService.verify(id, user);
     return { message: 'Property verified successfully', data };
   }
@@ -192,7 +226,11 @@ export class PropertiesController {
       'Marks the listing rejected, optionally with a reason. Any admin/superuser may act — no ' +
       'per-admin restriction.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiSuccessResponse(PropertyResponseDto)
   @ApiNotFound('Property')
   async reject(
@@ -210,16 +248,22 @@ export class PropertiesController {
   @ApiBody({
     schema: {
       type: 'object',
-      properties: { files: { type: 'array', items: { type: 'string', format: 'binary' } } },
+      properties: {
+        files: { type: 'array', items: { type: 'string', format: 'binary' } },
+      },
     },
   })
   @ApiOperation({
     summary: 'Upload verification documents for a property',
     description:
-      'Up to 10 files (PDF/JPEG/PNG/WEBP, 10MB each). The property\'s owning seller, or any ' +
+      "Up to 10 files (PDF/JPEG/PNG/WEBP, 10MB each). The property's owning seller, or any " +
       'admin/superuser, may upload. Files are stored under /uploads and served statically.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiSuccessResponse(PropertyResponseDto)
   @ApiNotFound('Property')
   // File-upload middleware. The storage layout, the random filename, the MIME
@@ -258,18 +302,24 @@ export class PropertiesController {
   @ApiBody({
     schema: {
       type: 'object',
-      properties: { files: { type: 'array', items: { type: 'string', format: 'binary' } } },
+      properties: {
+        files: { type: 'array', items: { type: 'string', format: 'binary' } },
+      },
     },
   })
   @ApiOperation({
     summary: 'Upload photos for a property',
     description:
       'Up to 10 files (JPEG/PNG/WEBP, 10MB each). These are the public, buyer-facing photos ' +
-      "(shown in listings) — separate from /documents, which are private verification files only " +
+      '(shown in listings) — separate from /documents, which are private verification files only ' +
       "the admin/superuser or owning seller can see. The property's owning seller, or any " +
       'admin/superuser, may upload.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiSuccessResponse(PropertyResponseDto)
   @ApiNotFound('Property')
   @UseInterceptors(
@@ -291,7 +341,9 @@ export class PropertiesController {
       throw noValidFilesException(ALLOWED_IMAGE_MIME_TYPES);
     }
     const safeId = id.replace(/[^a-fA-F0-9]/g, '');
-    const urls = files.map((f) => `/uploads/property-images/${safeId}/${f.filename}`);
+    const urls = files.map(
+      (f) => `/uploads/property-images/${safeId}/${f.filename}`,
+    );
     const data = await this.propertiesService.addImages(id, user, urls);
     return { message: 'Photos uploaded successfully', data };
   }
@@ -306,9 +358,16 @@ export class PropertiesController {
       'remove a listing from the catalogue (they cannot create one) and they may delete any ' +
       'property; a seller may delete only their own submissions.',
   })
-  @ApiParam({ name: 'id', description: 'Property ID', example: '65f1b2c3d4e5f6a7b8c9d0e1' })
+  @ApiParam({
+    name: 'id',
+    description: 'Property ID',
+    example: '65f1b2c3d4e5f6a7b8c9d0e1',
+  })
   @ApiNotFound('Property')
-  async remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     await this.propertiesService.remove(id, user);
     return { message: 'Property deleted successfully', data: null };
   }

@@ -22,7 +22,11 @@ import { SubscriptionsService } from '../subscriptions/subscriptions.service.js'
 import { FeaturedTier } from '../../shared/enums/billing.enum.js';
 import { FEATURED_PACKS } from '../../shared/constants/pricing.js';
 import { referenceId } from '../../shared/helpers/reference-id.helper.js';
-import { PropertyVerificationStatus, PropertyStatus, ListingType } from '../../shared/enums/property.enum.js';
+import {
+  PropertyVerificationStatus,
+  PropertyStatus,
+  ListingType,
+} from '../../shared/enums/property.enum.js';
 import { backfillObjectIdStrings } from '../../shared/helpers/objectid-backfill.helper.js';
 import {
   ServiceCity,
@@ -60,7 +64,8 @@ export class PropertiesService implements OnModuleInit {
   private readonly logger = new Logger(PropertiesService.name);
 
   constructor(
-    @InjectModel(Property.name) private readonly propertyModel: Model<PropertyDocument>,
+    @InjectModel(Property.name)
+    private readonly propertyModel: Model<PropertyDocument>,
     private readonly usersService: UsersService,
     private readonly subscriptionsService: SubscriptionsService,
   ) {}
@@ -87,9 +92,15 @@ export class PropertiesService implements OnModuleInit {
         },
       );
     } catch (error) {
-      this.logger.warn(`Failed to backfill legacy Property documents: ${(error as Error).message}`);
+      this.logger.warn(
+        `Failed to backfill legacy Property documents: ${(error as Error).message}`,
+      );
     }
-    await backfillObjectIdStrings(this.propertyModel, ['adminId', 'sellerId'], this.logger);
+    await backfillObjectIdStrings(
+      this.propertyModel,
+      ['adminId', 'sellerId'],
+      this.logger,
+    );
     await this.syncCityAdmins();
   }
 
@@ -112,7 +123,10 @@ export class PropertiesService implements OnModuleInit {
         const admin = await this.usersService.findAdminForCity(city);
         if (!admin) continue;
         await this.propertyModel.updateMany(
-          { city: { $in: citySpellings(city) }, $or: [{ adminId: { $ne: admin._id } }, { city: { $ne: city } }] },
+          {
+            city: { $in: citySpellings(city) },
+            $or: [{ adminId: { $ne: admin._id } }, { city: { $ne: city } }],
+          },
           { $set: { adminId: admin._id, city, state: CITY_STATE[city] } },
         );
       }
@@ -121,7 +135,8 @@ export class PropertiesService implements OnModuleInit {
       // alias resolves, or a missing city — goes to the fallback desk. This
       // runs after the loop above so a recognised legacy spelling
       // ("Bengaluru") reaches its own desk first and is never swept up here.
-      const fallbackAdmin = await this.usersService.findAdminForCity(FALLBACK_CITY);
+      const fallbackAdmin =
+        await this.usersService.findAdminForCity(FALLBACK_CITY);
       if (fallbackAdmin) {
         const adopted = await this.propertyModel.updateMany(
           { city: { $nin: SERVICE_CITIES } },
@@ -140,7 +155,9 @@ export class PropertiesService implements OnModuleInit {
         }
       }
     } catch (error) {
-      this.logger.warn(`Failed to sync per-city property admins: ${(error as Error).message}`);
+      this.logger.warn(
+        `Failed to sync per-city property admins: ${(error as Error).message}`,
+      );
     }
   }
 
@@ -150,7 +167,10 @@ export class PropertiesService implements OnModuleInit {
    * (see the `documents` field doc on PropertyResponseDto). `images` are
    * always included; they're the buyer-facing photos.
    */
-  private toResponse(p: PropertyDocument, includeDocuments = false): PropertyResponseDto {
+  private toResponse(
+    p: PropertyDocument,
+    includeDocuments = false,
+  ): PropertyResponseDto {
     // `sellerId`/`adminId` may come back populated (from the review-queue
     // query) as a full User subdocument rather than a bare ObjectId.
     const seller = p.sellerId as unknown as {
@@ -160,7 +180,8 @@ export class PropertiesService implements OnModuleInit {
       phone?: string | null;
       createdAt?: Date;
     } | null;
-    const sellerIsPopulated = !!seller && typeof seller === 'object' && 'name' in seller;
+    const sellerIsPopulated =
+      !!seller && typeof seller === 'object' && 'name' in seller;
 
     return {
       id: p._id.toString(),
@@ -178,7 +199,11 @@ export class PropertiesService implements OnModuleInit {
       status: p.status,
       images: p.images,
       adminId: p.adminId ? p.adminId.toString() : null,
-      sellerId: sellerIsPopulated ? seller!._id!.toString() : p.sellerId ? p.sellerId.toString() : null,
+      sellerId: sellerIsPopulated
+        ? seller!._id!.toString()
+        : p.sellerId
+          ? p.sellerId.toString()
+          : null,
       verificationStatus: p.verificationStatus,
       rejectionReason: p.rejectionReason ?? null,
       // Featured state is derived, never trusted from storage: an expired
@@ -208,7 +233,10 @@ export class PropertiesService implements OnModuleInit {
   }
 
   /** Whether `actor` may see `property`'s private verification documents. */
-  private canSeeDocuments(property: PropertyDocument, actor?: AuthenticatedUser): boolean {
+  private canSeeDocuments(
+    property: PropertyDocument,
+    actor?: AuthenticatedUser,
+  ): boolean {
     if (!actor) return false;
     if (isElevated(actor.role)) return true;
     return !!property.sellerId && property.sellerId.toString() === actor.id;
@@ -235,14 +263,19 @@ export class PropertiesService implements OnModuleInit {
    * property's city, or the seller who owns it. An admin from another city
    * has no more power over this listing than a stranger does.
    */
-  private assertCanManage(property: PropertyDocument, actor: AuthenticatedUser): void {
+  private assertCanManage(
+    property: PropertyDocument,
+    actor: AuthenticatedUser,
+  ): void {
     if (actor.role === Role.SUPERUSER) return;
     if (actor.role === Role.ADMIN) {
       this.assertRunsCity(property.city, actor, 'manage this listing');
       return;
     }
     if (property.sellerId && property.sellerId.toString() === actor.id) return;
-    throw new ForbiddenException('You do not have permission to manage this property');
+    throw new ForbiddenException(
+      'You do not have permission to manage this property',
+    );
   }
 
   /**
@@ -257,7 +290,10 @@ export class PropertiesService implements OnModuleInit {
    * The submission starts PENDING and stays hidden from public search until
    * an admin verifies it.
    */
-  async create(dto: CreatePropertyDto, actor: AuthenticatedUser): Promise<PropertyResponseDto> {
+  async create(
+    dto: CreatePropertyDto,
+    actor: AuthenticatedUser,
+  ): Promise<PropertyResponseDto> {
     if (actor.userType !== UserType.SELLER) {
       throw new ForbiddenException(
         isElevated(actor.role)
@@ -348,7 +384,11 @@ export class PropertiesService implements OnModuleInit {
    * than truncating it, so a seller who buys two packs back to back gets
    * both weeks they paid for.
    */
-  async applyFeature(propertyId: string, tier: FeaturedTier, sellerId: string): Promise<PropertyResponseDto> {
+  async applyFeature(
+    propertyId: string,
+    tier: FeaturedTier,
+    sellerId: string,
+  ): Promise<PropertyResponseDto> {
     const property = await this.loadOrThrow(propertyId);
     if (referenceId(property.sellerId) !== sellerId) {
       throw new ForbiddenException('You can only promote your own listings');
@@ -360,18 +400,26 @@ export class PropertiesService implements OnModuleInit {
     }
     const pack = FEATURED_PACKS[tier];
     const now = new Date();
-    const from = property.featuredUntil && property.featuredUntil > now ? property.featuredUntil : now;
+    const from =
+      property.featuredUntil && property.featuredUntil > now
+        ? property.featuredUntil
+        : now;
     const until = new Date(from);
     until.setDate(until.getDate() + pack.days);
 
     property.featuredUntil = until;
     // Keep the stronger badge when an extension is bought at a lower tier.
-    if (!property.featuredTier || pack.rank >= (FEATURED_PACKS[property.featuredTier]?.rank ?? 0)) {
+    if (
+      !property.featuredTier ||
+      pack.rank >= (FEATURED_PACKS[property.featuredTier]?.rank ?? 0)
+    ) {
       property.featuredTier = tier;
       property.featuredRank = pack.rank;
     }
     await property.save();
-    this.logger.log(`Property ${propertyId} promoted (${tier}) until ${until.toISOString()}`);
+    this.logger.log(
+      `Property ${propertyId} promoted (${tier}) until ${until.toISOString()}`,
+    );
     return this.toResponse(property);
   }
 
@@ -400,7 +448,7 @@ export class PropertiesService implements OnModuleInit {
   async promotableForSeller(sellerId: string): Promise<PropertyResponseDto[]> {
     this.assertValidId(sellerId, 'user');
     const properties = await this.propertyModel
-      .find({ sellerId, status: { $nin: CLOSED_STATUSES } })
+      .find({ sellerId, status: PropertyStatus.AVAILABLE })
       .sort({ createdAt: -1 });
     return properties.map((p) => this.toResponse(p));
   }
@@ -413,8 +461,26 @@ export class PropertiesService implements OnModuleInit {
   }
 
   /** `actor` is optional (the route is public) — only used to decide whether private `documents` are included. */
-  async findOne(id: string, actor?: AuthenticatedUser): Promise<PropertyResponseDto> {
+  async findOne(
+    id: string,
+    actor?: AuthenticatedUser,
+  ): Promise<PropertyResponseDto> {
     const property = await this.loadOrThrow(id);
+
+    // A direct URL must not bypass the catalogue's public visibility rules.
+    // Sellers and staff still need to inspect their own/in-scope records, but
+    // a buyer or anonymous caller cannot use a saved ID to see a listing
+    // while another buyer's offer has it reserved.
+    const isPublicListing =
+      property.verificationStatus === PropertyVerificationStatus.VERIFIED &&
+      property.status === PropertyStatus.AVAILABLE;
+    const canViewPrivateListing =
+      !!actor &&
+      (isElevated(actor.role) ||
+        (!!property.sellerId && property.sellerId.toString() === actor.id));
+    if (!isPublicListing && !canViewPrivateListing) {
+      throw new NotFoundException(`Property with ID "${id}" not found`);
+    }
     return this.toResponse(property, this.canSeeDocuments(property, actor));
   }
 
@@ -428,7 +494,9 @@ export class PropertiesService implements OnModuleInit {
   }
 
   /** The `_id` of the admin who runs `city`, or null if we don't operate there. */
-  private async resolveCityAdminId(city: string): Promise<Types.ObjectId | null> {
+  private async resolveCityAdminId(
+    city: string,
+  ): Promise<Types.ObjectId | null> {
     const admin = await this.usersService.findAdminForCity(city);
     return admin ? (admin._id as Types.ObjectId) : null;
   }
@@ -451,10 +519,15 @@ export class PropertiesService implements OnModuleInit {
    * than the whole platform — a misconfigured admin account should see
    * nothing, not everything.
    */
-  async propertyIdsForAdmin(actor: AuthenticatedUser): Promise<Types.ObjectId[] | null> {
+  async propertyIdsForAdmin(
+    actor: AuthenticatedUser,
+  ): Promise<Types.ObjectId[] | null> {
     if (actor.role === Role.SUPERUSER) return null;
     const city = this.adminCity(actor);
-    const docs = await this.propertyModel.find(city ? { city } : { _id: null }, '_id');
+    const docs = await this.propertyModel.find(
+      city ? { city } : { _id: null },
+      '_id',
+    );
     return docs.map((d) => d._id as Types.ObjectId);
   }
 
@@ -466,14 +539,21 @@ export class PropertiesService implements OnModuleInit {
    * an in-progress deal is driven by the same city desk that verified the
    * listing, rather than by whichever admin happens to open it first.
    */
-  async assertAdminHandlesProperty(propertyId: string | null, actor: AuthenticatedUser): Promise<void> {
+  async assertAdminHandlesProperty(
+    propertyId: string | null,
+    actor: AuthenticatedUser,
+  ): Promise<void> {
     if (actor.role === Role.SUPERUSER) return;
     if (actor.role !== Role.ADMIN) {
-      throw new ForbiddenException('Only an admin or superuser may perform this action');
+      throw new ForbiddenException(
+        'Only an admin or superuser may perform this action',
+      );
     }
     if (!propertyId) {
       // No property to attribute a city to, so no city admin owns it either.
-      throw new ForbiddenException('This record is not linked to a property, so only a superuser can act on it');
+      throw new ForbiddenException(
+        'This record is not linked to a property, so only a superuser can act on it',
+      );
     }
     const property = await this.loadOrThrow(propertyId);
     this.assertRunsCity(property.city, actor, 'act on this request');
@@ -504,15 +584,24 @@ export class PropertiesService implements OnModuleInit {
   async markDealClosed(propertyId: string): Promise<void> {
     const property = await this.loadOrThrow(propertyId);
     property.status =
-      property.listingType === ListingType.RENT ? PropertyStatus.RENTED : PropertyStatus.SOLD;
+      property.listingType === ListingType.RENT
+        ? PropertyStatus.RENTED
+        : PropertyStatus.SOLD;
     await property.save();
-    this.logger.log(`Property ${propertyId} is now ${property.status} and hidden from buyer search.`);
+    this.logger.log(
+      `Property ${propertyId} is now ${property.status} and hidden from buyer search.`,
+    );
   }
 
-  /** Puts a listing back on the market — the deal that closed it fell through. */
+  /**
+   * Puts a listing back on the market when an offer is withdrawn/rejected or
+   * a purchase falls through. A listing reserved by an offer is deliberately
+   * handled here too: it is just as unavailable to other buyers as a closed
+   * deal, but can become available again when that negotiation ends.
+   */
   async markDealReopened(propertyId: string): Promise<void> {
     const property = await this.loadOrThrow(propertyId);
-    if (!isClosedStatus(property.status)) return;
+    if (!isOffMarketStatus(property.status)) return;
     property.status = PropertyStatus.AVAILABLE;
     await property.save();
     this.logger.log(`Property ${propertyId} is available again.`);
@@ -524,7 +613,64 @@ export class PropertiesService implements OnModuleInit {
     return isClosedStatus(property.status);
   }
 
-  async getOwnershipInfo(propertyId: string): Promise<{ adminId: string | null; sellerId: string | null }> {
+  /**
+   * Atomically reserves a live listing for the first valid offer. The status
+   * predicate means two buyers submitting at the same time cannot both start
+   * a negotiation, and the price predicate makes the asking-price ceiling a
+   * backend rule rather than a UI-only safeguard.
+   */
+  async reserveForOffer(
+    propertyId: string,
+    offerAmount: number,
+  ): Promise<PropertyResponseDto> {
+    this.assertValidId(propertyId);
+    const property = await this.propertyModel.findOneAndUpdate(
+      {
+        _id: propertyId,
+        verificationStatus: PropertyVerificationStatus.VERIFIED,
+        status: PropertyStatus.AVAILABLE,
+        price: { $gte: offerAmount },
+      },
+      { $set: { status: PropertyStatus.UNDER_OFFER } },
+      { new: true },
+    );
+    if (property) return this.toResponse(property);
+
+    // The atomic update did not match. Load the record only to return a
+    // useful business error; it is never used as the authorization decision.
+    const current = await this.loadOrThrow(propertyId);
+    if (current.verificationStatus !== PropertyVerificationStatus.VERIFIED) {
+      throw new BadRequestException(
+        `"${current.title}" is not available for offers.`,
+      );
+    }
+    if (current.status !== PropertyStatus.AVAILABLE) {
+      throw new BadRequestException(
+        `"${current.title}" is currently under offer or off the market.`,
+      );
+    }
+    if (offerAmount > current.price) {
+      throw new BadRequestException(
+        `Your offer cannot exceed the listed price of ₹${current.price.toLocaleString('en-IN')}.`,
+      );
+    }
+    throw new BadRequestException(
+      `"${current.title}" could not be reserved for your offer. Please try again.`,
+    );
+  }
+
+  /** Releases an offer hold without ever reopening a sold/rented listing. */
+  async releaseOfferHold(propertyId: string): Promise<void> {
+    this.assertValidId(propertyId);
+    await this.propertyModel.updateOne(
+      { _id: propertyId, status: PropertyStatus.UNDER_OFFER },
+      { $set: { status: PropertyStatus.AVAILABLE } },
+    );
+  }
+
+  async getOwnershipInfo(
+    propertyId: string,
+  ): Promise<{ adminId: string | null; sellerId: string | null }> {
     const property = await this.loadOrThrow(propertyId);
     return {
       adminId: property.adminId ? property.adminId.toString() : null,
@@ -540,9 +686,13 @@ export class PropertiesService implements OnModuleInit {
    * Hyderabad admin's queue and nowhere else. The superuser sees all four
    * cities.
    */
-  async findForReview(filters: ReviewQueueFilterDto, actor: AuthenticatedUser): Promise<PaginatedResult<PropertyResponseDto>> {
+  async findForReview(
+    filters: ReviewQueueFilterDto,
+    actor: AuthenticatedUser,
+  ): Promise<PaginatedResult<PropertyResponseDto>> {
     const query: QueryFilter<PropertyDocument> = {};
-    if (filters.verificationStatus) query.verificationStatus = filters.verificationStatus;
+    if (filters.verificationStatus)
+      query.verificationStatus = filters.verificationStatus;
     if (actor.role === Role.ADMIN) {
       // An admin with no recognised city sees nothing rather than everything.
       query.city = this.adminCity(actor) ?? '\u0000none';
@@ -571,7 +721,11 @@ export class PropertiesService implements OnModuleInit {
     };
   }
 
-  async update(id: string, dto: UpdatePropertyDto, actor: AuthenticatedUser): Promise<PropertyResponseDto> {
+  async update(
+    id: string,
+    dto: UpdatePropertyDto,
+    actor: AuthenticatedUser,
+  ): Promise<PropertyResponseDto> {
     const property = await this.loadOrThrow(id);
     this.assertCanManage(property, actor);
 
@@ -597,7 +751,20 @@ export class PropertiesService implements OnModuleInit {
       property.state = CITY_STATE[dto.city];
       property.adminId = await this.resolveCityAdminId(dto.city);
     }
-    if (dto.status !== undefined) property.status = dto.status;
+    if (dto.status !== undefined) {
+      // An in-flight negotiation owns the public availability state. Letting
+      // an edit switch it back to AVAILABLE would expose the property while
+      // an offer is still pending.
+      if (
+        property.status === PropertyStatus.UNDER_OFFER &&
+        dto.status !== PropertyStatus.UNDER_OFFER
+      ) {
+        throw new BadRequestException(
+          'This property is under offer and cannot be made public until that negotiation ends.',
+        );
+      }
+      property.status = dto.status;
+    }
     if (dto.images !== undefined) property.images = dto.images;
     // `adminId` is no longer caller-assignable: it is always the admin who
     // runs the property's city, derived above.
@@ -625,10 +792,15 @@ export class PropertiesService implements OnModuleInit {
    * check that makes "a Hyderabad property is verified by the Hyderabad
    * admin" true rather than merely conventional.
    */
-  private assertCanVerify(property: PropertyDocument, actor: AuthenticatedUser): void {
+  private assertCanVerify(
+    property: PropertyDocument,
+    actor: AuthenticatedUser,
+  ): void {
     if (actor.role === Role.SUPERUSER) return;
     if (actor.role !== Role.ADMIN) {
-      throw new ForbiddenException('Only an admin or superuser may verify or reject a property listing');
+      throw new ForbiddenException(
+        'Only an admin or superuser may verify or reject a property listing',
+      );
     }
     this.assertRunsCity(property.city, actor, 'verify or reject this listing');
   }
@@ -637,7 +809,11 @@ export class PropertiesService implements OnModuleInit {
    * Shared city guard: throws unless `actor` is the admin who runs `city`.
    * Callers must have already established that `actor` is an ADMIN.
    */
-  private assertRunsCity(city: string, actor: AuthenticatedUser, action: string): void {
+  private assertRunsCity(
+    city: string,
+    actor: AuthenticatedUser,
+    action: string,
+  ): void {
     const own = this.adminCity(actor);
     if (own && normalizeCity(city) === own) return;
     throw new ForbiddenException(
@@ -646,7 +822,10 @@ export class PropertiesService implements OnModuleInit {
   }
 
   /** Marks a listing verified. Only the city's own admin (or the superuser) may act — see assertCanVerify. */
-  async verify(id: string, actor: AuthenticatedUser): Promise<PropertyResponseDto> {
+  async verify(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<PropertyResponseDto> {
     const property = await this.loadOrThrow(id);
     this.assertCanVerify(property, actor);
     property.verificationStatus = PropertyVerificationStatus.VERIFIED;
@@ -659,7 +838,11 @@ export class PropertiesService implements OnModuleInit {
   }
 
   /** Marks a listing rejected, optionally with a reason shown to the seller. Same city-scoped authorization as verify(). */
-  async reject(id: string, reason: string | undefined, actor: AuthenticatedUser): Promise<PropertyResponseDto> {
+  async reject(
+    id: string,
+    reason: string | undefined,
+    actor: AuthenticatedUser,
+  ): Promise<PropertyResponseDto> {
     const property = await this.loadOrThrow(id);
     this.assertCanVerify(property, actor);
     property.verificationStatus = PropertyVerificationStatus.REJECTED;
@@ -678,7 +861,11 @@ export class PropertiesService implements OnModuleInit {
     this.assertCanManage(property, actor);
 
     property.documents.push(
-      ...files.map((f) => ({ url: f.url, originalName: f.originalName, uploadedAt: new Date() })),
+      ...files.map((f) => ({
+        url: f.url,
+        originalName: f.originalName,
+        uploadedAt: new Date(),
+      })),
     );
     await property.save();
     return this.toResponse(property, true);
@@ -689,7 +876,11 @@ export class PropertiesService implements OnModuleInit {
    * same authorization as addDocuments, but these are public (buyer-facing),
    * unlike verification documents.
    */
-  async addImages(id: string, actor: AuthenticatedUser, urls: string[]): Promise<PropertyResponseDto> {
+  async addImages(
+    id: string,
+    actor: AuthenticatedUser,
+    urls: string[],
+  ): Promise<PropertyResponseDto> {
     const property = await this.loadOrThrow(id);
     this.assertCanManage(property, actor);
 
@@ -704,7 +895,10 @@ export class PropertiesService implements OnModuleInit {
    * scoped to verified listings — pending/rejected submissions never appear
    * in public search results (see findForReview for the admin queue).
    */
-  async search(filters: ListingFilterDto, includeClosed = false): Promise<PaginatedResult<PropertyResponseDto>> {
+  async search(
+    filters: ListingFilterDto,
+    includeClosed = false,
+  ): Promise<PaginatedResult<PropertyResponseDto>> {
     if (
       filters.minPrice !== undefined &&
       filters.maxPrice !== undefined &&
@@ -713,35 +907,45 @@ export class PropertiesService implements OnModuleInit {
       throw new BadRequestException('minPrice cannot be greater than maxPrice');
     }
 
-    const query: QueryFilter<PropertyDocument> = {
-      verificationStatus: PropertyVerificationStatus.VERIFIED,
-    };
+    const page = filters.page ?? 1;
+    const limit = Math.min(filters.limit ?? 10, MAX_PAGE_SIZE);
+    const skip = (page - 1) * limit;
 
-    // A sold or rented listing is gone: it stays out of every buyer-facing
-    // result unless the caller asks for that status by name (an admin
-    // reviewing what closed) or opts in wholesale (the seeder, which has to
-    // see closed listings or it would recreate them as duplicates).
-    if (!includeClosed && !filters.status) {
-      query.status = { $nin: CLOSED_STATUSES };
+    // Public search is deliberately restricted to live AVAILABLE listings.
+    // `under_offer` is not a public catalogue state: the first offer reserves
+    // the property, so nobody else can see or offer on it through a crafted
+    // `?status=under_offer` query either. Internal callers (the seeder) pass
+    // includeClosed=true when they genuinely need every state.
+    if (
+      !includeClosed &&
+      filters.status &&
+      filters.status !== PropertyStatus.AVAILABLE
+    ) {
+      return { items: [], total: 0, page, limit, totalPages: 0 };
     }
 
-    if (filters.city) query.city = new RegExp(`^${escapeRegExp(filters.city)}$`, 'i');
-    if (filters.state) query.state = new RegExp(`^${escapeRegExp(filters.state)}$`, 'i');
+    const query: QueryFilter<PropertyDocument> = {
+      verificationStatus: PropertyVerificationStatus.VERIFIED,
+      ...(!includeClosed && { status: PropertyStatus.AVAILABLE }),
+    };
+
+    if (filters.city)
+      query.city = new RegExp(`^${escapeRegExp(filters.city)}$`, 'i');
+    if (filters.state)
+      query.state = new RegExp(`^${escapeRegExp(filters.state)}$`, 'i');
     if (filters.type) query.type = filters.type;
     if (filters.listingType) query.listingType = filters.listingType;
-    if (filters.status) query.status = filters.status;
-    if (filters.minBedrooms !== undefined) query.bedrooms = { $gte: filters.minBedrooms };
-    if (filters.minAreaSqft !== undefined) query.areaSqft = { $gte: filters.minAreaSqft };
+    if (includeClosed && filters.status) query.status = filters.status;
+    if (filters.minBedrooms !== undefined)
+      query.bedrooms = { $gte: filters.minBedrooms };
+    if (filters.minAreaSqft !== undefined)
+      query.areaSqft = { $gte: filters.minAreaSqft };
     if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
       query.price = {
         ...(filters.minPrice !== undefined && { $gte: filters.minPrice }),
         ...(filters.maxPrice !== undefined && { $lte: filters.maxPrice }),
       };
     }
-
-    const page = filters.page ?? 1;
-    const limit = Math.min(filters.limit ?? 10, MAX_PAGE_SIZE);
-    const skip = (page - 1) * limit;
 
     // Promoted listings come first — that placement is exactly what a seller
     // paid for. It is computed in the pipeline against "now" rather than read
@@ -751,7 +955,11 @@ export class PropertiesService implements OnModuleInit {
     const [raw, total] = await Promise.all([
       this.propertyModel.aggregate<Record<string, unknown>>([
         { $match: query },
-        { $addFields: { isPromoted: { $cond: [{ $gt: ['$featuredUntil', now] }, 1, 0] } } },
+        {
+          $addFields: {
+            isPromoted: { $cond: [{ $gt: ['$featuredUntil', now] }, 1, 0] },
+          },
+        },
         { $sort: { isPromoted: -1, featuredRank: -1, createdAt: -1 } },
         { $skip: skip },
         { $limit: limit },
@@ -772,11 +980,24 @@ export class PropertiesService implements OnModuleInit {
   }
 }
 
-/** Sold and rented are the two "off the market" states. */
-const CLOSED_STATUSES: PropertyStatus[] = [PropertyStatus.SOLD, PropertyStatus.RENTED];
+/** Sold and rented are final deal states. */
+const CLOSED_STATUSES: PropertyStatus[] = [
+  PropertyStatus.SOLD,
+  PropertyStatus.RENTED,
+];
+
+/** Any state that must stay out of the public catalogue. */
+const OFF_MARKET_STATUSES: PropertyStatus[] = [
+  ...CLOSED_STATUSES,
+  PropertyStatus.UNDER_OFFER,
+];
 
 function isClosedStatus(status: PropertyStatus): boolean {
   return CLOSED_STATUSES.includes(status);
+}
+
+function isOffMarketStatus(status: PropertyStatus): boolean {
+  return OFF_MARKET_STATUSES.includes(status);
 }
 
 function escapeRegExp(value: string): string {

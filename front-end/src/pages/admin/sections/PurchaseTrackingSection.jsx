@@ -10,11 +10,12 @@
  *            GET /purchases/review-queue (via desk.reload)
  */
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Badge, FilterPills, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import DealProgress from '../../../components/deals/DealProgress.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { purchasesApi } from '../../../api/services.js';
+import { advancePurchase, cancelPurchase } from '../../../store/actions/apiActions.js';
 import { formatCompactINR, formatINR, joinPlace } from '../../../utils/format.js';
 
 const STATUS = {
@@ -26,6 +27,7 @@ const STATUS = {
 export default function PurchaseTrackingSection({ desk }) {
   const { showToast } = useToast();
   const { confirm } = useDialog();
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState('all');
   const [busyId, setBusyId] = useState(null);
   const list = filter === 'all' ? desk.purchases : desk.purchases.filter((p) => p.dealStatus === filter);
@@ -33,11 +35,11 @@ export default function PurchaseTrackingSection({ desk }) {
   const advance = async (p) => {
     setBusyId(p.id);
     try {
-      await purchasesApi.advance(p.id);
+      await dispatch(advancePurchase(p.id)).unwrap();
       showToast('Purchase advanced');
       await desk.reload('purchases');
     } catch (err) {
-      showToast(err.message || 'Failed to advance purchase', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to advance purchase', 'error');
     } finally {
       setBusyId(null);
     }
@@ -48,11 +50,11 @@ export default function PurchaseTrackingSection({ desk }) {
       return;
     setBusyId(p.id);
     try {
-      await purchasesApi.cancel(p.id);
+      await dispatch(cancelPurchase(p.id)).unwrap();
       showToast('Purchase cancelled');
       await desk.reload('purchases');
     } catch (err) {
-      showToast(err.message || 'Failed to cancel purchase', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to cancel purchase', 'error');
     } finally {
       setBusyId(null);
     }

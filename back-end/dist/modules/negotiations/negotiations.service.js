@@ -51,7 +51,10 @@ let NegotiationsService = NegotiationsService_1 = class NegotiationsService {
         let propertyHasSeller;
         if (actor && propertyPopulated) {
             const sellerId = (0, reference_id_helper_js_1.referenceId)(property.sellerId);
-            canRespond = !!sellerId && actor.userType === user_schema_js_1.UserType.SELLER && actor.id === sellerId;
+            canRespond =
+                !!sellerId &&
+                    actor.userType === user_schema_js_1.UserType.SELLER &&
+                    actor.id === sellerId;
             propertyHasSeller = !!sellerId;
         }
         return {
@@ -139,19 +142,22 @@ let NegotiationsService = NegotiationsService_1 = class NegotiationsService {
         if (actor.userType !== user_schema_js_1.UserType.BUYER) {
             throw new common_1.ForbiddenException('Only buyer accounts can submit offers');
         }
-        const property = await this.propertiesService.findOne(dto.propertyId);
-        if (await this.propertiesService.isDealClosed(dto.propertyId)) {
-            throw new common_1.BadRequestException(`"${property.title}" is no longer on the market — it has already been ${property.status}.`);
+        await this.propertiesService.reserveForOffer(dto.propertyId, dto.offerAmount);
+        try {
+            const negotiation = await this.negotiationModel.create({
+                propertyId: dto.propertyId,
+                buyerId: actor.id,
+                offerAmount: dto.offerAmount,
+                message: dto.message ?? null,
+                paymentMode: dto.paymentMode ?? null,
+                status: negotiation_enum_js_1.NegotiationStatus.PENDING,
+            });
+            return this.toResponse(negotiation);
         }
-        const negotiation = await this.negotiationModel.create({
-            propertyId: dto.propertyId,
-            buyerId: actor.id,
-            offerAmount: dto.offerAmount,
-            message: dto.message ?? null,
-            paymentMode: dto.paymentMode ?? null,
-            status: negotiation_enum_js_1.NegotiationStatus.PENDING,
-        });
-        return this.toResponse(negotiation);
+        catch (error) {
+            await this.propertiesService.releaseOfferHold(dto.propertyId);
+            throw error;
+        }
     }
     async findByOwner(buyerId) {
         this.assertValidId(buyerId, 'user');
@@ -233,6 +239,13 @@ let NegotiationsService = NegotiationsService_1 = class NegotiationsService {
         if (![negotiation_enum_js_1.NegotiationStatus.PENDING, negotiation_enum_js_1.NegotiationStatus.COUNTERED].includes(negotiation.status)) {
             throw new common_1.BadRequestException(`Cannot counter a negotiation that is ${negotiation.status}`);
         }
+        const propertyId = (0, reference_id_helper_js_1.referenceId)(negotiation.propertyId);
+        if (!propertyId)
+            throw new common_1.NotFoundException('The property for this negotiation no longer exists');
+        const property = await this.propertiesService.findOne(propertyId, actor);
+        if (dto.counterAmount > property.price) {
+            throw new common_1.BadRequestException(`A counter-offer cannot exceed the listed price of ₹${property.price.toLocaleString('en-IN')}.`);
+        }
         negotiation.counterAmount = dto.counterAmount;
         negotiation.status = negotiation_enum_js_1.NegotiationStatus.COUNTERED;
         await negotiation.save();
@@ -259,13 +272,17 @@ let NegotiationsService = NegotiationsService_1 = class NegotiationsService {
         negotiation.status = negotiation_enum_js_1.NegotiationStatus.REJECTED;
         negotiation.rejectionReason = dto.reason ?? null;
         await negotiation.save();
+        const propertyId = (0, reference_id_helper_js_1.referenceId)(negotiation.propertyId);
+        if (propertyId)
+            await this.propertiesService.releaseOfferHold(propertyId);
         return this.toResponse(negotiation);
     }
     async acceptCounterByBuyer(id, actor) {
         const negotiation = await this.loadOrThrow(id);
         this.assertOwnsOrElevated(negotiation, actor);
         await this.assertStillOnTheMarket(negotiation);
-        if (negotiation.status !== negotiation_enum_js_1.NegotiationStatus.COUNTERED || negotiation.counterAmount == null) {
+        if (negotiation.status !== negotiation_enum_js_1.NegotiationStatus.COUNTERED ||
+            negotiation.counterAmount == null) {
             throw new common_1.BadRequestException('There is no counter-offer to accept on this negotiation');
         }
         negotiation.status = negotiation_enum_js_1.NegotiationStatus.ACCEPTED;
@@ -281,6 +298,9 @@ let NegotiationsService = NegotiationsService_1 = class NegotiationsService {
         }
         negotiation.status = negotiation_enum_js_1.NegotiationStatus.WITHDRAWN;
         await negotiation.save();
+        const propertyId = (0, reference_id_helper_js_1.referenceId)(negotiation.propertyId);
+        if (propertyId)
+            await this.propertiesService.releaseOfferHold(propertyId);
         return this.toResponse(negotiation);
     }
 };

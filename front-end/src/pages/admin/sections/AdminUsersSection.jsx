@@ -9,15 +9,17 @@
  *            POST /users (through UserFormModal), GET /users (via desk.reload)
  */
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Badge, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import UserFormModal from '../../../components/users/UserFormModal.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { usersApi } from '../../../api/services.js';
+import { deleteUser, updateUser } from '../../../store/actions/apiActions.js';
 
 export default function AdminUsersSection({ desk }) {
   const { showToast } = useToast();
   const { confirm } = useDialog();
+  const dispatch = useDispatch();
   const [query, setQuery] = useState('');
   const [role, setRole] = useState('all');
   const [adding, setAdding] = useState(false);
@@ -35,11 +37,11 @@ export default function AdminUsersSection({ desk }) {
     setBusyId(u.id);
     try {
       // Blocked accounts are refused at login and their sessions end at once.
-      await usersApi.update(u.id, { isBlocked: !u.isBlocked });
+      await dispatch(updateUser({ id: u.id, payload: { isBlocked: !u.isBlocked } })).unwrap();
       showToast(u.name + (u.isBlocked ? ' has been unblocked' : ' has been blocked'));
       await desk.reload('users');
     } catch (err) {
-      showToast(err.message || 'Failed to update user', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to update user', 'error');
     } finally {
       setBusyId(null);
     }
@@ -48,11 +50,11 @@ export default function AdminUsersSection({ desk }) {
   const remove = async (u) => {
     if (!(await confirm({ message: 'Delete this user? This cannot be undone.', confirmText: 'Delete', danger: true }))) return;
     try {
-      await usersApi.remove(u.id);
+      await dispatch(deleteUser(u.id)).unwrap();
       showToast('User deleted');
       desk.reload('users');
     } catch (err) {
-      showToast(err.message || 'Failed to delete user', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to delete user', 'error');
     }
   };
 

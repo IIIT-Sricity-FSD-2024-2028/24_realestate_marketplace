@@ -3,24 +3,17 @@
  * Purpose: Platform revenue report (superuser only). Keeps "collected"
  *          (verified payments) and "receivable" (earned, unpaid commission)
  *          separate so the numbers are never flattered.
- * Inputs:  Redux store (revenueSlice).
+ * Inputs:  none.
  * Outputs: stat cards, a 6-month bar chart, stream/city/plan breakdowns,
  *          checkout funnel and the recent payments table.
- * API calls (via Redux thunk): GET /billing/revenue
+ * API calls: GET /billing/revenue
  */
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge, PageHeader, StatCard, StatusLine } from '../../../components/common/ui.jsx';
-import { useAppDispatch, useAppSelector } from '../../../store/index.js';
-import {
-  fetchRevenue,
-  resetRevenue,
-  selectRevenueError,
-  selectRevenueReport,
-  selectRevenueStatus,
-} from '../../../store/slices/revenueSlice.js';
+import { fetchRevenue } from '../../../store/actions/apiActions.js';
 import { formatINR, shortDate } from '../../../utils/format.js';
 import { STREAM_LABELS } from '../../../utils/constants.js';
-import './RevenueSection.css';
 
 /** One labelled horizontal bar (name · meta · value + track). */
 function BarRow({ name, meta, value, percent, tone }) {
@@ -40,26 +33,14 @@ function BarRow({ name, meta, value, percent, tone }) {
 }
 
 export default function RevenueSection() {
-  const dispatch = useAppDispatch();
-
-  // ── Redux state (server data) ──────────────────────────────────────────
-  const report = useAppSelector(selectRevenueReport);
-  const status = useAppSelector(selectRevenueStatus);
-  const error = useAppSelector(selectRevenueError);
-
+  const dispatch = useDispatch();
+  const report = useSelector((state) => state.billing.revenue);
+  const loading = useSelector((state) => state.billing.loading.revenue);
+  const load = () => dispatch(fetchRevenue());
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchRevenue());
-    }
-  }, [dispatch, status]);
-
-  // Manual refresh — resets the slice so the next render dispatches a fresh fetch.
-  const handleRefresh = () => {
-    dispatch(resetRevenue());
     dispatch(fetchRevenue());
-  };
+  }, [dispatch]);
 
-  const loading = status === 'loading';
   const r = report || {};
   const monthly = r.monthly || [];
   const peakMonth = Math.max(0, ...monthly.map((m) => m.amount)); // tallest bar
@@ -79,13 +60,13 @@ export default function RevenueSection() {
         title="Revenue"
         subtitle="What the platform earns, where it comes from, and what is still owed."
         actions={
-          <button type="button" className="btn btn-secondary" onClick={handleRefresh} disabled={loading}>
+          <button type="button" className="btn btn-secondary" onClick={load} disabled={loading}>
             {loading ? 'Refreshing…' : 'Refresh'}
           </button>
         }
       />
       <div className="content">
-        <StatusLine loading={loading && !report} error={error} />
+        <StatusLine loading={loading && !report} />
         <div className="stats-grid">
           <StatCard label="Collected — verified payments only" value={formatINR(r.totalCollected)} icon="dollar" />
           <StatCard label="Receivable — earned, not yet settled" value={formatINR(r.receivable)} icon="clock" tone="yellow" />

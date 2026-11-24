@@ -7,11 +7,10 @@
  * API calls: made by each section component (see their headers).
  */
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import { useDashboardSection } from '../../hooks/useDashboardSection.js';
-import { logoutPathForRole } from '../../auth/session.js';
-import { useAppDispatch, useAppSelector } from '../../store/index.js';
-import { clearUser, selectAuthUser } from '../../store/slices/authSlice.js';
+import { clearUser, logoutPathForRole } from '../../auth/session.js';
 import SuperuserOverview from './sections/SuperuserOverview.jsx';
 import UserManagementSection from './sections/UserManagementSection.jsx';
 import PropertyOperationsSection from './sections/PropertyOperationsSection.jsx';
@@ -42,13 +41,12 @@ const SECTIONS = {
 
 export default function SuperuserDashboardPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [active, goTo] = useDashboardSection('/superuser', 'superuser', KEYS, 'dashboard');
-  const user = useAppSelector(selectAuthUser) || {};
+  const user = useSelector((state) => state.auth.user || {});
   const Section = SECTIONS[active];
 
   const logout = () => {
-    dispatch(clearUser()); // clears Redux state + session storage
+    clearUser(); // forget the token
     navigate(logoutPathForRole('superuser'));
   };
 

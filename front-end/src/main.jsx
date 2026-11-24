@@ -2,15 +2,15 @@
  * main.jsx
  * Purpose: Entry point — mounts the React app into <div id="root">.
  * Inputs:  none.
- * Outputs: renders <App /> wrapped in the Redux Provider and browser router.
+ * Outputs: renders <App /> wrapped in the browser router.
  * API calls: none.
  */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from './store/index.js';
 import App from './App.jsx';
+import { store } from './store/index.js';
 // Global design tokens, layout and component styles (shared by every page).
 import './styles/global.css';
 
@@ -18,9 +18,8 @@ import './styles/global.css';
 createRoot(document.getElementById('root')).render(
   // StrictMode surfaces unsafe patterns during development only.
   <StrictMode>
-    {/* Provider makes the Redux store available to every component in the tree. */}
+    {/* BrowserRouter keeps the URL in sync with the page being shown. */}
     <Provider store={store}>
-      {/* BrowserRouter keeps the URL in sync with the page being shown. */}
       <BrowserRouter>
         <App />
       </BrowserRouter>

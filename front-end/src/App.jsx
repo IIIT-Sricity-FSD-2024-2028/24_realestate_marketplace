@@ -18,9 +18,9 @@
  */
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { ToastProvider } from './components/feedback/ToastProvider.jsx';
-import { DialogProvider } from './components/feedback/DialogProvider.jsx';
-import { PaymentProvider } from './components/payments/PaymentProvider.jsx';
+import { ToastHost } from './components/feedback/ToastProvider.jsx';
+import { DialogHost } from './components/feedback/DialogProvider.jsx';
+import { PaymentHost } from './components/payments/PaymentProvider.jsx';
 import ProtectedRoute from './auth/ProtectedRoute.jsx';
 import LandingPage from './pages/LandingPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
@@ -67,57 +67,56 @@ function LegacyRedirect() {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <DialogProvider>
-        <PaymentProvider>
-          <Suspense fallback={<PageLoading />}>
-            <Routes>
-              {/* Public pages */}
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<AuthPage />} />
-              <Route path="/admin/login" element={<AdminLoginPage />} />
-              <Route path="/superuser/login" element={<SuperuserLoginPage />} />
+    <>
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          {/* Public pages */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<AuthPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/superuser/login" element={<SuperuserLoginPage />} />
 
-              {/* Dashboards — each guarded by role; ":section" picks the tab. */}
-              <Route
-                path="/buyer/:section?"
-                element={
-                  <ProtectedRoute role="buyer">
-                    <BuyerDashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/seller/:section?"
-                element={
-                  <ProtectedRoute role="seller">
-                    <SellerDashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/:section?"
-                element={
-                  <ProtectedRoute role="admin">
-                    <AdminDashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/superuser/:section?"
-                element={
-                  <ProtectedRoute role="superuser">
-                    <SuperuserDashboardPage />
-                  </ProtectedRoute>
-                }
-              />
+          {/* Dashboards — each guarded by role; ":section" picks the tab. */}
+          <Route
+            path="/buyer/:section?"
+            element={
+              <ProtectedRoute role="buyer">
+                <BuyerDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/:section?"
+            element={
+              <ProtectedRoute role="seller">
+                <SellerDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/:section?"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superuser/:section?"
+            element={
+              <ProtectedRoute role="superuser">
+                <SuperuserDashboardPage />
+              </ProtectedRoute>
+            }
+          />
 
-              {/* Everything else: old .html links or a real 404. */}
-              <Route path="*" element={<LegacyRedirect />} />
-            </Routes>
-          </Suspense>
-        </PaymentProvider>
-      </DialogProvider>
-    </ToastProvider>
+          {/* Everything else: old .html links or a real 404. */}
+          <Route path="*" element={<LegacyRedirect />} />
+        </Routes>
+      </Suspense>
+      <ToastHost />
+      <DialogHost />
+      <PaymentHost />
+    </>
   );
 }

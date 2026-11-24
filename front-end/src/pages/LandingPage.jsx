@@ -15,16 +15,16 @@
  * from the database, so nothing on the page is invented.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import SiteHeader from '../components/layout/SiteHeader.jsx';
 import PropertyCard from '../components/property/PropertyCard.jsx';
 import PublicPropertyModal from '../components/property/PublicPropertyModal.jsx';
 import Icon from '../components/common/Icon.jsx';
 import { EmptyState, Pager, StatusLine } from '../components/common/ui.jsx';
-import { propertiesApi } from '../api/services.js';
+import { fetchFeaturedListings, fetchListingStats, fetchLiveListings } from '../store/actions/apiActions.js';
 import { capitalize } from '../utils/format.js';
 import { PROPERTY_TYPES, SERVICE_CITIES } from '../utils/constants.js';
-import './LandingPage.css';
 
 // Hero "Budget" choices → price range in rupees (1 Cr = 1,00,00,000).
 const BUDGETS = {
@@ -41,78 +41,46 @@ const EMPTY_LIVE = { city: '', type: '', minPrice: '', maxPrice: '' };
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const featuredRef = useRef(null); // scroll target after a hero search
 
-  // ── Stats row (real totals) ──
-  const [stats, setStats] = useState(null);
+  const stats = useSelector((state) => state.listings.stats);
+  const featured = useSelector((state) => state.listings.featured);
+  const liveData = useSelector((state) => state.listings.live);
 
   // ── Hero search → Featured / Search Results ──
   const [hero, setHero] = useState(EMPTY_HERO); // form values
   const [heroApplied, setHeroApplied] = useState(EMPTY_HERO); // last searched values
-  const [featured, setFeatured] = useState({ items: [], total: 0, loading: true, error: '' });
 
   // ── Live Listings (server-side filters + pages) ──
   const [live, setLive] = useState(EMPTY_LIVE);
   const [liveApplied, setLiveApplied] = useState(EMPTY_LIVE);
   const [livePage, setLivePage] = useState(1);
-  const [liveData, setLiveData] = useState({ items: [], page: 1, totalPages: 1, total: 0, loading: true, error: '' });
 
   const [selected, setSelected] = useState(null); // listing in the detail dialog
 
   // Load the three real totals once.
   useEffect(() => {
-    Promise.all([
-      propertiesApi.list({ limit: 1 }),
-      propertiesApi.list({ limit: 1, listingType: 'sale' }),
-      propertiesApi.list({ limit: 1, listingType: 'rent' }),
-    ])
-      .then(([all, sale, rent]) => setStats({ all: all.data.total, sale: sale.data.total, rent: rent.data.total }))
-      .catch(() => setStats(null)); // the stats row simply hides on failure
-  }, []);
+    dispatch(fetchListingStats());
+  }, [dispatch]);
 
   // Featured grid follows the last applied hero search.
   useEffect(() => {
-    let alive = true;
-    setFeatured((f) => ({ ...f, loading: true, error: '' }));
-    propertiesApi
-      .list({
+    dispatch(
+      fetchFeaturedListings({
         limit: FEATURED_COUNT,
         listingType: heroApplied.listingType,
         city: heroApplied.city,
         type: heroApplied.type,
         ...BUDGETS[heroApplied.budget],
-      })
-      .then((res) => alive && setFeatured({ items: res.data.items, total: res.data.total, loading: false, error: '' }))
-      .catch((err) => alive && setFeatured({ items: [], total: 0, loading: false, error: err.message }));
-    return () => {
-      alive = false; // ignore a slow response after a newer search
-    };
-  }, [heroApplied]);
+      }),
+    );
+  }, [dispatch, heroApplied]);
 
   // Live Listings follow their own filters + page number.
   useEffect(() => {
-    let alive = true;
-    setLiveData((d) => ({ ...d, loading: true, error: '' }));
-    propertiesApi
-      .list({ page: livePage, limit: LIVE_PAGE_SIZE, ...liveApplied })
-      .then((res) => alive && setLiveData({ ...res.data, loading: false, error: '' }))
-      .catch(
-        (err) =>
-          alive &&
-          setLiveData({
-            items: [],
-            page: 1,
-            totalPages: 1,
-            total: 0,
-            loading: false,
-            // A status means the API answered with an error; no status = unreachable.
-            error: err.status !== undefined ? err.message : "Couldn't reach the API. Is the backend running?",
-          }),
-      );
-    return () => {
-      alive = false;
-    };
-  }, [liveApplied, livePage]);
+    dispatch(fetchLiveListings({ page: livePage, limit: LIVE_PAGE_SIZE, ...liveApplied }));
+  }, [dispatch, liveApplied, livePage]);
 
   const heroActive = Object.values(heroApplied).some(Boolean); // any filter in use?
 

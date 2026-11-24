@@ -1,49 +1,39 @@
-/**
- * SuperuserOverview.jsx
- * Purpose: "Super Admin Overview" — global counts and platform health.
- * Inputs:  Redux store (overviewSlice).
- * Outputs: four stat cards (all real numbers).
- * API calls (via Redux thunks): GET /users, GET /properties?limit=1, GET /health
- */
+/** Platform overview derived entirely from Redux repository slices. */
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { PageHeader, StatCard, StatusLine } from '../../../components/common/ui.jsx';
-import { useAppDispatch, useAppSelector } from '../../../store/index.js';
-import {
-  fetchOverview,
-  fetchOverviewHealth,
-  selectOverviewError,
-  selectOverviewHealth,
-  selectOverviewStats,
-  selectOverviewStatus,
-} from '../../../store/slices/overviewSlice.js';
+import { fetchHealth, fetchProperties, fetchUsers } from '../../../store/actions/apiActions.js';
 
 export default function SuperuserOverview() {
-  const dispatch = useAppDispatch();
-  const stats = useAppSelector(selectOverviewStats);
-  const health = useAppSelector(selectOverviewHealth);
-  const status = useAppSelector(selectOverviewStatus);
-  const error = useAppSelector(selectOverviewError);
-
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.items);
+  const userLoading = useSelector((state) => state.users.loading);
+  const propertyTotal = useSelector((state) => state.properties.public.total);
+  const propertyLoading = useSelector((state) => state.properties.loading.public);
+  const health = useSelector((state) => state.system.health);
+  const error = useSelector((state) => state.users.error || state.properties.error || state.system.error);
   useEffect(() => {
-    // Only fetch if we don't already have data (avoids refetch on every tab-switch).
-    if (status === 'idle') {
-      dispatch(fetchOverview());
-      dispatch(fetchOverviewHealth());
-    }
-  }, [dispatch, status]);
-
-  const healthy = health && health.status === 'ok';
+    dispatch(fetchUsers());
+    dispatch(fetchProperties({ limit: 1 }));
+    dispatch(fetchHealth());
+  }, [dispatch]);
+  const healthy = health?.status === 'ok';
   return (
     <>
       <PageHeader title="Super Admin Overview" subtitle="Global statistics and platform health metrics." />
       <div className="content">
-        <StatusLine error={error} />
+        <StatusLine loading={userLoading || propertyLoading} error={error} />
         <div className="stats-grid">
-          <StatCard label="Total Users" value={stats ? stats.totalUsers : '…'} icon="users" />
-          <StatCard label="Total Properties" value={stats ? stats.totalProperties : '…'} icon="home" tone="blue" />
-          <StatCard label="Active Users (not blocked)" value={stats ? stats.activeUsers : '…'} icon="calendar" tone="yellow" />
+          <StatCard label="Total Users" value={userLoading ? '…' : users.length} icon="users" />
+          <StatCard label="Total Properties" value={propertyLoading ? '…' : propertyTotal} icon="home" tone="blue" />
           <StatCard
-            label={health && health.database ? 'System Status · database ' + health.database : 'System Status'}
+            label="Active Users (not blocked)"
+            value={userLoading ? '…' : users.filter((user) => !user.isBlocked).length}
+            icon="calendar"
+            tone="yellow"
+          />
+          <StatCard
+            label={health?.database ? 'System Status · database ' + health.database : 'System Status'}
             value={health ? (healthy ? 'OK' : String(health.status).toUpperCase()) : '…'}
             icon="shield"
             tone={healthy ? 'green' : 'red'}

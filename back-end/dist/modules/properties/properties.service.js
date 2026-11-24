@@ -65,7 +65,10 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
                 const admin = await this.usersService.findAdminForCity(city);
                 if (!admin)
                     continue;
-                await this.propertyModel.updateMany({ city: { $in: (0, service_cities_js_1.citySpellings)(city) }, $or: [{ adminId: { $ne: admin._id } }, { city: { $ne: city } }] }, { $set: { adminId: admin._id, city, state: service_cities_js_1.CITY_STATE[city] } });
+                await this.propertyModel.updateMany({
+                    city: { $in: (0, service_cities_js_1.citySpellings)(city) },
+                    $or: [{ adminId: { $ne: admin._id } }, { city: { $ne: city } }],
+                }, { $set: { adminId: admin._id, city, state: service_cities_js_1.CITY_STATE[city] } });
             }
             const fallbackAdmin = await this.usersService.findAdminForCity(service_cities_js_1.FALLBACK_CITY);
             if (fallbackAdmin) {
@@ -104,7 +107,11 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
             status: p.status,
             images: p.images,
             adminId: p.adminId ? p.adminId.toString() : null,
-            sellerId: sellerIsPopulated ? seller._id.toString() : p.sellerId ? p.sellerId.toString() : null,
+            sellerId: sellerIsPopulated
+                ? seller._id.toString()
+                : p.sellerId
+                    ? p.sellerId.toString()
+                    : null,
             verificationStatus: p.verificationStatus,
             rejectionReason: p.rejectionReason ?? null,
             isFeatured: !!p.featuredUntil && p.featuredUntil.getTime() > Date.now(),
@@ -208,11 +215,14 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
         }
         const pack = pricing_js_1.FEATURED_PACKS[tier];
         const now = new Date();
-        const from = property.featuredUntil && property.featuredUntil > now ? property.featuredUntil : now;
+        const from = property.featuredUntil && property.featuredUntil > now
+            ? property.featuredUntil
+            : now;
         const until = new Date(from);
         until.setDate(until.getDate() + pack.days);
         property.featuredUntil = until;
-        if (!property.featuredTier || pack.rank >= (pricing_js_1.FEATURED_PACKS[property.featuredTier]?.rank ?? 0)) {
+        if (!property.featuredTier ||
+            pack.rank >= (pricing_js_1.FEATURED_PACKS[property.featuredTier]?.rank ?? 0)) {
             property.featuredTier = tier;
             property.featuredRank = pack.rank;
         }
@@ -237,7 +247,7 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
     async promotableForSeller(sellerId) {
         this.assertValidId(sellerId, 'user');
         const properties = await this.propertyModel
-            .find({ sellerId, status: { $nin: CLOSED_STATUSES } })
+            .find({ sellerId, status: property_enum_js_1.PropertyStatus.AVAILABLE })
             .sort({ createdAt: -1 });
         return properties.map((p) => this.toResponse(p));
     }
@@ -249,6 +259,14 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
     }
     async findOne(id, actor) {
         const property = await this.loadOrThrow(id);
+        const isPublicListing = property.verificationStatus === property_enum_js_1.PropertyVerificationStatus.VERIFIED &&
+            property.status === property_enum_js_1.PropertyStatus.AVAILABLE;
+        const canViewPrivateListing = !!actor &&
+            (isElevated(actor.role) ||
+                (!!property.sellerId && property.sellerId.toString() === actor.id));
+        if (!isPublicListing && !canViewPrivateListing) {
+            throw new common_1.NotFoundException(`Property with ID "${id}" not found`);
+        }
         return this.toResponse(property, this.canSeeDocuments(property, actor));
     }
     async findByOwner(ownerId) {
@@ -293,13 +311,15 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
     async markDealClosed(propertyId) {
         const property = await this.loadOrThrow(propertyId);
         property.status =
-            property.listingType === property_enum_js_1.ListingType.RENT ? property_enum_js_1.PropertyStatus.RENTED : property_enum_js_1.PropertyStatus.SOLD;
+            property.listingType === property_enum_js_1.ListingType.RENT
+                ? property_enum_js_1.PropertyStatus.RENTED
+                : property_enum_js_1.PropertyStatus.SOLD;
         await property.save();
         this.logger.log(`Property ${propertyId} is now ${property.status} and hidden from buyer search.`);
     }
     async markDealReopened(propertyId) {
         const property = await this.loadOrThrow(propertyId);
-        if (!isClosedStatus(property.status))
+        if (!isOffMarketStatus(property.status))
             return;
         property.status = property_enum_js_1.PropertyStatus.AVAILABLE;
         await property.save();
@@ -308,6 +328,32 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
     async isDealClosed(propertyId) {
         const property = await this.loadOrThrow(propertyId);
         return isClosedStatus(property.status);
+    }
+    async reserveForOffer(propertyId, offerAmount) {
+        this.assertValidId(propertyId);
+        const property = await this.propertyModel.findOneAndUpdate({
+            _id: propertyId,
+            verificationStatus: property_enum_js_1.PropertyVerificationStatus.VERIFIED,
+            status: property_enum_js_1.PropertyStatus.AVAILABLE,
+            price: { $gte: offerAmount },
+        }, { $set: { status: property_enum_js_1.PropertyStatus.UNDER_OFFER } }, { new: true });
+        if (property)
+            return this.toResponse(property);
+        const current = await this.loadOrThrow(propertyId);
+        if (current.verificationStatus !== property_enum_js_1.PropertyVerificationStatus.VERIFIED) {
+            throw new common_1.BadRequestException(`"${current.title}" is not available for offers.`);
+        }
+        if (current.status !== property_enum_js_1.PropertyStatus.AVAILABLE) {
+            throw new common_1.BadRequestException(`"${current.title}" is currently under offer or off the market.`);
+        }
+        if (offerAmount > current.price) {
+            throw new common_1.BadRequestException(`Your offer cannot exceed the listed price of ₹${current.price.toLocaleString('en-IN')}.`);
+        }
+        throw new common_1.BadRequestException(`"${current.title}" could not be reserved for your offer. Please try again.`);
+    }
+    async releaseOfferHold(propertyId) {
+        this.assertValidId(propertyId);
+        await this.propertyModel.updateOne({ _id: propertyId, status: property_enum_js_1.PropertyStatus.UNDER_OFFER }, { $set: { status: property_enum_js_1.PropertyStatus.AVAILABLE } });
     }
     async getOwnershipInfo(propertyId) {
         const property = await this.loadOrThrow(propertyId);
@@ -369,8 +415,13 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
             property.state = service_cities_js_1.CITY_STATE[dto.city];
             property.adminId = await this.resolveCityAdminId(dto.city);
         }
-        if (dto.status !== undefined)
+        if (dto.status !== undefined) {
+            if (property.status === property_enum_js_1.PropertyStatus.UNDER_OFFER &&
+                dto.status !== property_enum_js_1.PropertyStatus.UNDER_OFFER) {
+                throw new common_1.BadRequestException('This property is under offer and cannot be made public until that negotiation ends.');
+            }
             property.status = dto.status;
+        }
         if (dto.images !== undefined)
             property.images = dto.images;
         if (!isElevated(actor.role)) {
@@ -418,7 +469,11 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
     async addDocuments(id, actor, files) {
         const property = await this.loadOrThrow(id);
         this.assertCanManage(property, actor);
-        property.documents.push(...files.map((f) => ({ url: f.url, originalName: f.originalName, uploadedAt: new Date() })));
+        property.documents.push(...files.map((f) => ({
+            url: f.url,
+            originalName: f.originalName,
+            uploadedAt: new Date(),
+        })));
         await property.save();
         return this.toResponse(property, true);
     }
@@ -435,12 +490,18 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
             filters.minPrice > filters.maxPrice) {
             throw new common_1.BadRequestException('minPrice cannot be greater than maxPrice');
         }
+        const page = filters.page ?? 1;
+        const limit = Math.min(filters.limit ?? 10, MAX_PAGE_SIZE);
+        const skip = (page - 1) * limit;
+        if (!includeClosed &&
+            filters.status &&
+            filters.status !== property_enum_js_1.PropertyStatus.AVAILABLE) {
+            return { items: [], total: 0, page, limit, totalPages: 0 };
+        }
         const query = {
             verificationStatus: property_enum_js_1.PropertyVerificationStatus.VERIFIED,
+            ...(!includeClosed && { status: property_enum_js_1.PropertyStatus.AVAILABLE }),
         };
-        if (!includeClosed && !filters.status) {
-            query.status = { $nin: CLOSED_STATUSES };
-        }
         if (filters.city)
             query.city = new RegExp(`^${escapeRegExp(filters.city)}$`, 'i');
         if (filters.state)
@@ -449,7 +510,7 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
             query.type = filters.type;
         if (filters.listingType)
             query.listingType = filters.listingType;
-        if (filters.status)
+        if (includeClosed && filters.status)
             query.status = filters.status;
         if (filters.minBedrooms !== undefined)
             query.bedrooms = { $gte: filters.minBedrooms };
@@ -461,14 +522,15 @@ let PropertiesService = PropertiesService_1 = class PropertiesService {
                 ...(filters.maxPrice !== undefined && { $lte: filters.maxPrice }),
             };
         }
-        const page = filters.page ?? 1;
-        const limit = Math.min(filters.limit ?? 10, MAX_PAGE_SIZE);
-        const skip = (page - 1) * limit;
         const now = new Date();
         const [raw, total] = await Promise.all([
             this.propertyModel.aggregate([
                 { $match: query },
-                { $addFields: { isPromoted: { $cond: [{ $gt: ['$featuredUntil', now] }, 1, 0] } } },
+                {
+                    $addFields: {
+                        isPromoted: { $cond: [{ $gt: ['$featuredUntil', now] }, 1, 0] },
+                    },
+                },
                 { $sort: { isPromoted: -1, featuredRank: -1, createdAt: -1 } },
                 { $skip: skip },
                 { $limit: limit },
@@ -493,9 +555,19 @@ exports.PropertiesService = PropertiesService = PropertiesService_1 = __decorate
         users_service_js_1.UsersService,
         subscriptions_service_js_1.SubscriptionsService])
 ], PropertiesService);
-const CLOSED_STATUSES = [property_enum_js_1.PropertyStatus.SOLD, property_enum_js_1.PropertyStatus.RENTED];
+const CLOSED_STATUSES = [
+    property_enum_js_1.PropertyStatus.SOLD,
+    property_enum_js_1.PropertyStatus.RENTED,
+];
+const OFF_MARKET_STATUSES = [
+    ...CLOSED_STATUSES,
+    property_enum_js_1.PropertyStatus.UNDER_OFFER,
+];
 function isClosedStatus(status) {
     return CLOSED_STATUSES.includes(status);
+}
+function isOffMarketStatus(status) {
+    return OFF_MARKET_STATUSES.includes(status);
 }
 function escapeRegExp(value) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

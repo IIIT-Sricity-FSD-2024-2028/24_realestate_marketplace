@@ -1,39 +1,48 @@
-/**
- * authSlice.js
- * Purpose: Holds the signed-in user object in Redux so superuser dashboard
- *          components can read it via useSelector instead of calling getUser().
- * Initial state: hydrated from session.js (reads sessionStorage/localStorage
- *                once at startup — no new writes).
- * Reducers:
- *   setUser(user)  — called after a successful login
- *   clearUser()    — called on logout
- */
 import { createSlice } from '@reduxjs/toolkit';
-import { getUser, setUser as writeSession, clearUser as clearSession } from '../../auth/session.js';
+import { login, register } from '../actions/apiActions.js';
+
+const initialState = { user: null, status: 'idle', error: null };
+const errorMessage = (payload) => payload?.message || payload || 'Authentication failed';
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    // Hydrate from session storage so a page refresh doesn't lose the user.
-    user: getUser(),
-  },
+  initialState,
   reducers: {
-    /** Store a freshly-signed-in user both in Redux and in session storage. */
-    setUser(state, action) {
+    sessionStarted(state, action) {
       state.user = action.payload;
-      writeSession(action.payload);
+      state.status = 'authenticated';
+      state.error = null;
     },
-    /** Sign out: clear Redux state and both storage areas. */
-    clearUser(state) {
-      state.user = null;
-      clearSession();
+    sessionCleared() {
+      return initialState;
     },
+  },
+  extraReducers: (builder) => {
+    for (const action of [login, register]) {
+      builder.addCase(action.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      });
+      builder.addCase(action.fulfilled, (state, { payload }) => {
+        const account = payload.user;
+        state.user = {
+          id: account.id,
+          name: account.name,
+          email: account.email,
+          role: account.role === 'user' ? account.userType : account.role,
+          userType: account.userType,
+          city: account.city || null,
+          token: payload.accessToken,
+        };
+        state.status = 'authenticated';
+      });
+      builder.addCase(action.rejected, (state, { payload }) => {
+        state.status = 'error';
+        state.error = errorMessage(payload);
+      });
+    }
   },
 });
 
-export const { setUser, clearUser } = authSlice.actions;
-
-// ── Selectors ──────────────────────────────────────────────────────────────
-export const selectAuthUser = (state) => state.auth.user;
-
+export const { sessionStarted, sessionCleared } = authSlice.actions;
 export default authSlice.reducer;

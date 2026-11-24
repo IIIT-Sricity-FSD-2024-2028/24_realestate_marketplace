@@ -3,45 +3,27 @@
  * Purpose: "My Listings" — every property this seller submitted (any status)
  *          with photos, document count, featured flag, rejection reason,
  *          filter pills and delete. Links to the Add Property form.
- * Inputs (props): data (optional, falls back to Redux); goTo(section)
+ * Inputs (props): data – useSellerData(); goTo(section)
  * Outputs: quota banner, create card, filters and the listings table.
- * API calls: DELETE /properties/:id (via Redux deleteSellerListing thunk)
+ * API calls: DELETE /properties/:id, GET /properties/mine (via data.reload)
  */
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Badge, Card, FilterPills, PageHeader } from '../../../components/common/ui.jsx';
 import Icon from '../../../components/common/Icon.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
+import { deleteProperty } from '../../../store/actions/apiActions.js';
 import { formatINR } from '../../../utils/format.js';
 import { VERIFICATION_DISPLAY } from '../../../utils/constants.js';
 import { QuotaNotice } from '../components/QuotaNotice.jsx';
-import {
-  selectSellerListings,
-  selectSellerBilling,
-  selectSellerLoading,
-  selectSellerErrors,
-  selectSellerListingsFilter,
-  setListingsFilter,
-  deleteSellerListing,
-} from '../../../store/slices/sellerSlice.js';
-import './MyListingsSection.css';
 
 export default function MyListingsSection({ data, goTo }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { confirm } = useDialog();
-
-  const reduxListings = useSelector(selectSellerListings);
-  const reduxBilling = useSelector(selectSellerBilling);
-  const reduxLoading = useSelector(selectSellerLoading);
-  const reduxErrors = useSelector(selectSellerErrors);
-  const reduxFilter = useSelector(selectSellerListingsFilter);
-
-  const listings = data?.listings || reduxListings;
-  const billing = data?.billing || reduxBilling;
-  const loading = data?.loading || reduxLoading;
-  const errors = data?.errors || reduxErrors;
-  const filter = reduxFilter || 'all';
+  const dispatch = useDispatch();
+  const [filter, setFilter] = useState('all');
+  const listings = data.listings;
 
   // Count per verification bucket for the pills.
   const counts = { all: listings.length, approved: 0, pending: 0, rejected: 0 };
@@ -54,21 +36,19 @@ export default function MyListingsSection({ data, goTo }) {
   const remove = async (p) => {
     if (!(await confirm({ message: 'Delete this property listing? This cannot be undone.', confirmText: 'Delete', danger: true }))) return;
     try {
-      if (data?.deleteListing) {
-        await data.deleteListing(p.id);
-      } else {
-        await dispatch(deleteSellerListing(p.id)).unwrap();
-      }
+      await dispatch(deleteProperty(p.id)).unwrap();
       showToast('Property deleted');
+      data.reload('listings');
+      data.reload('billing'); // frees a quota slot
     } catch (err) {
-      showToast(err.message || 'Failed to delete property', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to delete property', 'error');
     }
   };
 
   return (
     <>
       <PageHeader title="My Listings" subtitle="Create and manage your property listings">
-        <QuotaNotice billing={billing} listings={listings} onUpgrade={() => goTo && goTo('billing')} />
+        <QuotaNotice billing={data.billing} listings={listings} onUpgrade={() => goTo('billing')} />
       </PageHeader>
       <div className="content">
         <Card className="create-card">
@@ -77,7 +57,7 @@ export default function MyListingsSection({ data, goTo }) {
           </span>
           <h2 className="card-title-lg">Create New Property Listing</h2>
           <p className="text-secondary mb-3">List your property for sale or rent. Fill out the details and submit for admin review.</p>
-          <button type="button" className="btn btn-primary" onClick={() => goTo && goTo('add-property')}>
+          <button type="button" className="btn btn-primary" onClick={() => goTo('add-property')}>
             + Add New Property
           </button>
         </Card>
@@ -85,7 +65,7 @@ export default function MyListingsSection({ data, goTo }) {
         <FilterPills
           label="Listing status"
           value={filter}
-          onChange={(val) => dispatch(setListingsFilter(val))}
+          onChange={setFilter}
           options={[
             { key: 'all', label: 'All', count: counts.all },
             { key: 'approved', label: 'Approved', count: counts.approved },
@@ -108,16 +88,16 @@ export default function MyListingsSection({ data, goTo }) {
                 </tr>
               </thead>
               <tbody>
-                {loading.listings ? (
+                {data.loading.listings ? (
                   <tr>
                     <td colSpan={6} className="table-empty">
                       Loading…
                     </td>
                   </tr>
-                ) : errors.listings ? (
+                ) : data.errors.listings ? (
                   <tr>
                     <td colSpan={6} className="table-empty text-danger">
-                      {errors.listings}
+                      {data.errors.listings}
                     </td>
                   </tr>
                 ) : visible.length === 0 ? (

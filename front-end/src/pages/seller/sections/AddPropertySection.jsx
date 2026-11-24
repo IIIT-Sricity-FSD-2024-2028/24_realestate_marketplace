@@ -5,30 +5,21 @@
  *          uploads the chosen photos (public) and ownership documents
  *          (private, admins only). A full plan (HTTP 402) opens the upgrade
  *          dialog while keeping the form filled in.
- * Inputs (props): data (optional, falls back to Redux); goTo(section)
+ * Inputs (props): data – useSellerData(); goTo(section)
  * Outputs: the multi-card form.
  * API calls: POST /properties, POST /properties/:id/images (multipart),
  *            POST /properties/:id/documents (multipart)
  */
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Card } from '../../../components/common/ui.jsx';
 import { FormField, TextInput } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
-import { propertiesApi } from '../../../api/services.js';
-import { errorText } from '../../../api/client.js';
+import { createProperty, uploadPropertyDocuments, uploadPropertyImages } from '../../../store/actions/apiActions.js';
 import { isPositiveNumber, toNumber } from '../../../utils/validation.js';
 import { PROPERTY_TYPES, SERVICE_CITIES, SERVICE_CITY_STATE } from '../../../utils/constants.js';
 import { capitalize } from '../../../utils/format.js';
 import { QuotaNotice, QuotaUpgradeModal } from '../components/QuotaNotice.jsx';
-import {
-  selectSellerBilling,
-  selectSellerListings,
-  selectSellerQuotaMessage,
-  setQuotaMessage,
-  clearQuotaMessage,
-  reloadSellerResource,
-} from '../../../store/slices/sellerSlice.js';
 
 const EMPTY = {
   title: '',
@@ -81,21 +72,13 @@ export function validateNewProperty(f) {
 export default function AddPropertySection({ data, goTo }) {
   const dispatch = useDispatch();
   const { showToast } = useToast();
-
-  const reduxBilling = useSelector(selectSellerBilling);
-  const reduxListings = useSelector(selectSellerListings);
-  const reduxQuotaMessage = useSelector(selectSellerQuotaMessage);
-
-  const billing = data?.billing || reduxBilling;
-  const listings = data?.listings || reduxListings;
-  const quotaMessage = reduxQuotaMessage;
-
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [images, setImages] = useState(null); // FileList of photos
   const [documents, setDocuments] = useState(null); // FileList of documents
   const [fileInputsKey, setFileInputsKey] = useState(0); // bump to clear <input type=file>
   const [submitting, setSubmitting] = useState(false);
+  const [quotaMessage, setQuotaMessage] = useState(''); // 402 dialog text
 
   const set = (field) => (value) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -124,8 +107,8 @@ export default function AddPropertySection({ data, goTo }) {
     setSubmitting(true);
     try {
       // 1) Create the listing (it starts pending admin review).
-      const created = (
-        await propertiesApi.create({
+      const created = await dispatch(
+        createProperty({
           title: form.title.trim(),
           description: form.description.trim() + '\n\n' + extras.join(' · '),
           type: form.type,
@@ -136,13 +119,13 @@ export default function AddPropertySection({ data, goTo }) {
           bathrooms: toNumber(form.bathrooms),
           address: form.address.trim(),
           city: form.city, // the server derives the state from the city
-        })
-      ).data;
+        }),
+      ).unwrap();
 
       // 2) Photos (public) — a failure here doesn't undo the listing.
       if (images && images.length) {
         try {
-          await propertiesApi.uploadImages(created.id, images);
+          await dispatch(uploadPropertyImages({ id: created.id, files: images })).unwrap();
         } catch (err) {
           showToast('Property submitted, but photo upload failed: ' + err.message, 'error');
         }
@@ -150,7 +133,7 @@ export default function AddPropertySection({ data, goTo }) {
       // 3) Ownership documents (private, admins only).
       if (documents && documents.length) {
         try {
-          await propertiesApi.uploadDocuments(created.id, documents);
+          await dispatch(uploadPropertyDocuments({ id: created.id, files: documents })).unwrap();
         } catch (err) {
           showToast('Property submitted, but document upload failed: ' + err.message, 'error');
         }
@@ -161,36 +144,30 @@ export default function AddPropertySection({ data, goTo }) {
       setImages(null);
       setDocuments(null);
       setFileInputsKey((k) => k + 1);
-
-      if (data?.reload) {
-        data.reload('listings');
-        data.reload('billing');
-      } else {
-        dispatch(reloadSellerResource('listings'));
-        dispatch(reloadSellerResource('billing'));
-      }
-      if (goTo) goTo('my-listings');
+      data.reload('listings');
+      data.reload('billing');
+      goTo('my-listings');
     } catch (err) {
       // 402 = valid submission, but the plan is full → actionable dialog.
-      if (err.status === 402) dispatch(setQuotaMessage(err.message));
-      else showToast('⚠️ ' + errorText(err, 'Failed to submit property'), 'error');
+      if (err.status === 402) setQuotaMessage(err.message);
+      else showToast('⚠️ ' + (typeof err === 'string' ? err : err.message || 'Failed to submit property'), 'error');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const plan = billing && billing.plan;
+  const plan = data.billing && data.billing.plan;
   return (
     <div className="content">
       <div className="row-center gap-sm">
-        <button type="button" className="icon-btn" onClick={() => goTo && goTo('my-listings')} aria-label="Back to My Listings">
+        <button type="button" className="icon-btn" onClick={() => goTo('my-listings')} aria-label="Back to My Listings">
           ←
         </button>
         <h1 className="page-title mb-0">Add New Property</h1>
       </div>
       <p className="page-subtitle mb-4">Fill in the details to create a new listing</p>
       {/* Plan quota shown before the form, not only after a rejection. */}
-      <QuotaNotice billing={billing} listings={listings} onUpgrade={() => goTo && goTo('billing')} />
+      <QuotaNotice billing={data.billing} listings={data.listings} onUpgrade={() => goTo('billing')} />
 
       <form onSubmit={submit} noValidate>
         <Card>
@@ -380,7 +357,7 @@ export default function AddPropertySection({ data, goTo }) {
         </Card>
 
         <div className="button-row">
-          <button type="button" className="btn btn-outline" onClick={() => goTo && goTo('my-listings')}>
+          <button type="button" className="btn btn-outline" onClick={() => goTo('my-listings')}>
             Cancel
           </button>
           <button type="submit" className="btn btn-primary" disabled={submitting}>
@@ -393,10 +370,10 @@ export default function AddPropertySection({ data, goTo }) {
         open={!!quotaMessage}
         message={quotaMessage}
         planName={plan && plan.planName}
-        onClose={() => dispatch(clearQuotaMessage())}
+        onClose={() => setQuotaMessage('')}
         onUpgrade={() => {
-          dispatch(clearQuotaMessage());
-          if (goTo) goTo('billing');
+          setQuotaMessage('');
+          goTo('billing');
         }}
       />
     </div>

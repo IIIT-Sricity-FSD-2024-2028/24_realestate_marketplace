@@ -4,26 +4,20 @@
  *          form), plus the dialog shown when the API refuses a listing with
  *          402 because the plan is full.
  * Inputs (props):
- *   QuotaNotice       – billing (optional, falls back to Redux), listings (optional), onUpgrade()
- *   QuotaUpgradeModal – open (optional), message (optional), planName, onUpgrade(), onClose()
+ *   QuotaNotice       – billing (GET /billing/summary data), listings, onUpgrade()
+ *   QuotaUpgradeModal – open, message, planName, onUpgrade(), onClose()
  * Outputs: banner / dialog JSX.
- * API calls: none (state sourced directly from Redux when not provided).
+ * API calls: none.
+ *
+ * `listingsUsed` comes from the server so this banner can never disagree with
+ * what the API will allow. Sold/rented listings still occupy a slot.
  */
-import { useSelector } from 'react-redux';
 import Modal from '../../../components/common/Modal.jsx';
-import { selectSellerBilling, selectSellerListings, selectSellerQuotaMessage } from '../../../store/slices/sellerSlice.js';
-import './QuotaNotice.css';
 
-export function QuotaNotice({ billing: propBilling, listings: propListings, onUpgrade }) {
-  const reduxBilling = useSelector(selectSellerBilling);
-  const reduxListings = useSelector(selectSellerListings);
-
-  const billing = propBilling !== undefined ? propBilling : reduxBilling;
-  const listings = propListings !== undefined ? propListings : reduxListings;
-
+export function QuotaNotice({ billing, listings, onUpgrade }) {
   const plan = billing && billing.plan;
   if (!plan) return null; // billing not loaded yet
-  const closed = (listings || []).filter((p) => p.status === 'sold' || p.status === 'rented').length;
+  const closed = listings.filter((p) => p.status === 'sold' || p.status === 'rented').length;
   const quota = plan.listingQuota; // null = unlimited
   const used = plan.listingsUsed;
   const full = quota !== null && used >= quota;
@@ -55,11 +49,7 @@ export function QuotaNotice({ billing: propBilling, listings: propListings, onUp
   );
 }
 
-export function QuotaUpgradeModal({ open: propOpen, message: propMessage, planName, onUpgrade, onClose }) {
-  const reduxQuotaMessage = useSelector(selectSellerQuotaMessage);
-  const message = propMessage !== undefined ? propMessage : reduxQuotaMessage;
-  const open = propOpen !== undefined ? propOpen : !!message;
-
+export function QuotaUpgradeModal({ open, message, planName, onUpgrade, onClose }) {
   return (
     <Modal open={open} onClose={onClose} size="sm" title="You have used every slot on your plan">
       <div className="lock-icon" aria-hidden="true">

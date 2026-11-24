@@ -11,10 +11,11 @@
  * API calls: GET /properties/:id (fresh copy), PATCH /properties/:id
  */
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Modal from '../common/Modal.jsx';
 import { FormField, TextInput } from '../forms/FormControls.jsx';
 import { useToast } from '../feedback/ToastProvider.jsx';
-import { propertiesApi } from '../../api/services.js';
+import { updateProperty } from '../../store/actions/apiActions.js';
 import { PROPERTY_STATUSES, PROPERTY_TYPES } from '../../utils/constants.js';
 import { capitalize } from '../../utils/format.js';
 
@@ -56,6 +57,7 @@ export function validatePropertyForm(f) {
 
 export default function PropertyEditModal({ property, onClose, onSaved }) {
   const { showToast } = useToast();
+  const dispatch = useDispatch();
   const [form, setForm] = useState(null);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
@@ -64,19 +66,10 @@ export default function PropertyEditModal({ property, onClose, onSaved }) {
   // Fill the form when a listing is chosen, then refresh it from the API.
   useEffect(() => {
     if (!property) return undefined;
-    let alive = true;
     setForm(toForm(property));
     setErrors({});
     setServerError('');
-    propertiesApi
-      .get(property.id)
-      .then((res) => alive && setForm(toForm(res.data)))
-      .catch(() => {
-        /* keep the list copy if the refresh fails */
-      });
-    return () => {
-      alive = false;
-    };
+    // The current Redux entity is already the freshest shared copy.
   }, [property]);
 
   const set = (field) => (value) => {
@@ -96,25 +89,30 @@ export default function PropertyEditModal({ property, onClose, onSaved }) {
     setServerError('');
     try {
       // Same payload the old pages sent (numbers converted, text trimmed).
-      await propertiesApi.update(property.id, {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        type: form.type,
-        listingType: form.listingType,
-        price: Number(form.price),
-        areaSqft: Number(form.areaSqft),
-        bedrooms: Number(form.bedrooms),
-        bathrooms: Number(form.bathrooms),
-        address: form.address.trim(),
-        city: form.city.trim(),
-        state: form.state.trim(),
-        status: form.status,
-      });
+      await dispatch(
+        updateProperty({
+          id: property.id,
+          payload: {
+            title: form.title.trim(),
+            description: form.description.trim(),
+            type: form.type,
+            listingType: form.listingType,
+            price: Number(form.price),
+            areaSqft: Number(form.areaSqft),
+            bedrooms: Number(form.bedrooms),
+            bathrooms: Number(form.bathrooms),
+            address: form.address.trim(),
+            city: form.city.trim(),
+            state: form.state.trim(),
+            status: form.status,
+          },
+        }),
+      ).unwrap();
       showToast('Property updated successfully');
       onSaved();
       onClose();
     } catch (err) {
-      setServerError((err.errors && err.errors.join('; ')) || err.message || 'Failed to save property');
+      setServerError((typeof err === 'string' ? err : err.message) || 'Failed to save property');
     } finally {
       setSaving(false);
     }

@@ -264,20 +264,21 @@ let PurchasesService = PurchasesService_1 = class PurchasesService {
     async cancel(id, actor) {
         const purchase = await this.loadOrThrow(id);
         await this.propertiesService.assertAdminHandlesProperty((0, reference_id_helper_js_1.referenceId)(purchase.propertyId), actor);
-        const heldProperty = purchase.dealStatus === purchase_enum_js_1.DealStatus.COMPLETED || purchase.dealStep >= purchase_enum_js_1.DEAL_STEPS.length;
+        const heldProperty = purchase.dealStatus === purchase_enum_js_1.DealStatus.IN_PROGRESS ||
+            purchase.dealStatus === purchase_enum_js_1.DealStatus.COMPLETED;
         purchase.dealStatus = purchase_enum_js_1.DealStatus.CANCELLED;
         await purchase.save();
         const propertyId = (0, reference_id_helper_js_1.referenceId)(purchase.propertyId);
         if (heldProperty && propertyId) {
-            const stillClosed = await this.purchaseModel.countDocuments({
+            const stillHolding = await this.purchaseModel.countDocuments({
                 _id: { $ne: purchase._id },
                 propertyId: purchase.propertyId,
                 $or: [
                     { dealStatus: purchase_enum_js_1.DealStatus.COMPLETED },
-                    { dealStatus: purchase_enum_js_1.DealStatus.IN_PROGRESS, dealStep: { $gte: purchase_enum_js_1.DEAL_STEPS.length } },
+                    { dealStatus: purchase_enum_js_1.DealStatus.IN_PROGRESS },
                 ],
             });
-            if (!stillClosed)
+            if (!stillHolding)
                 await this.propertiesService.markDealReopened(propertyId);
         }
         return this.decorate(purchase);

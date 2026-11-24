@@ -5,8 +5,8 @@
  *          notifications and profile.
  * Inputs:  URL section (/seller/:section), the signed-in seller session.
  * Outputs: DashboardLayout + the active section.
- * State & API: Central Redux store (sellerSlice) via Redux selectors and actions.
- *              Prop drilling eliminated — sections retrieve data from Redux directly.
+ * API calls: shared data in useSellerData (refreshed every 15 s, like before)
+ *            plus each section's own calls (see their headers).
  */
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
@@ -67,18 +67,19 @@ export default function SellerDashboardPage() {
     navigate(logoutPathForRole('seller'));
   };
 
-  // Section prop drilling eliminated: each section connects to Redux store directly
+  // Shared props every section receives.
+  const props = { data, goTo, account };
   const sections = {
-    dashboard: <SellerOverview account={account} />,
-    'my-listings': <MyListingsSection goTo={goTo} />,
-    'add-property': <AddPropertySection goTo={goTo} />,
-    negotiate: <SellerNegotiationsSection />,
-    'track-payment': <TrackPaymentsSection />,
-    sold: <ClosedDealsSection mode="sale" />,
-    'rent-given': <ClosedDealsSection mode="rent" />,
-    billing: <BillingSection />,
-    notifications: <SellerNotificationsSection />,
-    profile: <SellerProfileSection account={account} />,
+    dashboard: <SellerOverview {...props} />,
+    'my-listings': <MyListingsSection {...props} />,
+    'add-property': <AddPropertySection {...props} />,
+    negotiate: <SellerNegotiationsSection {...props} />,
+    'track-payment': <TrackPaymentsSection {...props} />,
+    sold: <ClosedDealsSection {...props} mode="sale" />,
+    'rent-given': <ClosedDealsSection {...props} mode="rent" />,
+    billing: <BillingSection {...props} />,
+    notifications: <SellerNotificationsSection {...props} />,
+    profile: <SellerProfileSection {...props} />,
   };
 
   return (

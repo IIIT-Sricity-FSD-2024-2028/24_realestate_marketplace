@@ -3,45 +3,27 @@
  * Purpose: "Track Payments" — the seller's deals (created when an offer is
  *          accepted) with live step status. A deal stuck at Registration
  *          because commission is unpaid shows the seller's share and a Pay
- *          button right on its row.
- * Inputs (props): data (optional, falls back to Redux)
+ *          button right on its row. (The old page shipped fake demo rows.)
+ * Inputs (props): data – useSellerData()
  * Outputs: stats, filter pills, payments table.
- * API calls: payment flow via usePayment, Redux reload thunks
+ * API calls: payment flow via usePayment (POST /billing/checkout, /verify…),
+ *            GET /purchases/seller-queue + /billing/summary (via data.reload)
  */
-import { Fragment } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Fragment, useState } from 'react';
 import { Badge, FilterPills, PageHeader, StatCard } from '../../../components/common/ui.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
 import { formatCompactINR, formatINR, shortDate } from '../../../utils/format.js';
 import { DEAL_STEPS } from '../../../utils/constants.js';
-import {
-  selectSellerPurchases,
-  selectSellerLoading,
-  selectSellerErrors,
-  selectSellerPaymentsFilter,
-  setPaymentsFilter,
-  reloadSellerResource,
-} from '../../../store/slices/sellerSlice.js';
-import './TrackPaymentsSection.css';
 
 /** dealStatus → filter bucket used by the pills. */
 const bucketOf = (p) => (p.dealStatus === 'completed' ? 'completed' : p.dealStatus === 'cancelled' ? 'rejected' : 'ongoing');
 
 export default function TrackPaymentsSection({ data }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { pay } = usePayment();
-
-  const reduxPurchases = useSelector(selectSellerPurchases);
-  const reduxLoading = useSelector(selectSellerLoading);
-  const reduxErrors = useSelector(selectSellerErrors);
-  const reduxFilter = useSelector(selectSellerPaymentsFilter);
-
-  const purchases = data?.purchases || reduxPurchases;
-  const loading = data?.loading || reduxLoading;
-  const errors = data?.errors || reduxErrors;
-  const filter = reduxFilter || 'all';
+  const [filter, setFilter] = useState('all');
+  const purchases = data.purchases;
 
   const completed = purchases.filter((p) => p.dealStatus === 'completed');
   const inProgress = purchases.filter((p) => p.dealStatus === 'in_progress');
@@ -54,11 +36,7 @@ export default function TrackPaymentsSection({ data }) {
       const result = await pay({ purpose: 'commission', commissionId });
       if (!result) return; // closed the checkout
       showToast(result.message);
-      if (data?.reload) {
-        await Promise.all([data.reload('purchases'), data.reload('billing')]);
-      } else {
-        await Promise.all([dispatch(reloadSellerResource('purchases')), dispatch(reloadSellerResource('billing'))]);
-      }
+      await Promise.all([data.reload('purchases'), data.reload('billing')]);
     } catch (err) {
       showToast(err.message || 'Payment failed', 'error');
     }
@@ -77,7 +55,7 @@ export default function TrackPaymentsSection({ data }) {
         <FilterPills
           label="Payment status"
           value={filter}
-          onChange={(val) => dispatch(setPaymentsFilter(val))}
+          onChange={setFilter}
           options={[
             { key: 'all', label: 'All', count: purchases.length },
             { key: 'ongoing', label: 'Ongoing', count: inProgress.length },
@@ -100,16 +78,16 @@ export default function TrackPaymentsSection({ data }) {
                 </tr>
               </thead>
               <tbody>
-                {loading.purchases ? (
+                {data.loading.purchases ? (
                   <tr>
                     <td colSpan={6} className="table-empty">
                       Loading…
                     </td>
                   </tr>
-                ) : errors.purchases ? (
+                ) : data.errors.purchases ? (
                   <tr>
                     <td colSpan={6} className="table-empty text-danger">
-                      {errors.purchases}
+                      {data.errors.purchases}
                     </td>
                   </tr>
                 ) : visible.length === 0 ? (

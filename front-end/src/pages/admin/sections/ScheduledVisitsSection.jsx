@@ -9,15 +9,15 @@
  *            GET /visits/review-queue (via desk.reload)
  */
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import Modal from '../../../components/common/Modal.jsx';
 import { FormField } from '../../../components/forms/FormControls.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { visitsApi } from '../../../api/services.js';
+import { cancelVisit, completeVisit, confirmVisit, rescheduleVisit } from '../../../store/actions/apiActions.js';
 import { joinPlace } from '../../../utils/format.js';
 import { VISIT_SLOTS } from '../../../utils/constants.js';
-import './ScheduledVisitsSection.css';
 
 // Tab → which visit statuses it shows.
 const TABS = [
@@ -42,6 +42,7 @@ function todayIso() {
 export default function ScheduledVisitsSection({ desk }) {
   const { showToast } = useToast();
   const { confirm } = useDialog();
+  const dispatch = useDispatch();
   const [tab, setTab] = useState('upcoming');
   const [busyId, setBusyId] = useState(null);
   const [moving, setMoving] = useState(null); // visit being rescheduled
@@ -59,7 +60,7 @@ export default function ScheduledVisitsSection({ desk }) {
       showToast(success);
       await desk.reload('visits');
     } catch (err) {
-      showToast(err.message || failure, 'error');
+      showToast((typeof err === 'string' ? err : err.message) || failure, 'error');
     } finally {
       setBusyId(null);
     }
@@ -67,7 +68,7 @@ export default function ScheduledVisitsSection({ desk }) {
 
   const cancel = async (v) => {
     if (!(await confirm({ message: 'Cancel this visit?', confirmText: 'Cancel visit', cancelText: 'Keep it', danger: true }))) return;
-    act(v, () => visitsApi.cancel(v.id), 'Visit cancelled', 'Failed to cancel visit');
+    act(v, () => dispatch(cancelVisit(v.id)).unwrap(), 'Visit cancelled', 'Failed to cancel visit');
   };
 
   const openReschedule = (v) => {
@@ -83,7 +84,7 @@ export default function ScheduledVisitsSection({ desk }) {
     if (!slot.time) return setSlotError('Please pick a time slot.');
     const v = moving;
     setMoving(null);
-    act(v, () => visitsApi.reschedule(v.id, slot.date, slot.time), 'Visit rescheduled', 'Failed to reschedule visit');
+    act(v, () => dispatch(rescheduleVisit({ id: v.id, date: slot.date, slot: slot.time })).unwrap(), 'Visit rescheduled', 'Failed to reschedule visit');
   };
 
   return (
@@ -133,7 +134,7 @@ export default function ScheduledVisitsSection({ desk }) {
                             type="button"
                             className="btn btn-primary btn-sm"
                             disabled={busyId === v.id}
-                            onClick={() => act(v, () => visitsApi.confirm(v.id), 'Visit confirmed', 'Failed to confirm visit')}
+                            onClick={() => act(v, () => dispatch(confirmVisit(v.id)).unwrap(), 'Visit confirmed', 'Failed to confirm visit')}
                           >
                             Confirm
                           </button>
@@ -146,7 +147,7 @@ export default function ScheduledVisitsSection({ desk }) {
                             type="button"
                             className="btn btn-sm btn-outline-green"
                             disabled={busyId === v.id}
-                            onClick={() => act(v, () => visitsApi.complete(v.id), 'Visit marked completed', 'Failed to update visit')}
+                            onClick={() => act(v, () => dispatch(completeVisit(v.id)).unwrap(), 'Visit marked completed', 'Failed to update visit')}
                           >
                             Mark Completed
                           </button>

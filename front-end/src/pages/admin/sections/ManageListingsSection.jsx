@@ -7,13 +7,13 @@
  * API calls: GET /properties?page=N&limit=8[&city=…], PATCH /properties/:id
  *            (PropertyEditModal), DELETE /properties/:id
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Badge, PageHeader, Pager, StatusLine } from '../../../components/common/ui.jsx';
 import PropertyEditModal from '../../../components/property/PropertyEditModal.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { propertiesApi } from '../../../api/services.js';
-import { getUser } from '../../../auth/session.js';
+import { deleteProperty, fetchProperties } from '../../../store/actions/apiActions.js';
 import { formatINR, joinPlace } from '../../../utils/format.js';
 
 const PAGE_SIZE = 8;
@@ -21,39 +21,26 @@ const PAGE_SIZE = 8;
 export default function ManageListingsSection() {
   const { showToast } = useToast();
   const { confirm } = useDialog();
+  const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const [data, setData] = useState({ items: [], page: 1, totalPages: 1, total: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const data = useSelector((state) => state.properties.public);
+  const loading = useSelector((state) => state.properties.loading.public);
+  const error = useSelector((state) => state.properties.error);
+  const city = useSelector((state) => state.auth.user?.city || undefined);
   const [editing, setEditing] = useState(null);
-  // GET /properties is the public, all-city catalogue; an admin only manages their own city.
-  const city = (getUser() || {}).city || undefined;
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await propertiesApi.list({ page, limit: PAGE_SIZE, city });
-      setData(res.data);
-      setError('');
-    } catch (err) {
-      setError(err.message || "Couldn't load properties from the API.");
-    } finally {
-      setLoading(false);
-    }
-  }, [page, city]);
-
+  const load = () => dispatch(fetchProperties({ page, limit: PAGE_SIZE, city }));
   useEffect(() => {
-    load();
-  }, [load]);
+    dispatch(fetchProperties({ page, limit: PAGE_SIZE, city }));
+  }, [dispatch, page, city]);
 
   const remove = async (p) => {
     if (!(await confirm({ message: 'Delete this property? This cannot be undone.', confirmText: 'Delete', danger: true }))) return;
     try {
-      await propertiesApi.remove(p.id);
+      await dispatch(deleteProperty(p.id)).unwrap();
       showToast('Property deleted');
       load();
     } catch (err) {
-      showToast(err.message || 'Failed to delete property', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to delete property', 'error');
     }
   };
 

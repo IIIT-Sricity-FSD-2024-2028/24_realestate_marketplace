@@ -8,7 +8,6 @@
  */
 import Icon from './Icon.jsx';
 import { initials } from '../../utils/format.js';
-import './ui.css';
 
 /** Coloured pill label. tone: green | orange | red | blue | yellow | gray */
 export function Badge({ tone = 'gray', children, className = '' }) {

@@ -2,21 +2,19 @@
  * ClosedDealsSection.jsx
  * Purpose: "Sold Properties" (mode="sale") and "Rent Given Properties"
  *          (mode="rent") — the seller's completed deals with real totals.
- * Inputs (props): data (optional, falls back to Redux); mode – 'sale' | 'rent'
+ *          (The old pages showed invented portfolios such as "24 sold".)
+ * Inputs (props): data – useSellerData(); mode – 'sale' | 'rent'
  * Outputs: four stat cards + one card per closed deal.
- * API calls: none (uses Redux state).
+ * API calls: none (uses GET /purchases/seller-queue via shared data).
  */
-import { useSelector } from 'react-redux';
 import { Badge, EmptyState, StatCard } from '../../../components/common/ui.jsx';
 import { formatCompactINR, joinPlace, shortDate } from '../../../utils/format.js';
 import { FALLBACK_PROPERTY_IMAGE } from '../../../utils/constants.js';
-import { completedDeals, selectSellerPurchases } from '../../../store/slices/sellerSlice.js';
+import { completedDeals } from '../useSellerData.js';
 
 export default function ClosedDealsSection({ data, mode }) {
   const rent = mode === 'rent';
-  const reduxPurchases = useSelector(selectSellerPurchases);
-  const purchases = data?.purchases || reduxPurchases;
-  const deals = completedDeals(purchases, mode);
+  const deals = completedDeals(data.purchases, mode);
   const total = deals.reduce((sum, d) => sum + (d.agreedPrice || 0), 0);
   const thisYear = new Date().getFullYear();
   const yearCount = deals.filter((d) => new Date(d.updatedAt).getFullYear() === thisYear).length;

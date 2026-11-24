@@ -7,11 +7,10 @@
  * Outputs: a full-screen blocking panel with a Reload button.
  * API calls: none.
  */
-import { getUser } from '../../auth/session.js';
-import './SessionChangedOverlay.css';
+import { useSelector } from 'react-redux';
 
 export default function SessionChangedOverlay({ role }) {
-  const user = getUser(); // whoever is signed in on this tab now (maybe nobody)
+  const user = useSelector((state) => state.auth.user);
   const who = user && user.name ? user.name + ' (' + user.role + ')' : null;
   return (
     <div className="session-overlay" role="alertdialog" aria-modal="true" aria-labelledby="session-changed-title">

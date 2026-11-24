@@ -3,18 +3,17 @@
  * Purpose: "Visit Status" — the buyer's site-visit requests in four tabs:
  *          Requested (awaiting admin), Upcoming (confirmed/rescheduled),
  *          Completed and Cancelled, with a Cancel button on open visits.
- * Inputs (props): data (optional)
+ * Inputs (props): data – useBuyerData()
  * Outputs: tabs with counts + visit rows.
- * API calls: PATCH /visits/:id/cancel, GET /visits/mine (via Redux fetchBuyerVisits)
+ * API calls: PATCH /visits/:id/cancel, GET /visits/mine (via data.reload)
  */
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Avatar, Badge, PageHeader, StatusLine } from '../../../components/common/ui.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { visitsApi } from '../../../api/services.js';
+import { cancelVisit } from '../../../store/actions/apiActions.js';
 import { joinPlace } from '../../../utils/format.js';
-import { selectBuyerVisits, selectBuyerLoading, selectBuyerErrors, fetchBuyerVisits } from '../../../store/slices/buyerSlice.js';
 
 const TABS = [
   {
@@ -42,22 +41,12 @@ const LABELS = {
 };
 
 export default function VisitStatusSection({ data }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { confirm } = useDialog();
-
-  const reduxVisits = useSelector(selectBuyerVisits);
-  const reduxLoading = useSelector(selectBuyerLoading);
-  const reduxErrors = useSelector(selectBuyerErrors);
-
-  const visits = data?.visits || reduxVisits;
-  const loading = data?.loading || reduxLoading;
-  const errors = data?.errors || reduxErrors;
-
-  // Local component-specific tab state
+  const dispatch = useDispatch();
   const [tab, setTab] = useState('requested');
   const current = TABS.find((t) => t.key === tab);
-  const filteredVisits = visits.filter((v) => current.statuses.includes(v.status));
+  const visits = data.visits.filter((v) => current.statuses.includes(v.status));
 
   const cancel = async (v) => {
     if (
@@ -70,15 +59,11 @@ export default function VisitStatusSection({ data }) {
     )
       return;
     try {
-      await visitsApi.cancel(v.id);
+      await dispatch(cancelVisit(v.id)).unwrap();
       showToast('Visit cancelled');
-      if (data?.reload) {
-        data.reload('visits');
-      } else {
-        dispatch(fetchBuyerVisits());
-      }
+      data.reload('visits');
     } catch (err) {
-      showToast(err.message || 'Failed to cancel visit', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to cancel visit', 'error');
     }
   };
 
@@ -88,7 +73,7 @@ export default function VisitStatusSection({ data }) {
       <div className="content">
         <div className="tab-bar" role="tablist" aria-label="Visit status">
           {TABS.map((t) => {
-            const n = visits.filter((v) => t.statuses.includes(v.status)).length;
+            const n = data.visits.filter((v) => t.statuses.includes(v.status)).length;
             return (
               <button
                 key={t.key}
@@ -105,10 +90,10 @@ export default function VisitStatusSection({ data }) {
         </div>
         <div className="table-card" role="tabpanel">
           <h2 className="table-card-title">Visits</h2>
-          <StatusLine loading={loading.visits && !visits.length} error={errors.visits} />
-          {!loading.visits && filteredVisits.length === 0 && <p className="state-line">{current.empty}</p>}
+          <StatusLine loading={data.loading.visits && !data.visits.length} error={data.errors.visits} />
+          {!data.loading.visits && visits.length === 0 && <p className="state-line">{current.empty}</p>}
           <ul className="row-list">
-            {filteredVisits.map((v) => {
+            {visits.map((v) => {
               const open = ['pending', 'confirmed', 'rescheduled'].includes(v.status);
               return (
                 <li key={v.id} className="row-item">

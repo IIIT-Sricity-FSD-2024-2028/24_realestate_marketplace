@@ -1,85 +1,59 @@
-/**
- * useSellerData.js
- * Purpose: Redux-connected hook providing seller data and actions:
- *          my listings, buyer negotiations, purchases, billing & catalog,
- *          plus reload operations dispatched through Redux Toolkit.
- * Inputs:  none (reads from Redux store via useSelector / useDispatch).
- * Outputs: { listings, negotiations, purchases, catalog, billing, loading,
- *            errors, reload(name), reloadAll(), deleteListing(id) }
- */
+/** Redux selectors and commands for seller-wide data. */
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  completedDeals,
-  reloadSellerResource,
-  reloadAllSellerData,
-  deleteSellerListing,
-  selectSellerListings,
-  selectSellerNegotiations,
-  selectSellerPurchases,
-  selectSellerCatalog,
-  selectSellerBilling,
-  selectSellerLoading,
-  selectSellerErrors,
-  selectSelectedListing,
-  setSelectedListing,
-  clearSelectedListing,
-} from '../../store/slices/sellerSlice.js';
-
-export { completedDeals };
+import { fetchBillingCatalog, fetchBillingSummary, fetchMyProperties, fetchSellerNegotiations, fetchSellerPurchases } from '../../store/actions/apiActions.js';
 
 export function useSellerData() {
   const dispatch = useDispatch();
-
-  const listings = useSelector(selectSellerListings);
-  const negotiations = useSelector(selectSellerNegotiations);
-  const purchases = useSelector(selectSellerPurchases);
-  const catalog = useSelector(selectSellerCatalog);
-  const billing = useSelector(selectSellerBilling);
-  const loading = useSelector(selectSellerLoading);
-  const errors = useSelector(selectSellerErrors);
-  const selectedListing = useSelector(selectSelectedListing);
-
-  const reload = useCallback((name) => dispatch(reloadSellerResource(name)), [dispatch]);
-  const reloadAll = useCallback(() => dispatch(reloadAllSellerData()), [dispatch]);
-  const deleteListing = useCallback((id) => dispatch(deleteSellerListing(id)), [dispatch]);
-  const selectListing = useCallback((listing) => dispatch(setSelectedListing(listing)), [dispatch]);
-  const clearSelection = useCallback(() => dispatch(clearSelectedListing()), [dispatch]);
-
+  const listings = useSelector((state) => state.properties.mine);
+  const negotiationsState = useSelector((state) => state.negotiations);
+  const purchasesState = useSelector((state) => state.purchases);
+  const negotiations = negotiationsState.seller;
+  const purchases = purchasesState.seller;
+  const billing = useSelector((state) => state.billing);
+  const properties = useSelector((state) => state.properties);
+  const reload = useCallback(
+    (name) => {
+      const loads = {
+        listings: () => dispatch(fetchMyProperties()).unwrap(),
+        negotiations: () => dispatch(fetchSellerNegotiations()).unwrap(),
+        purchases: () => dispatch(fetchSellerPurchases()).unwrap(),
+        billing: () => Promise.all([dispatch(fetchBillingCatalog()).unwrap(), dispatch(fetchBillingSummary()).unwrap()]),
+      };
+      return loads[name]?.() || Promise.resolve();
+    },
+    [dispatch],
+  );
+  const reloadAll = useCallback(() => Promise.all(['listings', 'negotiations', 'purchases', 'billing'].map(reload)), [reload]);
   useEffect(() => {
-    dispatch(reloadAllSellerData());
-  }, [dispatch]);
-
+    reloadAll();
+  }, [reloadAll]);
   return useMemo(
     () => ({
       listings,
       negotiations,
       purchases,
-      catalog,
-      billing,
-      loading,
-      errors,
-      selectedListing,
+      catalog: billing.catalog,
+      billing: billing.summary,
+      loading: {
+        listings: properties.loading.mine,
+        negotiations: negotiationsState.loading.seller,
+        purchases: purchasesState.loading.seller,
+        billing: billing.loading.catalog || billing.loading.summary,
+      },
+      errors: {
+        listings: properties.error,
+        negotiations: negotiationsState.error,
+        purchases: purchasesState.error,
+        billing: billing.error,
+      },
       reload,
       reloadAll,
-      deleteListing,
-      selectListing,
-      clearSelection,
     }),
-    [
-      listings,
-      negotiations,
-      purchases,
-      catalog,
-      billing,
-      loading,
-      errors,
-      selectedListing,
-      reload,
-      reloadAll,
-      deleteListing,
-      selectListing,
-      clearSelection,
-    ],
+    [listings, negotiations, purchases, billing, properties, negotiationsState, purchasesState, reload, reloadAll],
   );
+}
+
+export function completedDeals(purchases, listingType) {
+  return purchases.filter((p) => p.dealStatus === 'completed' && p.propertyListingType === listingType);
 }

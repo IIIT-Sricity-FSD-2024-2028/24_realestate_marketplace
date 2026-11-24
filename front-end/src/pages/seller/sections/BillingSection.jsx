@@ -5,51 +5,31 @@
  *          invoices, and the payment history. Every price comes from
  *          GET /billing/catalog, and the server re-prices at checkout, so the
  *          price shown and the price charged cannot drift apart.
- * Inputs (props): data (optional, falls back to Redux)
+ * Inputs (props): data – useSellerData() (catalog, billing, listings)
  * Outputs: the billing page.
  * API calls: payment flow via usePayment (checkout → gateway → verify),
- *            Redux cancelSellerSubscription thunk, Redux reload thunks
+ *            PATCH /billing/subscription/cancel,
+ *            GET /billing/summary + /properties/mine (via data.reload)
  */
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Badge, Card, PageHeader, StatCard, StatusLine } from '../../../components/common/ui.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
 import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
+import { cancelSubscription } from '../../../store/actions/apiActions.js';
 import { formatINR, shortDate } from '../../../utils/format.js';
 import { gatewayBadge } from '../../../utils/billing.js';
-import {
-  selectSellerCatalog,
-  selectSellerBilling,
-  selectSellerLoading,
-  selectSellerErrors,
-  selectSellerBillingCycle,
-  setBillingCycle,
-  cancelSellerSubscription,
-  reloadSellerResource,
-} from '../../../store/slices/sellerSlice.js';
-import './BillingSection.css';
 
 export default function BillingSection({ data }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { confirm } = useDialog();
+  const dispatch = useDispatch();
   const { pay } = usePayment();
-
-  const reduxCatalog = useSelector(selectSellerCatalog);
-  const reduxBilling = useSelector(selectSellerBilling);
-  const reduxLoading = useSelector(selectSellerLoading);
-  const reduxErrors = useSelector(selectSellerErrors);
-  const reduxCycle = useSelector(selectSellerBillingCycle);
-
-  const catalog = data?.catalog || reduxCatalog;
-  const billing = data?.billing || reduxBilling;
-  const loading = data?.loading || reduxLoading;
-  const errors = data?.errors || reduxErrors;
-  const cycle = reduxCycle || 'monthly';
-
+  const [cycle, setCycle] = useState('monthly'); // billing cycle toggle
   const [promoteId, setPromoteId] = useState(''); // listing chosen for promotion
   const [busy, setBusy] = useState(false); // blocks double-clicks during checkout
+  const { catalog, billing } = data;
 
   const verified = ((billing && billing.listings) || []).filter((l) => l.verificationStatus === 'verified');
   // Keep the promote dropdown pointing at a real verified listing.
@@ -58,16 +38,7 @@ export default function BillingSection({ data }) {
   }, [verified, promoteId]);
 
   /** Refresh the numbers a payment can change. */
-  const refresh = () => {
-    if (data?.reload) {
-      return Promise.all([data.reload('billing'), data.reload('listings'), data.reload('purchases')]);
-    }
-    return Promise.all([
-      dispatch(reloadSellerResource('billing')),
-      dispatch(reloadSellerResource('listings')),
-      dispatch(reloadSellerResource('purchases')),
-    ]);
-  };
+  const refresh = () => Promise.all([data.reload('billing'), data.reload('listings'), data.reload('purchases')]);
 
   /** Shared runner for every paid action. */
   const checkout = async (request) => {
@@ -78,7 +49,7 @@ export default function BillingSection({ data }) {
       showToast(result.message);
       await refresh();
     } catch (err) {
-      showToast(err.message || 'Payment failed', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Payment failed', 'error');
     } finally {
       setBusy(false);
     }
@@ -93,15 +64,11 @@ export default function BillingSection({ data }) {
     });
     if (!ok) return;
     try {
-      if (data?.reload) {
-        const res = await dispatch(cancelSellerSubscription()).unwrap();
-        showToast(res || 'Plan cancelled');
-      } else {
-        const msg = await dispatch(cancelSellerSubscription()).unwrap();
-        showToast(msg || 'Plan cancelled');
-      }
+      await dispatch(cancelSubscription()).unwrap();
+      showToast('Subscription cancelled');
+      await refresh();
     } catch (err) {
-      showToast(err.message || 'Could not cancel the plan', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Could not cancel the plan', 'error');
     }
   };
 
@@ -111,7 +78,7 @@ export default function BillingSection({ data }) {
       <>
         <PageHeader title="Billing & Plans" subtitle="Your listing plan, paid promotions and platform invoices" />
         <div className="content">
-          <StatusLine loading={loading.billing} error={errors.billing} />
+          <StatusLine loading={data.loading.billing} error={data.errors.billing} />
         </div>
       </>
     );
@@ -166,7 +133,7 @@ export default function BillingSection({ data }) {
                 type="button"
                 className={'cycle-btn' + (c.key === cycle ? ' active' : '')}
                 aria-pressed={c.key === cycle}
-                onClick={() => dispatch(setBillingCycle(c.key))}
+                onClick={() => setCycle(c.key)}
               >
                 {c.label}
                 {c.discountPct ? <span className="cycle-save">−{c.discountPct}%</span> : null}

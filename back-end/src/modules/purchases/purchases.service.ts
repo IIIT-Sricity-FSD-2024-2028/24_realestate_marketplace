@@ -50,13 +50,18 @@ export class PurchasesService implements OnModuleInit {
   private readonly logger = new Logger(PurchasesService.name);
 
   constructor(
-    @InjectModel(Purchase.name) private readonly purchaseModel: Model<PurchaseDocument>,
+    @InjectModel(Purchase.name)
+    private readonly purchaseModel: Model<PurchaseDocument>,
     private readonly propertiesService: PropertiesService,
     private readonly commissionsService: CommissionsService,
   ) {}
 
   async onModuleInit(): Promise<void> {
-    await backfillObjectIdStrings(this.purchaseModel, ['propertyId', 'buyerId', 'negotiationId'], this.logger);
+    await backfillObjectIdStrings(
+      this.purchaseModel,
+      ['propertyId', 'buyerId', 'negotiationId'],
+      this.logger,
+    );
   }
 
   private toResponse(p: PurchaseDocument): PurchaseResponseDto {
@@ -103,11 +108,15 @@ export class PurchasesService implements OnModuleInit {
   }
 
   /** The list-shaped version: one commission query for the whole page. */
-  private async withCommissions(purchases: PurchaseDocument[]): Promise<PurchaseResponseDto[]> {
+  private async withCommissions(
+    purchases: PurchaseDocument[],
+  ): Promise<PurchaseResponseDto[]> {
     const responses = purchases.map((p) => this.toResponse(p));
     if (!responses.length) return responses;
 
-    const summaries = await this.commissionsService.summaryForPurchases(responses.map((r) => r.id));
+    const summaries = await this.commissionsService.summaryForPurchases(
+      responses.map((r) => r.id),
+    );
     for (const response of responses) {
       const summary = summaries.get(response.id);
       response.commissionDue = summary?.due ?? 0;
@@ -138,14 +147,22 @@ export class PurchasesService implements OnModuleInit {
     return purchase;
   }
 
-  private assertCanView(purchase: PurchaseDocument, actor: AuthenticatedUser): void {
+  private assertCanView(
+    purchase: PurchaseDocument,
+    actor: AuthenticatedUser,
+  ): void {
     if (isElevated(actor.role)) return;
     if (referenceId(purchase.buyerId) === actor.id) return;
-    throw new ForbiddenException('You do not have permission to view this purchase');
+    throw new ForbiddenException(
+      'You do not have permission to view this purchase',
+    );
   }
 
   /** Internal — called by NegotiationsService when an offer/counter is accepted. */
-  async createFromNegotiation(negotiation: NegotiationDocument, agreedPrice: number): Promise<PurchaseDocument> {
+  async createFromNegotiation(
+    negotiation: NegotiationDocument,
+    agreedPrice: number,
+  ): Promise<PurchaseDocument> {
     return this.purchaseModel.create({
       propertyId: negotiation.propertyId,
       buyerId: negotiation.buyerId,
@@ -170,7 +187,10 @@ export class PurchasesService implements OnModuleInit {
    * to the admin's own city — each city desk drives the deals on its own
    * properties. The superuser sees all four cities.
    */
-  async findForReview(filters: PurchaseFilterDto, actor: AuthenticatedUser): Promise<PaginatedResult<PurchaseResponseDto>> {
+  async findForReview(
+    filters: PurchaseFilterDto,
+    actor: AuthenticatedUser,
+  ): Promise<PaginatedResult<PurchaseResponseDto>> {
     const query: Record<string, unknown> = {};
     if (filters.dealStatus) query.dealStatus = filters.dealStatus;
     const propertyIds = await this.propertiesService.propertyIdsForAdmin(actor);
@@ -201,11 +221,18 @@ export class PurchasesService implements OnModuleInit {
   }
 
   /** Seller only — read-only view of purchases on properties this seller submitted. */
-  async findForSeller(actor: AuthenticatedUser, filters: PurchaseFilterDto): Promise<PaginatedResult<PurchaseResponseDto>> {
+  async findForSeller(
+    actor: AuthenticatedUser,
+    filters: PurchaseFilterDto,
+  ): Promise<PaginatedResult<PurchaseResponseDto>> {
     if (actor.userType !== UserType.SELLER) {
-      throw new ForbiddenException('Only seller accounts have a purchase tracking queue');
+      throw new ForbiddenException(
+        'Only seller accounts have a purchase tracking queue',
+      );
     }
-    const propertyIds = await this.propertiesService.propertyIdsForSeller(actor.id);
+    const propertyIds = await this.propertiesService.propertyIdsForSeller(
+      actor.id,
+    );
     const query: Record<string, unknown> = { propertyId: { $in: propertyIds } };
     if (filters.dealStatus) query.dealStatus = filters.dealStatus;
 
@@ -233,7 +260,10 @@ export class PurchasesService implements OnModuleInit {
     };
   }
 
-  async findOne(id: string, actor: AuthenticatedUser): Promise<PurchaseResponseDto> {
+  async findOne(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<PurchaseResponseDto> {
     const purchase = await this.loadOrThrow(id);
     this.assertCanView(purchase, actor);
     await purchase.populate([
@@ -249,11 +279,19 @@ export class PurchasesService implements OnModuleInit {
    * superuser) — the same desk that verified the listing sees the purchase
    * through.
    */
-  async advance(id: string, actor: AuthenticatedUser): Promise<PurchaseResponseDto> {
+  async advance(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<PurchaseResponseDto> {
     const purchase = await this.loadOrThrow(id);
-    await this.propertiesService.assertAdminHandlesProperty(referenceId(purchase.propertyId), actor);
+    await this.propertiesService.assertAdminHandlesProperty(
+      referenceId(purchase.propertyId),
+      actor,
+    );
     if (purchase.dealStatus !== DealStatus.IN_PROGRESS) {
-      throw new BadRequestException(`Cannot advance a purchase that is already ${purchase.dealStatus}`);
+      throw new BadRequestException(
+        `Cannot advance a purchase that is already ${purchase.dealStatus}`,
+      );
     }
     const propertyId = referenceId(purchase.propertyId);
     const registrationStep = DEAL_STEPS.length; // 5 — the final step
@@ -297,8 +335,12 @@ export class PurchasesService implements OnModuleInit {
    * names who still owes, because the admin pressing the button is usually
    * neither of them.
    */
-  private async assertCommissionSettled(purchase: PurchaseDocument): Promise<void> {
-    const outstanding = await this.commissionsService.outstandingForPurchase(purchase._id.toString());
+  private async assertCommissionSettled(
+    purchase: PurchaseDocument,
+  ): Promise<void> {
+    const outstanding = await this.commissionsService.outstandingForPurchase(
+      purchase._id.toString(),
+    );
     if (!outstanding.length) return;
 
     const total = outstanding.reduce((sum, c) => sum + c.amount, 0);
@@ -331,7 +373,10 @@ export class PurchasesService implements OnModuleInit {
    * legitimate, so it is logged loudly rather than surfaced as an error, and
    * `assertCommissionSettled` will simply find nothing outstanding.
    */
-  private async accrueCommission(purchase: PurchaseDocument, propertyId: string): Promise<void> {
+  private async accrueCommission(
+    purchase: PurchaseDocument,
+    propertyId: string,
+  ): Promise<void> {
     try {
       const facts = await this.propertiesService.dealFacts(propertyId);
       const buyerId = referenceId(purchase.buyerId);
@@ -353,30 +398,39 @@ export class PurchasesService implements OnModuleInit {
   }
 
   /** The property's city admin (or the superuser) may cancel a purchase. */
-  async cancel(id: string, actor: AuthenticatedUser): Promise<PurchaseResponseDto> {
+  async cancel(
+    id: string,
+    actor: AuthenticatedUser,
+  ): Promise<PurchaseResponseDto> {
     const purchase = await this.loadOrThrow(id);
-    await this.propertiesService.assertAdminHandlesProperty(referenceId(purchase.propertyId), actor);
-    // The property leaves the market on *entering* Registration, so a deal
-    // sitting at that step is holding it just as much as a completed one is.
+    await this.propertiesService.assertAdminHandlesProperty(
+      referenceId(purchase.propertyId),
+      actor,
+    );
+    // A property is reserved as soon as its offer is submitted. Any
+    // in-progress or completed purchase therefore holds it off the market,
+    // not only a deal that has reached Registration.
     const heldProperty =
-      purchase.dealStatus === DealStatus.COMPLETED || purchase.dealStep >= DEAL_STEPS.length;
+      purchase.dealStatus === DealStatus.IN_PROGRESS ||
+      purchase.dealStatus === DealStatus.COMPLETED;
     purchase.dealStatus = DealStatus.CANCELLED;
     await purchase.save();
 
-    // Cancelling the deal that took the property off the market puts it back
-    // on — but only if no *other* live deal is still holding it, which would
-    // otherwise re-list a property somebody else is buying.
+    // Cancelling the deal that holds the property puts it back on — but only
+    // if no *other* live deal is still holding it, which would otherwise
+    // re-list a property somebody else is buying.
     const propertyId = referenceId(purchase.propertyId);
     if (heldProperty && propertyId) {
-      const stillClosed = await this.purchaseModel.countDocuments({
+      const stillHolding = await this.purchaseModel.countDocuments({
         _id: { $ne: purchase._id },
         propertyId: purchase.propertyId,
         $or: [
           { dealStatus: DealStatus.COMPLETED },
-          { dealStatus: DealStatus.IN_PROGRESS, dealStep: { $gte: DEAL_STEPS.length } },
+          { dealStatus: DealStatus.IN_PROGRESS },
         ],
       });
-      if (!stillClosed) await this.propertiesService.markDealReopened(propertyId);
+      if (!stillHolding)
+        await this.propertiesService.markDealReopened(propertyId);
     }
     return this.decorate(purchase);
   }

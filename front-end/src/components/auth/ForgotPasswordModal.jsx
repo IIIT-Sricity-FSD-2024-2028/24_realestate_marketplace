@@ -9,14 +9,16 @@
  * API calls: POST /auth/forgot-password { email, userType? }
  */
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Modal from '../common/Modal.jsx';
 import { FormField, TextInput } from '../forms/FormControls.jsx';
-import { authApi } from '../../api/services.js';
+import { forgotPassword } from '../../store/actions/apiActions.js';
 import { useToast } from '../feedback/ToastProvider.jsx';
 import { isEmail } from '../../utils/validation.js';
 
 export default function ForgotPasswordModal({ open, onClose, userType }) {
   const { showToast } = useToast();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [sending, setSending] = useState(false); // disables the button while waiting
   const [sent, setSent] = useState(false); // switches to the "check your email" step
@@ -41,11 +43,11 @@ export default function ForgotPasswordModal({ open, onClose, userType }) {
     try {
       const body = { email: value };
       if (userType) body.userType = userType; // buyer vs seller account
-      await authApi.forgotPassword(body);
+      await dispatch(forgotPassword(body)).unwrap();
       setSent(true);
       showToast('If that account exists, a new password has been emailed to it');
     } catch (err) {
-      showToast(err.message || 'Failed to request password reset', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to request password reset', 'error');
     } finally {
       setSending(false);
     }

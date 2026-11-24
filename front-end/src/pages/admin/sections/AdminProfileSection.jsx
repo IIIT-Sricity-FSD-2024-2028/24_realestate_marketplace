@@ -8,46 +8,31 @@
  * Outputs: header card + read-only details.
  * API calls: GET /auth/me (inside useAdminProfile).
  */
-import { useEffect, useState } from 'react';
-import { authApi } from '../../../api/services.js';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCurrentUser } from '../../../store/actions/apiActions.js';
 import { Avatar, Badge, Card, PageHeader } from '../../../components/common/ui.jsx';
-import { getUser } from '../../../auth/session.js';
 import { monthYear } from '../../../utils/format.js';
 import { groupBuyers, groupSellers } from '../useAdminDesk.js';
 
 /** Hook: the admin's profile, read from the real account (not editable). */
 export function useAdminProfile() {
-  const [profile, setProfile] = useState(() => {
-    const user = getUser() || {};
-    return { name: user.name || '', email: user.email || '', location: user.city || '' };
-  });
-
-  // GET /auth/me — phone, city and member-since come from the server.
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user || {});
+  const account = useSelector((state) => state.profile.account || {});
   useEffect(() => {
-    let alive = true;
-    authApi
-      .me()
-      .then((res) => {
-        const me = res.data || {};
-        if (!alive) return;
-        setProfile((p) => ({
-          name: me.name || p.name,
-          email: me.email || p.email,
-          phone: me.phone || '',
-          location: me.city || p.location,
-          state: me.state || '',
-          createdAt: me.createdAt,
-        }));
-      })
-      .catch(() => {
-        /* fall back to the session details */
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return { profile };
+    dispatch(loadCurrentUser());
+  }, [dispatch]);
+  return {
+    profile: {
+      name: account.name || user.name || '',
+      email: account.email || user.email || '',
+      phone: account.phone || '',
+      location: account.city || user.city || '',
+      state: account.state || '',
+      createdAt: account.createdAt,
+    },
+  };
 }
 
 export default function AdminProfileSection({ desk, profile: { profile } }) {

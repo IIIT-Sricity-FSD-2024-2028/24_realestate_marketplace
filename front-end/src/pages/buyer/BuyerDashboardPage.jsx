@@ -5,25 +5,20 @@
  *          purchases/rentals, payments, notifications and profile.
  * Inputs:  URL section (/buyer/:section), the signed-in buyer session.
  * Outputs: DashboardLayout + active section + the shared property dialogs.
- * State:   Managed centrally via Redux (buyerSlice).
+ * API calls: shared data in useBuyerData (refreshed every 15 s), offer and
+ *            visit requests inside the dialogs (see their headers).
  */
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import DashboardLayout from '../../components/layout/DashboardLayout.jsx';
 import { useDashboardSection } from '../../hooks/useDashboardSection.js';
 import { useLiveRefresh } from '../../hooks/useLiveRefresh.js';
 import { clearUser, logoutPathForRole } from '../../auth/session.js';
 import { useAccountProfile } from '../../components/profile/ProfileSections.jsx';
+import { useToast } from '../../components/feedback/ToastProvider.jsx';
 import Modal from '../../components/common/Modal.jsx';
-import { useBuyerData } from './useBuyerData.js';
-import {
-  selectDetailCard,
-  selectOfferCard,
-  selectVisitCard,
-  selectContactCard,
-  selectOfferDoneMessage,
-  closeOfferDoneModal,
-} from '../../store/slices/buyerSlice.js';
+import { formatCompactINR } from '../../utils/format.js';
+import { savedMatches, useBuyerData } from './useBuyerData.js';
 import PropertyDetailModal from './components/PropertyDetailModal.jsx';
 import OfferFormModal from './components/OfferFormModal.jsx';
 import ScheduleVisitModal from './components/ScheduleVisitModal.jsx';
@@ -70,23 +65,62 @@ const KEYS = NAV.flatMap((n) => (n.items ? n.items.map((i) => i.key) : [n.key]))
 
 export default function BuyerDashboardPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { showToast } = useToast();
   const [active, goTo] = useDashboardSection('/buyer', 'buyer', KEYS, 'explore');
   const data = useBuyerData();
   const account = useAccountProfile('buyerProfile');
-
-  // Shared modal state from Redux
-  const detail = useSelector(selectDetailCard);
-  const offerFor = useSelector(selectOfferCard);
-  const visitFor = useSelector(selectVisitCard);
-  const contactFor = useSelector(selectContactCard);
-  const offerDone = useSelector(selectOfferDoneMessage);
-
   // A seller's reply, an admin confirming a visit or advancing a deal shows up on its own.
   const { sessionChanged } = useLiveRefresh(data.reloadAll, { role: 'buyer', intervalMs: 15000 });
 
-  /** After a visit request: switch to visit-status section. */
-  const visitRequested = () => {
+  // Which dialog is open, and for which listing.
+  const [detail, setDetail] = useState(null);
+  const [offerFor, setOfferFor] = useState(null);
+  const [visitFor, setVisitFor] = useState(null);
+  const [contactFor, setContactFor] = useState(null);
+  const [offerDone, setOfferDone] = useState(null); // success popup text
+
+  // Everything a section (or the detail dialog) can do with a listing.
+  const actions = {
+    open: (card) => setDetail(card),
+    close: () => setDetail(null),
+    makeOffer: (card) => {
+      setDetail(null);
+      setOfferFor(card);
+    },
+    visit: (card) => {
+      setDetail(null);
+      setContactFor(null);
+      setVisitFor(card);
+    },
+    contact: (card) => setContactFor(card),
+    // No public phone numbers exist — say so and point to the real channel.
+    phone: () => showToast("Phone numbers aren't shared publicly — request a site visit and the admin team will connect you."),
+    isShortlisted: (card) => data.shortlist.some((e) => savedMatches(e, card)),
+    isConsidering: (card) => data.considering.some((e) => savedMatches(e, card)),
+    shortlist: (card) => {
+      const added = data.toggleShortlist(card);
+      showToast(added ? '♡ ' + card.title + ' added to Shortlist!' : 'Removed from Shortlist');
+    },
+    consider: (card) => {
+      const added = data.addConsidering(card);
+      showToast(added ? '✅ ' + card.title + ' added to Under Consideration!' : 'Already in Under Consideration');
+      setDetail(null);
+      goTo('under-consideration');
+    },
+  };
+
+  /** After a successful offer: refresh the catalogue so the reserved listing disappears immediately. */
+  const offerSubmitted = async (card, amount) => {
+    data.addConsidering(card);
+    setOfferFor(null);
+    setOfferDone('Your offer of ' + formatCompactINR(amount) + ' for ' + card.title + ' has been submitted!');
+    await Promise.all([data.reload('catalog'), data.reload('deals')]);
+  };
+
+  /** After a visit request: refresh visits and show the "Requested" tab. */
+  const visitRequested = async () => {
+    setVisitFor(null);
+    await data.reload('visits');
     goTo('visit-status');
   };
 
@@ -95,18 +129,19 @@ export default function BuyerDashboardPage() {
     navigate(logoutPathForRole('buyer'));
   };
 
+  const props = { data, actions, goTo, account };
   const sections = {
-    explore: <ExploreSection />,
-    shortlist: <ShortlistSection />,
-    'visit-status': <VisitStatusSection />,
-    'under-consideration': <UnderConsiderationSection />,
-    negotiate: <BuyerNegotiationsSection goTo={goTo} />,
-    'purchase-initiation': <PurchaseInitiationSection />,
-    rented: <OwnedPropertiesSection mode="rent" />,
-    purchased: <OwnedPropertiesSection mode="sale" />,
-    payments: <BuyerPaymentsSection />,
-    notifications: <BuyerNotificationsSection />,
-    profile: <BuyerProfileSection account={account} />,
+    explore: <ExploreSection {...props} />,
+    shortlist: <ShortlistSection {...props} />,
+    'visit-status': <VisitStatusSection {...props} />,
+    'under-consideration': <UnderConsiderationSection {...props} />,
+    negotiate: <BuyerNegotiationsSection {...props} />,
+    'purchase-initiation': <PurchaseInitiationSection {...props} />,
+    rented: <OwnedPropertiesSection {...props} mode="rent" />,
+    purchased: <OwnedPropertiesSection {...props} mode="sale" />,
+    payments: <BuyerPaymentsSection {...props} />,
+    notifications: <BuyerNotificationsSection {...props} />,
+    profile: <BuyerProfileSection {...props} />,
   };
 
   return (
@@ -122,12 +157,12 @@ export default function BuyerDashboardPage() {
     >
       {sections[active]}
 
-      <PropertyDetailModal card={detail} onNavigate={goTo} />
-      <OfferFormModal card={offerFor} />
-      <ScheduleVisitModal card={visitFor} onRequested={visitRequested} />
-      <ContactManagerModal card={contactFor} />
+      <PropertyDetailModal card={detail} actions={actions} />
+      <OfferFormModal card={offerFor} onClose={() => setOfferFor(null)} onSubmitted={offerSubmitted} />
+      <ScheduleVisitModal card={visitFor} onClose={() => setVisitFor(null)} onRequested={visitRequested} />
+      <ContactManagerModal card={contactFor} onClose={() => setContactFor(null)} onRequestVisit={actions.visit} />
 
-      <Modal open={!!offerDone} onClose={() => dispatch(closeOfferDoneModal())} size="sm" title="Offer Submitted!">
+      <Modal open={!!offerDone} onClose={() => setOfferDone(null)} size="sm" title="Offer Submitted!">
         <div className="success-check" aria-hidden="true">
           ✓
         </div>
@@ -137,13 +172,13 @@ export default function BuyerDashboardPage() {
           type="button"
           className="btn btn-primary btn-block"
           onClick={() => {
-            dispatch(closeOfferDoneModal());
+            setOfferDone(null);
             goTo('negotiate');
           }}
         >
           View My Offers →
         </button>
-        <button type="button" className="btn btn-secondary btn-block mt-2" onClick={() => dispatch(closeOfferDoneModal())}>
+        <button type="button" className="btn btn-secondary btn-block mt-2" onClick={() => setOfferDone(null)}>
           Stay Here
         </button>
       </Modal>

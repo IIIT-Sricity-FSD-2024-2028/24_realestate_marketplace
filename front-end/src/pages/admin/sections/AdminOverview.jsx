@@ -9,7 +9,6 @@
  */
 import { PageHeader, StatCard } from '../../../components/common/ui.jsx';
 import { groupBuyers, groupSellers } from '../useAdminDesk.js';
-import './AdminOverview.css';
 
 export default function AdminOverview({ desk, goTo }) {
   const buyers = groupBuyers(desk.negotiations, desk.visits, desk.purchases);

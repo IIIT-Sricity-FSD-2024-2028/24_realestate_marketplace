@@ -56,6 +56,8 @@ export declare class PropertiesService implements OnModuleInit {
     markDealClosed(propertyId: string): Promise<void>;
     markDealReopened(propertyId: string): Promise<void>;
     isDealClosed(propertyId: string): Promise<boolean>;
+    reserveForOffer(propertyId: string, offerAmount: number): Promise<PropertyResponseDto>;
+    releaseOfferHold(propertyId: string): Promise<void>;
     getOwnershipInfo(propertyId: string): Promise<{
         adminId: string | null;
         sellerId: string | null;

@@ -11,10 +11,11 @@
  * API calls: POST /users (create), PATCH /users/:id (edit)
  */
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Modal from '../common/Modal.jsx';
 import { FormField, PasswordInput, TextInput } from '../forms/FormControls.jsx';
 import { useToast } from '../feedback/ToastProvider.jsx';
-import { usersApi } from '../../api/services.js';
+import { createUser, updateUser } from '../../store/actions/apiActions.js';
 import { SERVICE_CITIES } from '../../utils/constants.js';
 import { STRONG_PASSWORD, isValid, validateRules } from '../../utils/validation.js';
 
@@ -22,6 +23,7 @@ const EMPTY = { name: '', email: '', password: '', role: 'user', city: '', userT
 
 export default function UserFormModal({ open, mode = 'superuser', user, onClose, onSaved }) {
   const { showToast } = useToast();
+  const dispatch = useDispatch();
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
@@ -76,16 +78,16 @@ export default function UserFormModal({ open, mode = 'superuser', user, onClose,
     setServerError('');
     try {
       if (editing) {
-        await usersApi.update(user.id, payload); // PATCH /users/:id
+        await dispatch(updateUser({ id: user.id, payload })).unwrap();
         showToast('User updated successfully');
       } else {
-        await usersApi.create({ ...payload, password: form.password }); // POST /users
+        await dispatch(createUser({ ...payload, password: form.password })).unwrap();
         showToast('User created successfully');
       }
       onSaved();
       onClose();
     } catch (err) {
-      setServerError((err.errors && err.errors.join('; ')) || err.message || 'Failed to save user');
+      setServerError((typeof err === 'string' ? err : err.message) || 'Failed to save user');
     } finally {
       setSaving(false);
     }

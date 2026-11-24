@@ -9,13 +9,13 @@
  *            GET /properties/review-queue (via desk.reload)
  */
 import { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Badge, FilterPills, PageHeader, StatCard, StatusLine } from '../../../components/common/ui.jsx';
 import Icon from '../../../components/common/Icon.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { useDialog } from '../../../components/feedback/DialogProvider.jsx';
-import { propertiesApi } from '../../../api/services.js';
+import { rejectProperty, verifyProperty } from '../../../store/actions/apiActions.js';
 import { formatINR, joinPlace, shortDate } from '../../../utils/format.js';
-import './PropertyVerificationSection.css';
 
 // verificationStatus → badge colour + text.
 const STATUS_META = {
@@ -27,6 +27,7 @@ const STATUS_META = {
 export default function PropertyVerificationSection({ desk }) {
   const { showToast } = useToast();
   const { prompt } = useDialog();
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const [busyId, setBusyId] = useState(null);
@@ -56,11 +57,11 @@ export default function PropertyVerificationSection({ desk }) {
   const verify = async (p) => {
     setBusyId(p.id);
     try {
-      await propertiesApi.verify(p.id);
+      await dispatch(verifyProperty(p.id)).unwrap();
       showToast('Property verified ✓');
       await desk.reload('listings');
     } catch (err) {
-      showToast(err.message || 'Failed to verify property', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to verify property', 'error');
     } finally {
       setBusyId(null);
     }
@@ -77,11 +78,11 @@ export default function PropertyVerificationSection({ desk }) {
     if (reason === null) return; // cancelled
     setBusyId(p.id);
     try {
-      await propertiesApi.reject(p.id, reason.trim());
+      await dispatch(rejectProperty({ id: p.id, reason: reason.trim() })).unwrap();
       showToast('Property rejected ✕');
       await desk.reload('listings');
     } catch (err) {
-      showToast(err.message || 'Failed to reject property', 'error');
+      showToast((typeof err === 'string' ? err : err.message) || 'Failed to reject property', 'error');
     } finally {
       setBusyId(null);
     }

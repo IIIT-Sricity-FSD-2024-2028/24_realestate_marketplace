@@ -2,55 +2,30 @@
  * BuyerPaymentsSection.jsx
  * Purpose: Buyer "Payments" — outstanding commission, lifetime spend,
  *          commission invoice cards (with the arithmetic shown) and receipts.
- * Inputs (props): data (optional)
+ * Inputs (props): data – useBuyerData() (billing + catalogInfo)
  * Outputs: the payments page.
- * API calls: payment flow via usePayment, GET /billing/summary (via Redux fetchBuyerBilling & fetchBuyerDeals)
+ * API calls: payment flow via usePayment, GET /billing/summary (via data.reload)
  */
-import { useDispatch, useSelector } from 'react-redux';
 import { Badge, PageHeader, StatCard, StatusLine } from '../../../components/common/ui.jsx';
 import { useToast } from '../../../components/feedback/ToastProvider.jsx';
 import { usePayment } from '../../../components/payments/PaymentProvider.jsx';
 import { formatINR, shortDate } from '../../../utils/format.js';
 import { gatewayBadge } from '../../../utils/billing.js';
-import {
-  selectBuyerBilling,
-  selectBuyerCatalogInfo,
-  selectBuyerLoading,
-  selectBuyerErrors,
-  fetchBuyerBilling,
-  fetchBuyerDeals,
-} from '../../../store/slices/buyerSlice.js';
-import './BuyerPaymentsSection.css';
 
 const STATUS_LABEL = { accrued: 'Payment due', paid: 'Paid', waived: 'Waived by truEstate' };
 
 export default function BuyerPaymentsSection({ data }) {
-  const dispatch = useDispatch();
   const { showToast } = useToast();
   const { pay } = usePayment();
-
-  const reduxBilling = useSelector(selectBuyerBilling);
-  const reduxCatalogInfo = useSelector(selectBuyerCatalogInfo);
-  const reduxLoading = useSelector(selectBuyerLoading);
-  const reduxErrors = useSelector(selectBuyerErrors);
-
-  const billing = data?.billing || reduxBilling;
-  const catalogInfo = data?.catalogInfo || reduxCatalogInfo;
-  const loading = data?.loading || reduxLoading;
-  const errors = data?.errors || reduxErrors;
-
-  const badge = gatewayBadge(catalogInfo);
+  const billing = data.billing;
+  const badge = gatewayBadge(data.catalogInfo);
 
   const payCommission = async (commissionId) => {
     try {
       const result = await pay({ purpose: 'commission', commissionId });
       if (!result) return;
       showToast(result.message);
-      if (data?.reload) {
-        await Promise.all([data.reload('billing'), data.reload('deals')]);
-      } else {
-        await Promise.all([dispatch(fetchBuyerBilling()), dispatch(fetchBuyerDeals())]);
-      }
+      await Promise.all([data.reload('billing'), data.reload('deals')]);
     } catch (err) {
       showToast(err.message || 'Payment failed', 'error');
     }
@@ -64,7 +39,7 @@ export default function BuyerPaymentsSection({ data }) {
         actions={<Badge tone={badge.tone}>{badge.text}</Badge>}
       />
       <div className="content">
-        <StatusLine loading={loading.billing && !billing} error={!billing ? errors.billing : ''} />
+        <StatusLine loading={data.loading.billing && !billing} error={!billing ? data.errors.billing : ''} />
         {billing && (
           <>
             <div className="stats-grid stats-2">

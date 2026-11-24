@@ -11,7 +11,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Icon from '../common/Icon.jsx';
 import { RESTRICT_HINTS, sanitizeInput } from '../../utils/validation.js';
-import './FormControls.css';
 
 /**
  * Label + control + optional hint + optional error.
